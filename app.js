@@ -71,6 +71,10 @@ function findHostedAppData(inAppList, cb) {
 	searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?app_type=hosted&format=JSON&limit=200', inAppList, cb);
 }
 
+function findPrivilegedAppData(inAppList, cb) {
+    searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?app_type=privileged&format=JSON&limit=200', inAppList, cb);
+}
+
 // ------------------------------- ANGULAR STUFF -------------------------
 
 var carpetcrawlerApp = angular.module('carpetcrawlerApp', []);
@@ -83,6 +87,7 @@ carpetcrawlerApp.controller('AppListCtrl', function ($scope) {
 $(document).ready(function() {
 	var theScope = angular.element('[ng-controller=AppListCtrl]').scope();
 
-	findPackagedAppData(theScope.apps, function() { console.log("DONE PACKAGED"); });
+    findPrivilegedAppData(theScope.apps, function() { console.log("DONE PRIVILEGED"); });
+    findPackagedAppData(theScope.apps, function() { console.log("DONE PACKAGED"); });
 	findHostedAppData(theScope.apps, function() { console.log("DONE HOSTED"); });
 });

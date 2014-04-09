@@ -3,3 +3,18 @@
 body {
 	font-family: Oswald;
 }
+
+.pagetitle {
+	font-size: 48pt;
+}
+
+.statrow {
+	font-size: 32pt;
+	padding-top: 18px;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
