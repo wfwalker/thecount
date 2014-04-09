@@ -1,0 +1,35 @@
+<html ng-app='carpetcrawlerApp'>
+	<head>
+		<title>The Count</title>
+        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+
+        <link href="//fonts.googleapis.com/css?family=Oswald:300,400,700" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" rel="stylesheet" type="text/css" href="./app.css" />
+        <link rel="stylesheet" rel="stylesheet" type="text/css" href="./brick-1.0.0/brick-1.0.0.css" />
+	</head>
+
+	<body ng-controller='AppListCtrl'>
+
+		<h1>{{apps.length}} apps </h1>
+
+		<h2>{{(apps|filter:{is_packaged: true}).length}} packaged </h2>
+		<h2>{{(apps|filter:{is_packaged: false}).length}} hosted </h2>
+
+		<h2>{{(apps|filter:{device_types:'tablet'}).length}} tablet </h2>
+		<h2>{{(apps|filter:{device_types:'firefoxos'}).length}} firefoxos </h2>
+		<h2>{{(apps|filter:{device_types:'android'}).length}} android </h2>
+
+		<h2>{{(apps|filter:{premium_type:'free'}).length}} free </h2>
+		<h2>{{(apps|filter:{premium_type:'premium'}).length}} paid </h2>
+		<h2>{{(apps|filter:{premium_type:'free-inapp'}).length}} free w/in-app </h2>
+		<h2>{{(apps|filter:{premium_type:'premium-inapp'}).length}} paid w/in-app </h2>
+
+		<img src='thecount.jpg' align='right' />
+		<div style='font-size: 48pt'>The Count</div>
+
+	    <script src="http://cdn.jsdelivr.net/jquery/1.10.2/jquery-1.10.2.js" > </script>
+	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.2/angular.min.js" > </script>
+	    <script src="./brick-1.0.0/brick-1.0.0.js" > </script>
+	    <script src="./app.js" > </script>
+	</body>
+</html>
