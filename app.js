@@ -18,6 +18,9 @@ function getAppData(inAppName, inAppList) {
     });    
 }
 
+
+// http://jsonp.jit.su/?callback=&url=https%3A%2F%2Fmarketplace.firefox.com%2Fapp%2F0213a06f-2efb-4d4f-aab7-04dd267d4168%2Fmanifest.webapp
+
 function getManifest(inManifestURL) {
 	console.log(inManifestURL);
 
@@ -25,7 +28,7 @@ function getManifest(inManifestURL) {
         url: inManifestURL,
         dataType: 'json'
     }).done(function(data) {
-        console.log(data.size);
+        console.log(inManifestURL + ' ' + data.size);
         // angular.element('[ng-controller=AppListCtrl]').scope().$digest();
     }).fail(function(data) {
         console.log('getManifestFailed');
@@ -40,9 +43,11 @@ function searchAppData(inSearchURL, inAppList, cb) {
         $.each(data.objects, function(ix, app) { 
             inAppList.push(app);
 
-            // if (app.is_packaged) {
-	           //  getManifest(app.manifest_url);
-            // }
+            if (app.is_packaged) {
+                console.log(inSearchURL);
+                console.log(app.manifest_url);
+                // getManifest(app.manifest_url);
+            }
         });
 
         console.log('total count ' + data.meta.total_count);
