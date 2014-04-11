@@ -74,6 +74,8 @@ function getManifest(inApp) {
     });
 }
 
+// returns a Q promise for retrieving an app's appcache manifest
+
 function getAppcacheManifest(inApp) {
     var manifestURL = url.parse(inApp.manifest_url);
     var appcacheManifestURL = url.resolve(manifestURL, inApp.manifest.appcache_path);
@@ -84,6 +86,9 @@ function getAppcacheManifest(inApp) {
         return {'error' : error};
     });
 }
+
+// adds to the existing array of promises one or two promises
+// to retrieve the app manifest and appcache manifest
     
 function addPromiseForManifest(subpromises, app) {
     if (app.manifest_url) {
@@ -124,9 +129,13 @@ function searchAppData(inSearchURL) {
     });
 }
 
+// returns a Q promise to retrieve the entire firefox marketplace catalog
+
 function findAppData() {
     return searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?format=JSON&limit=200');
 }
+
+// CVS REPORT GENERATION --------------------------------------------------------------------------------------
 
 // Emitting CSV into the given file for the given data rows
 
@@ -218,6 +227,42 @@ function emitPackageSizeSummary(inOutputFile) {
 
     emitCSV(inOutputFile, rows);
 }
+
+function emitPermissionUsageSummary(inOutputFile) {
+    var rows = [];
+
+    var permissionCounts = {};
+    var appsFound = 0;
+
+    for (index in theScope.apps) {
+        var app = theScope.apps[index];
+
+        if (app.manifest.permissions) {
+            appsFound++;
+
+            var permissionKeys = Object.keys(app.manifest.permissions);
+            for (var permissionsIndex in permissionKeys) {
+                var permission = permissionKeys[permissionsIndex];
+
+                if (permissionCounts[permission]) {
+                    permissionCounts[permission]++;
+                } else {
+                    permissionCounts[permission] = 1;
+                }
+            }
+        }
+    }
+
+    rows.push(['total', appsFound]);
+    
+    for (countKey in permissionCounts) {
+        var count = permissionCounts[countKey];
+        rows.push([countKey, count]);
+    }
+
+    emitCSV(inOutputFile, rows);
+}
+
 
 // Build a summary of all the common attributes of apps
 
@@ -311,5 +356,6 @@ if (argv['emit']) {
     emitPackageSizeSummary('package-size-summary.csv');
     emitPackageSizeTable('marketplace-app-table.csv');
     emitAppKindSummary('app-kind-summary.csv');
+    emitPermissionUsageSummary('app-permission-summary.csv');
 }
 
