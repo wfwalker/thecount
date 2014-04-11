@@ -6,6 +6,7 @@ var request = require('request');
 var fs = require('fs');
 var Q = require('q');
 var parseArgs = require('minimist');
+var url = require('url');
 
 // global scope
 
@@ -30,9 +31,28 @@ function getPromiseForRequestAndParseJSON(inURL) {
                 deferred.resolve(JSON.parse(body));
             }
             catch (e) {
-                console.log('cannot parse ' + inURL + ', ' + e);
+                // console.log('cannot parse ' + inURL + ', ' + e);
                 deferred.reject(new Error(e));
             }
+        } else {
+            theScope.pendingRequests -= 1;
+            // console.log('cannot retrieve ' + inURL + ', ' + error);
+            deferred.reject(new Error(error));
+        }
+    });
+
+    return deferred.promise;
+}
+
+function getPromiseForRequest(inURL) {
+    var deferred = Q.defer();
+
+    theScope.pendingRequests += 1;
+
+    request(inURL, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            theScope.pendingRequests -= 1;
+            deferred.resolve(body);
         } else {
             theScope.pendingRequests -= 1;
             console.log('cannot retrieve ' + inURL + ', ' + error);
@@ -43,21 +63,41 @@ function getPromiseForRequestAndParseJSON(inURL) {
     return deferred.promise;
 }
 
+
 // returns a Q Promise for retrieving and parsing an app's manifest
 
 function getManifest(inApp) {
     return getPromiseForRequestAndParseJSON(inApp.manifest_url).catch(function (error) {
-        console.log('MANIFEST CATCH ' + error);
+        // console.log('MANIFEST CATCH ' + error);
         // TODO: this doesn't seem to work
         return {'error' : error};
     });
 }
 
+function getAppcacheManifest(inApp) {
+    var manifestURL = url.parse(inApp.manifest_url);
+    var appcacheManifestURL = url.resolve(manifestURL, inApp.manifest.appcache_path);
+
+    return getPromiseForRequest(appcacheManifestURL).catch(function (error) {
+        console.log('APPCACHE MANIFEST CATCH ' + error);
+        // TODO: this doesn't seem to work
+        return {'error' : error};
+    });
+}
     
 function addPromiseForManifest(subpromises, app) {
     if (app.manifest_url) {
+        // add a subpromise for the app manifest
         subpromises.push(getManifest(app).then(function (data) {
             theScope.apps[app.id].manifest = data;
+
+            if (data.appcache_path) {
+                console.log('found ' + data.appcache_path);
+                // add a subpromise for the appcache manifest
+                subpromises.push(getAppcacheManifest(theScope.apps[app.id]).then(function (appcacheData) {
+                    theScope.apps[app.id].appcache_manifest = appcacheData;
+                }));
+            }
         }));
     }
 }
