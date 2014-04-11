@@ -88,34 +88,7 @@ function findAppData() {
     return searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?format=JSON&limit=200');
 }
 
-function emitPackageSizeTable(inDB) {
-    var fieldNames = [
-        'name',
-        'type',
-        'payments',
-        'ratings',
-        'weekly_downloads',
-        'package size'
-    ];
-
-    console.log(fieldNames.join(','));
-
-    for (index in inDB) {
-        var app = inDB[index];
-        var appNameKeys = Object.keys(app.name);
-
-        var csvFields = [
-            app.name[appNameKeys[0]].replace(/,/g, ''),
-            app.app_type,
-            app.premium_type,
-            app.ratings ? app.ratings.count : '',
-            (app.weekly_downloads != 'null') ? app.weekly_downloads: '',
-            app.manifest && app.manifest.size ? app.manifest.size : ''
-        ];
-
-        console.log(csvFields.join(','));
-    }
-}
+// Emitting CSV
 
 function emitCSV(inOutputFile, inData) {
     var stream = fs.createWriteStream(inOutputFile);
@@ -126,7 +99,39 @@ function emitCSV(inOutputFile, inData) {
             stream.write(row.join(',') + '\n');
         }
         stream.end();
+
+        console.log('wrote ' + inData.length + ' rows to ' + inOutputFile);
     });     
+}
+
+function emitPackageSizeTable(inOutputFile) {
+
+    var rows = [];
+
+    rows.push([
+        'name',
+        'type',
+        'payments',
+        'ratings',
+        'weekly_downloads',
+        'package size'
+    ]);
+
+    for (index in theScope.apps) {
+        var app = theScope.apps[index];
+        var appNameKeys = Object.keys(app.name);
+
+        rows.push([
+            app.name[appNameKeys[0]].replace(/,/g, ''),
+            app.app_type,
+            app.premium_type,
+            app.ratings ? app.ratings.count : '',
+            (app.weekly_downloads != 'null') ? app.weekly_downloads: '',
+            app.manifest && app.manifest.size ? app.manifest.size : ''
+        ]);
+    }
+
+    emitCSV(inOutputFile, rows);
 }
 
 function emitPackageSizeSummary(inOutputFile) {
@@ -206,14 +211,13 @@ function createMarketplaceCatalogDB(inOutputFile) {
 
 var argv = parseArgs(process.argv.slice(2));
 
-console.log(argv);
-
 if (argv['build']) {
     createMarketplaceCatalogDB('apps.json');
 }
 
 if (argv['emit']) {
     loadDB('apps.json');
-    emitPackageSizeSummary('package-size-summary.json');
+    emitPackageSizeSummary('package-size-summary.csv');
+    emitPackageSizeTable('marketplace-app-table.csv');
 }
 
