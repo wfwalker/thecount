@@ -1,6 +1,11 @@
+// thecount.js -- node command-line utility to analyze Firefox Marketplace catalog
+// online version at http://wfwalker.github.io/thecount/
+// see https://github.com/wfwalker/thecount
+
 var request = require('request');
 var fs = require('fs');
 var Q = require('q');
+var parseArgs = require('minimist');
 
 // global scope
 
@@ -19,12 +24,12 @@ function getPromiseForRequestAndParseJSON(inURL) {
 
     request(inURL, function (error, response, body) {
         if (!error && response.statusCode == 200) {
+            theScope.pendingRequests -= 1;
+
             try {
-                theScope.pendingRequests -= 1;
                 deferred.resolve(JSON.parse(body));
             }
             catch (e) {
-                theScope.pendingRequests -= 1;
                 console.log('cannot parse ' + inURL + ', ' + e);
                 deferred.reject(new Error(e));
             }
@@ -43,6 +48,7 @@ function getPromiseForRequestAndParseJSON(inURL) {
 function getManifest(inApp) {
     return getPromiseForRequestAndParseJSON(inApp.manifest_url).catch(function (error) {
         console.log('MANIFEST CATCH ' + error);
+        // TODO: this doesn't seem to work
         return {'error' : error};
     });
 }
@@ -86,6 +92,9 @@ function emitPackageSizeTable(inDB) {
     var fieldNames = [
         'name',
         'type',
+        'payments',
+        'ratings',
+        'weekly_downloads',
         'package size'
     ];
 
@@ -96,8 +105,11 @@ function emitPackageSizeTable(inDB) {
         var appNameKeys = Object.keys(app.name);
 
         var csvFields = [
-            app.name[appNameKeys[0]],
+            app.name[appNameKeys[0]].replace(/,/g, ''),
             app.app_type,
+            app.premium_type,
+            app.ratings ? app.ratings.count : '',
+            (app.weekly_downloads != 'null') ? app.weekly_downloads: '',
             app.manifest && app.manifest.size ? app.manifest.size : ''
         ];
 
@@ -105,12 +117,24 @@ function emitPackageSizeTable(inDB) {
     }
 }
 
-function emitPackageSizeSummary(inDB) {
+function emitCSV(inOutputFile, inData) {
+    var stream = fs.createWriteStream(inOutputFile);
 
+    stream.once('open', function(fd) {
+        for (var index in inData) {
+            var row = inData[index];
+            stream.write(row.join(',') + '\n');
+        }
+        stream.end();
+    });     
+}
+
+function emitPackageSizeSummary(inOutputFile) {
     var appTotal = 0;
     var appCount = 0;
     var min = 100000000;
     var max = 0;
+    var rows = [];
 
     var countsByMB = [];
 
@@ -118,8 +142,8 @@ function emitPackageSizeSummary(inDB) {
         countsByMB[index] = 0;
     }
 
-    for (index in inDB) {
-        var app = inDB[index];
+    for (index in theScope.apps) {
+        var app = theScope.apps[index];
 
         if (app.manifest && app.manifest.size) {
             var mb = Math.round(app.manifest.size / 1000000);
@@ -132,41 +156,33 @@ function emitPackageSizeSummary(inDB) {
         }
     }
 
-    console.log('total,' + appTotal);
-    console.log('count,' + appCount);
-    console.log('average,' + Math.round(appTotal / appCount));
-    console.log('min,' + min);
-    console.log('max,' + max);
+    rows.push(['total', appTotal]);
+    rows.push(['count', appCount]);
+    rows.push(['average', Math.round(appTotal / appCount)]);
+    rows.push(['min', min]);
+    rows.push(['max', max]);
 
-    var fieldNames = [
-        'size',
-        'count'
-    ];
-
-    console.log(fieldNames.join(','));
+    rows.push(['size', 'count']);
 
     for (var index = 0; index < 50; index++) {
-        var csvFields = [
-            index, countsByMB[index]
-        ];
-
-        console.log(csvFields.join('\t'));
+        rows.push([index, countsByMB[index]]);
     }
 
+    emitCSV(inOutputFile, rows);
 }
 
+// Creating and Loading the local database
 
-function emitCSV(inJSONFilename) {
+function loadDB(inJSONFilename) {
     var raw = fs.readFileSync(inJSONFilename);
 
     try {
-        var data = JSON.parse(raw); 
-
-        emitPackageSizeTable(data);
-        emitPackageSizeSummary(data);
+        theScope.apps = JSON.parse(raw); 
+        console.log('loaded ' + Object.keys(theScope.apps).length + ' objects');
     }
     catch (e) {
         console.log('cannot parse ' + inJSONFilename + ', ' + e);
+        theScope.apps = [];
     }
 }
 
@@ -175,7 +191,7 @@ function createMarketplaceCatalogDB(inOutputFile) {
         console.log('DONE ALL ' + theScope.apps.length); 
 
         fs.writeFile(inOutputFile, JSON.stringify(theScope.apps, null, 4), function(err) {
-            if(err) {
+            if (err) {
               console.log(err);
             } else {
               console.log("JSON saved to " + inOutputFile);
@@ -186,8 +202,18 @@ function createMarketplaceCatalogDB(inOutputFile) {
     });
 }
 
-//createMarketplaceCatalogDB('apps.json');
+// MAIN - parse command-line arguments and either build the database or analyze it
 
-emitCSV('apps.json');
+var argv = parseArgs(process.argv.slice(2));
 
+console.log(argv);
+
+if (argv['build']) {
+    createMarketplaceCatalogDB('apps.json');
+}
+
+if (argv['emit']) {
+    loadDB('apps.json');
+    emitPackageSizeSummary('package-size-summary.json');
+}
 
