@@ -1,100 +1,169 @@
 var request = require('request');
 var fs = require('fs');
+var Q = require('q');
+
+// global scope
 
 var theScope = {};
+theScope.apps = {};
+theScope.pendingRequests = 0;
 
-theScope.apps = [];
+// creates a Q promise that
+//      resolves upon getting the bytes at the supplied URL and parsing them as JSON
+//      rejects otherwise
 
-function getAppData(inAppName, inAppList) {
-    var theURL = 'https://marketplace.firefox.com/api/v1/apps/app/' + inAppName + '/?format=JSON';
+function getPromiseForRequestAndParseJSON(inURL) {
+    var deferred = Q.defer();
 
-    request(theURL, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            console.log(body);
-        }
-    });
-}
+    theScope.pendingRequests += 1;
 
-function getManifest(inApp) {
-    request(inApp.manifest_url, function (error, response, body) {
+    request(inURL, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             try {
-                inApp.manifest = JSON.parse(body);                
+                theScope.pendingRequests -= 1;
+                deferred.resolve(JSON.parse(body));
             }
             catch (e) {
-                console.log('cannot parse ' + inApp.manifest_url + ', ' + e);
+                theScope.pendingRequests -= 1;
+                console.log('cannot parse ' + inURL + ', ' + e);
+                deferred.reject(new Error(e));
             }
+        } else {
+            theScope.pendingRequests -= 1;
+            console.log('cannot retrieve ' + inURL + ', ' + error);
+            deferred.reject(new Error(error));
         }
+    });
+
+    return deferred.promise;
+}
+
+// returns a Q Promise for retrieving and parsing an app's manifest
+
+function getManifest(inApp) {
+    return getPromiseForRequestAndParseJSON(inApp.manifest_url).catch(function (error) {
+        console.log('MANIFEST CATCH ' + error);
+        return {'error' : error};
     });
 }
 
-function searchAppData(inSearchURL, inAppList, cb) {
-    request(inSearchURL, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            var data = JSON.parse(body);
+    
+function addPromiseForManifest(subpromises, app) {
+    if (app.manifest_url) {
+        subpromises.push(getManifest(app).then(function (data) {
+            theScope.apps[app.id].manifest = data;
+        }));
+    }
+}
 
-            for (index in data.objects) {
-                var app = data.objects[index]
-                inAppList.push(app);
+// returns a Q Promise for searching the Apps catalog using the Marketplace API
 
-                if (app.manifest_url) {
-                    getManifest(app);
-                }
-            }
+function searchAppData(inSearchURL) {
+    return getPromiseForRequestAndParseJSON(inSearchURL).then(function (data) {
+        // resolved
+        var subpromises = [];
 
-            console.log('doing ' + data.meta.offset + '/' + data.meta.total_count);
-
-            if (data.meta.next) {
-                searchAppData('https://marketplace.firefox.com' + data.meta.next, inAppList, cb);
-            } else {
-                cb();
-            }
+        for (index in data.objects) {
+            var app = data.objects[index];
+            theScope.apps[app.id] = app;
+            addPromiseForManifest(subpromises, app);
         }
+
+        if (data.meta.next) {
+            console.log(data.meta.offset + '/' + data.meta.total_count + ' pending ' + theScope.pendingRequests + ' size ' + Object.keys(theScope.apps).length);
+            subpromises.push(searchAppData('https://marketplace.firefox.com' + data.meta.next));
+        }
+
+        return Q.all(subpromises);
     });
 }
 
-function findAppData(inAppList, cb) {
-    searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?format=JSON&limit=200', inAppList, cb);
+function findAppData() {
+    return searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?format=JSON&limit=200');
 }
 
-function findPackagedAppData(inAppList, cb) {
-	searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?app_type=packaged&format=JSON&limit=200', inAppList, cb);
-}
-
-function findHostedAppData(inAppList, cb) {
-	searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?app_type=hosted&format=JSON&limit=200', inAppList, cb);
-}
-
-function findPrivilegedAppData(inAppList, cb) {
-    searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?app_type=privileged&format=JSON&limit=200', inAppList, cb);
-}
-
-function emitCSV(inJSONFilename) {
-    var raw = fs.readFileSync(inJSONFilename);
-
+function emitPackageSizeTable(inDB) {
     var fieldNames = [
         'name',
-        'hosted',
+        'type',
         'package size'
     ];
 
     console.log(fieldNames.join(','));
 
+    for (index in inDB) {
+        var app = inDB[index];
+        var appNameKeys = Object.keys(app.name);
+
+        var csvFields = [
+            app.name[appNameKeys[0]],
+            app.app_type,
+            app.manifest && app.manifest.size ? app.manifest.size : ''
+        ];
+
+        console.log(csvFields.join(','));
+    }
+}
+
+function emitPackageSizeSummary(inDB) {
+
+    var appTotal = 0;
+    var appCount = 0;
+    var min = 100000000;
+    var max = 0;
+
+    var countsByMB = [];
+
+    for (var index = 0; index < 50; index++) {
+        countsByMB[index] = 0;
+    }
+
+    for (index in inDB) {
+        var app = inDB[index];
+
+        if (app.manifest && app.manifest.size) {
+            var mb = Math.round(app.manifest.size / 1000000);
+            countsByMB[mb] = countsByMB[mb] + 1;
+
+            appTotal = appTotal + Math.round(app.manifest.size);
+            min = Math.min(min, app.manifest.size);
+            max = Math.max(max, app.manifest.size);
+            appCount = appCount + 1;
+        }
+    }
+
+    console.log('total,' + appTotal);
+    console.log('count,' + appCount);
+    console.log('average,' + Math.round(appTotal / appCount));
+    console.log('min,' + min);
+    console.log('max,' + max);
+
+    var fieldNames = [
+        'size',
+        'count'
+    ];
+
+    console.log(fieldNames.join(','));
+
+    for (var index = 0; index < 50; index++) {
+        var csvFields = [
+            index, countsByMB[index]
+        ];
+
+        console.log(csvFields.join('\t'));
+    }
+
+}
+
+
+function emitCSV(inJSONFilename) {
+    var raw = fs.readFileSync(inJSONFilename);
+
     try {
         var data = JSON.parse(raw); 
 
-        for (index in data) {
-            var app = data[index];
-            var appNameKeys = Object.keys(app.name);
-
-            var csvFields = [
-                app.name[appNameKeys[0]],
-                app.app_type == 'hosted',
-                app.manifest && app.manifest.size ? app.manifest.size : ''
-            ];
-
-            console.log(csvFields.join(','));
-        }
+        emitPackageSizeTable(data);
+        emitPackageSizeSummary(data);
     }
     catch (e) {
         console.log('cannot parse ' + inJSONFilename + ', ' + e);
@@ -102,8 +171,8 @@ function emitCSV(inJSONFilename) {
 }
 
 function createMarketplaceCatalogDB(inOutputFile) {
-    findAppData(theScope.apps, function() {
-        console.log('DONE ALL'); 
+    return findAppData().then(function() {
+        console.log('DONE ALL ' + theScope.apps.length); 
 
         fs.writeFile(inOutputFile, JSON.stringify(theScope.apps, null, 4), function(err) {
             if(err) {
@@ -112,10 +181,13 @@ function createMarketplaceCatalogDB(inOutputFile) {
               console.log("JSON saved to " + inOutputFile);
             }
         }); 
+    }).catch(function (error) {
+        console.log('create err ' + error);
     });
 }
 
+//createMarketplaceCatalogDB('apps.json');
 
 emitCSV('apps.json');
 
-// createMarketplaceCatalogDB('apps.json');
+
