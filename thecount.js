@@ -88,7 +88,7 @@ function findAppData() {
     return searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?format=JSON&limit=200');
 }
 
-// Emitting CSV
+// Emitting CSV into the given file for the given data rows
 
 function emitCSV(inOutputFile, inData) {
     var stream = fs.createWriteStream(inOutputFile);
@@ -104,8 +104,9 @@ function emitCSV(inOutputFile, inData) {
     });     
 }
 
-function emitPackageSizeTable(inOutputFile) {
+// emit a table with one row per app showing various attributes
 
+function emitPackageSizeTable(inOutputFile) {
     var rows = [];
 
     rows.push([
@@ -133,6 +134,8 @@ function emitPackageSizeTable(inOutputFile) {
 
     emitCSV(inOutputFile, rows);
 }
+
+// Compute the distribution of packaged app sizes
 
 function emitPackageSizeSummary(inOutputFile) {
     var appTotal = 0;
@@ -175,6 +178,54 @@ function emitPackageSizeSummary(inOutputFile) {
 
     emitCSV(inOutputFile, rows);
 }
+
+// Build a summary of all the common attributes of apps
+
+function emitAppKindSummary(inOutputFile) {
+    var rows = [];
+
+    var packaged = 0, privileged = 0, hosted = 0;
+
+    var desktop = 0, firefoxos = 0, androidtablet = 0, androidmobile = 0;
+
+    var freeapp = 0, premiumapp = 0, freeinapp = 0, premiuminapp = 0;
+
+    for (index in theScope.apps) {
+        var app = theScope.apps[index];
+
+        if (app.app_type == 'hosted') { hosted++; }
+        if (app.app_type == 'privileged') { privileged++; }
+        if (app.app_type == 'packaged') { packaged++; }
+
+        if (app.premium_type == 'free') { freeapp++; }
+        if (app.premium_type == 'premium') { premiumapp++; }
+        if (app.premium_type == 'free-inapp') { freeinapp++; }
+        if (app.premium_type == 'premium-inapp') { premiuminapp++; }
+
+        if (app.device_types.indexOf('desktop') > -1) { desktop++; }
+        if (app.device_types.indexOf('firefoxos') > -1) { firefoxos++; }
+        if (app.device_types.indexOf('android-tablet') > -1) { androidtablet++; }
+        if (app.device_types.indexOf('android-mobile') > -1) { androidmobile++; }
+    }
+
+    rows.push(['total', Object.keys(theScope.apps).length]);
+    rows.push(['hosted', hosted]);
+    rows.push(['privileged', privileged]);
+    rows.push(['packaged', packaged]);
+
+    rows.push(['free', freeapp]);
+    rows.push(['premium', premiumapp]);
+    rows.push(['free-inapp', freeinapp]);
+    rows.push(['premium-inapp', premiuminapp]);
+
+    rows.push(['desktop', desktop]);
+    rows.push(['firefoxos', firefoxos]);
+    rows.push(['android-tablet', androidtablet]);
+    rows.push(['android-mobile', androidmobile]);
+
+    emitCSV(inOutputFile, rows);
+}
+
 
 // Creating and Loading the local database
 
@@ -219,5 +270,6 @@ if (argv['emit']) {
     loadDB('apps.json');
     emitPackageSizeSummary('package-size-summary.csv');
     emitPackageSizeTable('marketplace-app-table.csv');
+    emitAppKindSummary('app-kind-summary.csv');
 }
 
