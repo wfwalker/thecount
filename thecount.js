@@ -45,6 +45,10 @@ function getPromiseForRequestAndParseJSON(inURL) {
     return deferred.promise;
 }
 
+// creates a Q promise that 
+//      resolves upon getting the bytes at the supplied URL
+//      rejects otherwise
+
 function getPromiseForRequest(inURL) {
     var deferred = Q.defer();
 
@@ -56,13 +60,17 @@ function getPromiseForRequest(inURL) {
             deferred.resolve(body);
         } else {
             theScope.pendingRequests -= 1;
-            console.log('cannot retrieve ' + inURL + ', ' + error);
+            // console.log('cannot retrieve ' + inURL + ', ' + error);
             deferred.reject(new Error(error));
         }
     });
 
     return deferred.promise;
 }
+
+// creates a Q promise that 
+//      resolves upon getting a response to a HEAD request and returns the content-length header
+//      rejects otherwise
 
 function getPromiseForResponseContentSize(inURL) {
     var deferred = Q.defer();
@@ -75,7 +83,7 @@ function getPromiseForResponseContentSize(inURL) {
             deferred.resolve(response.headers['content-length']);
         } else {
             theScope.pendingRequests -= 1;
-            console.log('cannot retrieve ' + inURL + ', ' + error);
+            // console.log('cannot retrieve ' + inURL + ', ' + error);
             deferred.reject(new Error(error));
         }
     });
@@ -85,42 +93,47 @@ function getPromiseForResponseContentSize(inURL) {
 
 
 // returns a Q Promise for retrieving and parsing an app's manifest
+// catches errors and returns them as JSON
 
 function getManifest(inApp) {
     return getPromiseForRequestAndParseJSON(inApp.manifest_url).catch(function (error) {
-        // console.log('MANIFEST CATCH ' + error);
+        console.log('getManifest ' + inApp.manifest_url + ' CATCH ' + error);
         // TODO: this doesn't seem to work
         return {'error' : error};
     });
 }
 
 // returns a Q promise for retrieving an app's appcache manifest
+// catches errors and returns them as JSON
 
 function getAppcacheManifest(inApp) {
     var manifestURL = url.parse(inApp.manifest_url);
     var appcacheManifestURL = url.resolve(manifestURL, inApp.manifest.appcache_path);
 
     return getPromiseForRequest(appcacheManifestURL).catch(function (error) {
-        console.log('getAppcacheManifest ' + error);
+        console.log('getAppcacheManifest ' + appcacheManifestURL + ' CATCH ' + error);
         // TODO: this doesn't seem to work
         return {'error' : error};
     });
 }
 
+// returns a Q promise for retrieving the size of a resource on the web
+// catches errors and returns 0 instead
+
 function getAppcacheManifestEntrySize(inEntryURL) {
     return getPromiseForResponseContentSize(inEntryURL).catch(function (error) {
-        console.log('catch getAppcacheManifestEntrySize ' + error);
+        // console.log('getAppcacheManifestEntrySize ' + inEntryURL + ' CATCH ' + error);
         // TODO: this doesn't seem to work
         return 0;
     })
 
 }
 
-function addPromiseForAppcacheEntry(subpromises, app, entryURL) {
-    // TODO! need to fix the loop problem
+// adds to the existing array of promises a promise
+// to retrieve the size of an entry in the appcache manifest
 
+function addPromiseForAppcacheEntry(subpromises, app, entryURL) {
     subpromises.push(getAppcacheManifestEntrySize(entryURL).then(function (responseContentLength) {
-        console.log('FOUND ' + entryURL + ' -->  ' + responseContentLength);
         theScope.apps[app.id].appcache_entry_sizes[entryURL] = responseContentLength;
     }));    
 }
@@ -149,11 +162,9 @@ function addPromiseForManifest(subpromises, app) {
                         var entry = entries.cache[entryIndex];
                         var entryURL = url.resolve(manifestURL, entry);
 
-                        // TODO! need to fix the loop problem
+                        // add a subpromise for the size of each appcache entry
                         addPromiseForAppcacheEntry(subpromises, app, entryURL);
                     }
-
-                    console.log('done ' + entryIndex);                    
                 }));
             }
         }));
@@ -188,7 +199,7 @@ function findAppData() {
     return searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?format=JSON&limit=200');
 }
 
-// CVS REPORT GENERATION --------------------------------------------------------------------------------------
+// CSV REPORT GENERATION --------------------------------------------------------------------------------------
 
 // Emitting CSV into the given file for the given data rows
 
