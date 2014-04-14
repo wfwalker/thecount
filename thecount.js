@@ -7,6 +7,7 @@ var fs = require('fs');
 var Q = require('q');
 var parseArgs = require('minimist');
 var url = require('url');
+var parseAppcacheManifest = require("parse-appcache-manifest");
 
 // global scope
 
@@ -14,7 +15,7 @@ var theScope = {};
 theScope.apps = {};
 theScope.pendingRequests = 0;
 
-// creates a Q promise that
+// creates a Q promise that 
 //      resolves upon getting the bytes at the supplied URL and parsing them as JSON
 //      rejects otherwise
 
@@ -63,6 +64,25 @@ function getPromiseForRequest(inURL) {
     return deferred.promise;
 }
 
+function getPromiseForResponseContentSize(inURL) {
+    var deferred = Q.defer();
+
+    theScope.pendingRequests += 1;
+
+    request(inURL, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            theScope.pendingRequests -= 1;
+            deferred.resolve(response.headers['content-length']);
+        } else {
+            theScope.pendingRequests -= 1;
+            console.log('cannot retrieve ' + inURL + ', ' + error);
+            deferred.reject(new Error(error));
+        }
+    });
+
+    return deferred.promise;
+}
+
 
 // returns a Q Promise for retrieving and parsing an app's manifest
 
@@ -81,10 +101,28 @@ function getAppcacheManifest(inApp) {
     var appcacheManifestURL = url.resolve(manifestURL, inApp.manifest.appcache_path);
 
     return getPromiseForRequest(appcacheManifestURL).catch(function (error) {
-        console.log('APPCACHE MANIFEST CATCH ' + error);
+        console.log('getAppcacheManifest ' + error);
         // TODO: this doesn't seem to work
         return {'error' : error};
     });
+}
+
+function getAppcacheManifestEntrySize(inEntryURL) {
+    return getPromiseForResponseContentSize(inEntryURL).catch(function (error) {
+        console.log('catch getAppcacheManifestEntrySize ' + error);
+        // TODO: this doesn't seem to work
+        return 0;
+    })
+
+}
+
+function addPromiseForAppcacheEntry(subpromises, app, entryURL) {
+    // TODO! need to fix the loop problem
+
+    subpromises.push(getAppcacheManifestEntrySize(entryURL).then(function (responseContentLength) {
+        console.log('FOUND ' + entryURL + ' -->  ' + responseContentLength);
+        theScope.apps[app.id].appcache_entry_sizes[entryURL] = responseContentLength;
+    }));    
 }
 
 // adds to the existing array of promises one or two promises
@@ -92,15 +130,30 @@ function getAppcacheManifest(inApp) {
     
 function addPromiseForManifest(subpromises, app) {
     if (app.manifest_url) {
+        var manifestURL = url.parse(app.manifest_url);
+
         // add a subpromise for the app manifest
         subpromises.push(getManifest(app).then(function (data) {
             theScope.apps[app.id].manifest = data;
+            theScope.apps[app.id].appcache_entry_sizes = {};
 
             if (data.appcache_path) {
-                console.log('found ' + data.appcache_path);
                 // add a subpromise for the appcache manifest
                 subpromises.push(getAppcacheManifest(theScope.apps[app.id]).then(function (appcacheData) {
                     theScope.apps[app.id].appcache_manifest = appcacheData;
+
+                    var entries = parseAppcacheManifest(appcacheData);
+                    theScope.apps[app.id].appcache_entry_count = entries.cache.length;
+
+                    for (var entryIndex = 0; entryIndex < entries.cache.length; entryIndex++) {
+                        var entry = entries.cache[entryIndex];
+                        var entryURL = url.resolve(manifestURL, entry);
+
+                        // TODO! need to fix the loop problem
+                        addPromiseForAppcacheEntry(subpromises, app, entryURL);
+                    }
+
+                    console.log('done ' + entryIndex);                    
                 }));
             }
         }));
@@ -164,12 +217,15 @@ function emitPackageSizeTable(inOutputFile) {
         'payments',
         'ratings',
         'weekly_downloads',
-        'package size'
+        'package size',
+        'appcache entries'
     ]);
 
     for (index in theScope.apps) {
         var app = theScope.apps[index];
         var appNameKeys = Object.keys(app.name);
+
+        var manifestURL = url.parse(app.manifest_url);
 
         rows.push([
             app.name[appNameKeys[0]].replace(/,/g, ''),
@@ -177,7 +233,8 @@ function emitPackageSizeTable(inOutputFile) {
             app.premium_type,
             app.ratings ? app.ratings.count : '',
             (app.weekly_downloads != 'null') ? app.weekly_downloads: '',
-            app.manifest && app.manifest.size ? app.manifest.size : ''
+            app.manifest && app.manifest.size ? app.manifest.size : '',
+            app.appcache_entry_count
         ]);
     }
 
@@ -187,10 +244,10 @@ function emitPackageSizeTable(inOutputFile) {
 // Compute the distribution of packaged app sizes
 
 function emitPackageSizeSummary(inOutputFile) {
-    var appTotal = 0;
+    var appTotal = 0.0;
     var appCount = 0;
-    var min = 100000000;
-    var max = 0;
+    var min = 100000000.0;
+    var max = 0.0;
     var rows = [];
 
     var countsByMB = [];
@@ -201,6 +258,22 @@ function emitPackageSizeSummary(inOutputFile) {
 
     for (index in theScope.apps) {
         var app = theScope.apps[index];
+
+        if (app.appcache_entry_count > 0) {
+            var appcacheEntriesTotal = 0;
+
+            for (var entryIndex in app.appcache_entry_sizes) {
+                var entry = app.appcache_entry_sizes[entryIndex];
+                if (parseInt(entry) != NaN) {
+                    appcacheEntriesTotal += parseInt(entry);
+                }
+            }
+
+            appTotal = appTotal + Math.round(appcacheEntriesTotal);
+            min = Math.min(min, appcacheEntriesTotal);
+            max = Math.max(max, appcacheEntriesTotal);
+            appCount = appCount + 1;      
+        }
 
         if (app.manifest && app.manifest.size) {
             var mb = Math.round(app.manifest.size / 1000000);
@@ -222,7 +295,7 @@ function emitPackageSizeSummary(inOutputFile) {
     rows.push(['size', 'count']);
 
     for (var index = 0; index < 50; index++) {
-        rows.push([index, countsByMB[index]]);
+        rows.push(['"' + index + '"', countsByMB[index]]);
     }
 
     emitCSV(inOutputFile, rows);
@@ -254,7 +327,7 @@ function emitPermissionUsageSummary(inOutputFile) {
     }
 
     rows.push(['total', appsFound]);
-    
+
     for (countKey in permissionCounts) {
         var count = permissionCounts[countKey];
         rows.push([countKey, count]);
@@ -269,7 +342,7 @@ function emitPermissionUsageSummary(inOutputFile) {
 function emitAppKindSummary(inOutputFile) {
     var rows = [];
 
-    var packaged = 0, privileged = 0, hosted = 0;
+    var packaged = 0, privileged = 0, hosted = 0, appcache = 0;
 
     var desktop = 0, firefoxos = 0, androidtablet = 0, androidmobile = 0;
 
@@ -281,6 +354,7 @@ function emitAppKindSummary(inOutputFile) {
         if (app.app_type == 'hosted') { hosted++; }
         if (app.app_type == 'privileged') { privileged++; }
         if (app.app_type == 'packaged') { packaged++; }
+        if (app.manifest.appcache_path) { appcache++; }
 
         if (app.premium_type == 'free') { freeapp++; }
         if (app.premium_type == 'premium') { premiumapp++; }
@@ -297,6 +371,7 @@ function emitAppKindSummary(inOutputFile) {
     rows.push(['hosted', hosted]);
     rows.push(['privileged', privileged]);
     rows.push(['packaged', packaged]);
+    rows.push(['appcache', appcache]);
 
     rows.push(['free', freeapp]);
     rows.push(['premium', premiumapp]);
