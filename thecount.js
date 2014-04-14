@@ -24,15 +24,15 @@ function getPromiseForRequestAndParseJSON(inURL) {
 
     theScope.pendingRequests += 1;
 
-    request(inURL, function (error, response, body) {
+    request({ uri: inURL, strictSSL: false }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             theScope.pendingRequests -= 1;
 
             try {
-                deferred.resolve(JSON.parse(body));
+                deferred.resolve(JSON.parse(body.trim()));
             }
             catch (e) {
-                // console.log('cannot parse ' + inURL + ', ' + e);
+                console.log('cannot parse ' + inURL + ', ' + e + '\n\n\n\n' + body + '\n\n\n\n\n\n');
                 deferred.reject(new Error(e));
             }
         } else {
