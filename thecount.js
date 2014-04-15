@@ -228,8 +228,8 @@ function emitPackageSizeTable(inOutputFile) {
         'payments',
         'ratings',
         'weekly_downloads',
-        'package size',
-        'appcache entries'
+        'created',
+        'cache size',
     ]);
 
     for (index in theScope.apps) {
@@ -238,14 +238,24 @@ function emitPackageSizeTable(inOutputFile) {
 
         var manifestURL = url.parse(app.manifest_url);
 
+        var cacheSize = '';
+
+        if (app.manifest && app.manifest.size) {
+            cacheSize = app.manifest.size;
+        }
+
+        if (app.appcache_entry_count) {
+            cacheSize = sumAppcacheEntrySizes(app.appcache_entry_sizes);
+        }
+
         rows.push([
             app.name[appNameKeys[0]].replace(/,/g, ''),
             app.app_type,
             app.premium_type,
             app.ratings ? app.ratings.count : '',
             (app.weekly_downloads != 'null') ? app.weekly_downloads: '',
-            app.manifest && app.manifest.size ? app.manifest.size : '',
-            app.appcache_entry_count
+            app.created.substring(0, 10),
+            cacheSize
         ]);
     }
 
@@ -253,6 +263,17 @@ function emitPackageSizeTable(inOutputFile) {
 }
 
 // Compute the distribution of packaged app sizes
+
+function sumAppcacheEntrySizes(inAppcacheEntrySizes) {
+    var total = 0;
+
+    for (var entryIndex in inAppcacheEntrySizes) {
+        var entry = inAppcacheEntrySizes[entryIndex];
+        if (parseInt(entry) != NaN) {
+            total += parseInt(entry);
+        }
+    }
+}
 
 function emitPackageSizeSummary(inOutputFile) {
     var appTotal = 0.0;
@@ -271,14 +292,7 @@ function emitPackageSizeSummary(inOutputFile) {
         var app = theScope.apps[index];
 
         if (app.appcache_entry_count > 0) {
-            var appcacheEntriesTotal = 0;
-
-            for (var entryIndex in app.appcache_entry_sizes) {
-                var entry = app.appcache_entry_sizes[entryIndex];
-                if (parseInt(entry) != NaN) {
-                    appcacheEntriesTotal += parseInt(entry);
-                }
-            }
+            var appcacheEntriesTotal = sumAppcacheEntrySizes(app.appcache_entry_sizes);
 
             appTotal = appTotal + Math.round(appcacheEntriesTotal);
             min = Math.min(min, appcacheEntriesTotal);
