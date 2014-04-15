@@ -355,7 +355,7 @@ function emitAppKindSummary(inOutputFile) {
 
     var packaged = 0, privileged = 0, hosted = 0, appcache = 0;
 
-    var desktop = 0, firefoxos = 0, androidtablet = 0, androidmobile = 0;
+    var desktop = 0, firefoxos = 0, androidtablet = 0, androidmobile = 0, android = 0;
 
     var freeapp = 0, premiumapp = 0, freeinapp = 0, premiuminapp = 0;
 
@@ -374,8 +374,8 @@ function emitAppKindSummary(inOutputFile) {
 
         if (app.device_types.indexOf('desktop') > -1) { desktop++; }
         if (app.device_types.indexOf('firefoxos') > -1) { firefoxos++; }
-        if (app.device_types.indexOf('android-tablet') > -1) { androidtablet++; }
-        if (app.device_types.indexOf('android-mobile') > -1) { androidmobile++; }
+        if (app.device_types.indexOf('android-tablet') > -1) { androidtablet++; android++; }
+        if (app.device_types.indexOf('android-mobile') > -1) { androidmobile++; android++; }
     }
 
     rows.push(['total', Object.keys(theScope.apps).length]);
@@ -393,6 +393,7 @@ function emitAppKindSummary(inOutputFile) {
     rows.push(['firefoxos', firefoxos]);
     rows.push(['android-tablet', androidtablet]);
     rows.push(['android-mobile', androidmobile]);
+    rows.push(['android-total', android]);
 
     emitCSV(inOutputFile, rows);
 }
