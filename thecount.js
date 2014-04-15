@@ -275,7 +275,7 @@ function sumAppcacheEntrySizes(inAppcacheEntrySizes) {
     }
 }
 
-function emitPackageSizeSummary(inOutputFile) {
+function emitPackageSizeSummary(inOutputFile, inFilterCB) {
     var appTotal = 0.0;
     var appCount = 0;
     var min = 100000000.0;
@@ -291,13 +291,8 @@ function emitPackageSizeSummary(inOutputFile) {
     for (index in theScope.apps) {
         var app = theScope.apps[index];
 
-        if (app.appcache_entry_count > 0) {
-            var appcacheEntriesTotal = sumAppcacheEntrySizes(app.appcache_entry_sizes);
-
-            appTotal = appTotal + Math.round(appcacheEntriesTotal);
-            min = Math.min(min, appcacheEntriesTotal);
-            max = Math.max(max, appcacheEntriesTotal);
-            appCount = appCount + 1;      
+        if (inFilterCB && (! inFilterCB(app))) {
+            continue;
         }
 
         if (app.manifest && app.manifest.size) {
@@ -455,6 +450,12 @@ if (argv['build']) {
 if (argv['emit']) {
     loadDB('apps.json');
     emitPackageSizeSummary('package-size-summary.csv');
+
+    emitPackageSizeSummary('android-package-size-summary.csv', function (app) {
+        return (app.device_types.indexOf('android-tablet') > -1) || (app.device_types.indexOf('android-mobile') > -1);
+    });
+
+
     emitPackageSizeTable('marketplace-app-table.csv');
     emitAppKindSummary('app-kind-summary.csv');
     emitPermissionUsageSummary('app-permission-summary.csv');
