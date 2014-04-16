@@ -8,6 +8,7 @@ var Q = require('q');
 var parseArgs = require('minimist');
 var url = require('url');
 var parseAppcacheManifest = require("parse-appcache-manifest");
+var admZip = require('adm-zip');
 
 // global scope
 
@@ -46,10 +47,11 @@ function getPromiseForRequestAndParseJSON(inURL) {
 }
 
 // creates a Q promise that 
-//      resolves upon getting the bytes at the supplied URL and saving them in tmp
+//      resolves upon getting the bytes at the supplied URL, saving them in /tmp,
+//      then parsing the manifest.webapp as JSON
 //      rejects otherwise
 
-function getPromiseForDownloadPackage(inURL, inFilename) {
+function getPromiseForDownloadPackageAndExtractManifest(inURL, inFilename) {
     var deferred = Q.defer();
 
     theScope.pendingRequests += 1;
@@ -60,7 +62,10 @@ function getPromiseForDownloadPackage(inURL, inFilename) {
 
             try {
                 fs.writeFileSync(inFilename, body);
-                deferred.resolve(inFilename);
+                var zip = new admZip(inFilename);
+                var manifestBuffer = zip.readFile("manifest.webapp");
+                // console.log(JSON.parse(manifestBuffer));
+                deferred.resolve(JSON.parse(manifestBuffer.toString().trim()));
             }
             catch (e) {
                 console.log('cannot parse ' + inURL + ', ' + e);
@@ -152,37 +157,18 @@ function getAppcacheManifest(inApp) {
 // returns a Q promise for retrieving an app's appcache manifest
 // catches errors and returns them as JSON
 
-function getAppPackage(inApp) {
+function getAppPackageAndExtractManifest(inApp) {
     var filename = '/tmp/' + inApp.id + '.zip';
     var manifestURL = url.parse(inApp.manifest_url);
     var packageURL = url.resolve(manifestURL, inApp.manifest.package_path);
-    console.log('packageURL ' + packageURL);
+    // console.log('packageURL ' + packageURL);
 
-    return getPromiseForDownloadPackage(packageURL, filename).catch(function (error) {
-        console.log('getAppPackage ' + packageURL + ' CATCH ' + error);
+    return getPromiseForDownloadPackageAndExtractManifest(packageURL, filename).catch(function (error) {
+        console.log('getAppPackageAndExtractManifest app.id=' + inApp.id + ' ' + packageURL + ' CATCH ' + error);
         // TODO: this doesn't seem to work
         return {'error' : error};
     });
 }
-
-// function writePackageToTmp(inApp, inData) {
-//     console.log('writePackageToTmp');
-//     console.log(inData);
-
-//     var deferred = Q.defer();
-//     var tmpFilename = '/tmp/' + inApp.id + '.zip';
-
-//     fs.writeFile(tmpFilename, inData, function (err) {
-//         if (err) {
-//             deferred.reject(new Error(err))
-//         } else {
-//             deferred.resolve(tmpFilename);
-//         }
-//     });
-
-//     return deferred.promise;
-// }
-
 
 // returns a Q promise for retrieving the size of a resource on the web
 // catches errors and returns 0 instead
@@ -217,9 +203,12 @@ function addPromiseForManifest(subpromises, app) {
             theScope.apps[app.id].manifest = data;
             theScope.apps[app.id].appcache_entry_sizes = {};
 
-            // for apps with a package, add a promise to retrieve the package
+            // for apps with a package, add a promise to retrieve the package and the manifest inside it
             if (data.package_path) {
-                subpromises.push(getAppPackage(theScope.apps[app.id]));
+                subpromises.push(getAppPackageAndExtractManifest(theScope.apps[app.id]).then(function (manifestFromPackage) {
+                    // NOTE: overwrites mini-manifest data previously saved above.
+                    theScope.apps[app.id].manifest = manifestFromPackage;
+                }));
             }
 
             // for apps that use appcache, add promises to retrieve the size of each
@@ -404,7 +393,7 @@ function emitPermissionUsageSummary(inOutputFile) {
     for (index in theScope.apps) {
         var app = theScope.apps[index];
 
-        if (app.manifest.permissions) {
+        if (app.manifest.permissions && (Object.keys(app.manifest.permissions).length > 0)) {
             appsFound++;
 
             var permissionKeys = Object.keys(app.manifest.permissions);
@@ -420,7 +409,7 @@ function emitPermissionUsageSummary(inOutputFile) {
         }
     }
 
-    rows.push(['total', appsFound]);
+    rows.push(['total apps wanting permissions', appsFound]);
 
     for (countKey in permissionCounts) {
         var count = permissionCounts[countKey];
@@ -499,17 +488,17 @@ function loadDB(inJSONFilename) {
 
 function createMarketplaceCatalogDB(inOutputFile) {
     return findAppData().then(function() {
-        console.log('DONE ALL ' + theScope.apps.length); 
+        console.log('DONE ALL ' + Object.keys(theScope.apps).length + ', still pending ' + theScope.pendingRequests); 
 
         fs.writeFile(inOutputFile, JSON.stringify(theScope.apps, null, 4), function(err) {
             if (err) {
-              console.log(err);
+              console.log('error writing JSON: ' + err);
             } else {
               console.log("JSON saved to " + inOutputFile);
             }
         }); 
     }).catch(function (error) {
-        console.log('create err ' + error);
+        console.log('createMarketplaceCatalogDB err ' + error);
     });
 }
 
