@@ -32,7 +32,7 @@ function getPromiseForRequestAndParseJSON(inURL) {
                 deferred.resolve(JSON.parse(body.trim()));
             }
             catch (e) {
-                console.log('cannot parse ' + inURL + ', ' + e + '\n\n\n\n' + body + '\n\n\n\n\n\n');
+                console.log('cannot parse ' + inURL + ', ' + e);
                 deferred.reject(new Error(e));
             }
         } else {
@@ -44,6 +44,38 @@ function getPromiseForRequestAndParseJSON(inURL) {
 
     return deferred.promise;
 }
+
+// creates a Q promise that 
+//      resolves upon getting the bytes at the supplied URL and saving them in tmp
+//      rejects otherwise
+
+function getPromiseForDownloadPackage(inURL, inFilename) {
+    var deferred = Q.defer();
+
+    theScope.pendingRequests += 1;
+
+    request({ uri: inURL, strictSSL: false, encoding: null }, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            theScope.pendingRequests -= 1;
+
+            try {
+                fs.writeFileSync(inFilename, body);
+                deferred.resolve(inFilename);
+            }
+            catch (e) {
+                console.log('cannot parse ' + inURL + ', ' + e);
+                deferred.reject(new Error(e));
+            }
+        } else {
+            theScope.pendingRequests -= 1;
+            // console.log('cannot retrieve ' + inURL + ', ' + error);
+            deferred.reject(new Error(error));
+        }
+    });
+
+    return deferred.promise;
+}
+
 
 // creates a Q promise that 
 //      resolves upon getting the bytes at the supplied URL
@@ -117,6 +149,41 @@ function getAppcacheManifest(inApp) {
     });
 }
 
+// returns a Q promise for retrieving an app's appcache manifest
+// catches errors and returns them as JSON
+
+function getAppPackage(inApp) {
+    var filename = '/tmp/' + inApp.id + '.zip';
+    var manifestURL = url.parse(inApp.manifest_url);
+    var packageURL = url.resolve(manifestURL, inApp.manifest.package_path);
+    console.log('packageURL ' + packageURL);
+
+    return getPromiseForDownloadPackage(packageURL, filename).catch(function (error) {
+        console.log('getAppPackage ' + packageURL + ' CATCH ' + error);
+        // TODO: this doesn't seem to work
+        return {'error' : error};
+    });
+}
+
+// function writePackageToTmp(inApp, inData) {
+//     console.log('writePackageToTmp');
+//     console.log(inData);
+
+//     var deferred = Q.defer();
+//     var tmpFilename = '/tmp/' + inApp.id + '.zip';
+
+//     fs.writeFile(tmpFilename, inData, function (err) {
+//         if (err) {
+//             deferred.reject(new Error(err))
+//         } else {
+//             deferred.resolve(tmpFilename);
+//         }
+//     });
+
+//     return deferred.promise;
+// }
+
+
 // returns a Q promise for retrieving the size of a resource on the web
 // catches errors and returns 0 instead
 
@@ -150,6 +217,13 @@ function addPromiseForManifest(subpromises, app) {
             theScope.apps[app.id].manifest = data;
             theScope.apps[app.id].appcache_entry_sizes = {};
 
+            // for apps with a package, add a promise to retrieve the package
+            if (data.package_path) {
+                subpromises.push(getAppPackage(theScope.apps[app.id]));
+            }
+
+            // for apps that use appcache, add promises to retrieve the size of each
+            // asset listed in the appcache manifest
             if (data.appcache_path) {
                 // add a subpromise for the appcache manifest
                 subpromises.push(getAppcacheManifest(theScope.apps[app.id]).then(function (appcacheData) {
