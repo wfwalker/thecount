@@ -455,10 +455,27 @@ function emitLibrarySummary(inOutputFile) {
                 filenameCounts[filename]++;
             }
         }
+
+        if (app.manifest.package_path) {
+            var packageFilename = '/tmp/' + app.id + '.zip';
+            var zip = new admZip(packageFilename);
+            var manifestBuffer = zip.readFile("manifest.webapp");
+            var zipEntries = zip.getEntries(); // an array of ZipEntry records
+
+            zipEntries.forEach(function(zipEntry) {
+                var filename = zipEntry.entryName.substring(zipEntry.entryName.lastIndexOf('/') + 1);
+
+                if (! filenameCounts[filename]) {
+                    filenameCounts[filename] = 0;
+                }
+
+                filenameCounts[filename]++;
+            });
+        }
     }
 
     for (countIndex in filenameCounts) {
-        if (filenameCounts[countIndex] > 10) {
+        if (filenameCounts[countIndex] > 20) {
             rows.push([filenameCounts[countIndex], countIndex]);
         }
     }
