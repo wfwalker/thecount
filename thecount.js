@@ -201,12 +201,12 @@ function addPromiseForManifest(subpromises, app) {
         // add a subpromise for the app manifest
         subpromises.push(getManifest(app).then(function (data) {
             theScope.apps[app.id].manifest = data;
-            theScope.apps[app.id].appcache_entry_sizes = {};
 
             // for apps with a package, add a promise to retrieve the package and the manifest inside it
             if (data.package_path) {
+                theScope.apps[app.id].miniManifest = data;
+
                 subpromises.push(getAppPackageAndExtractManifest(theScope.apps[app.id]).then(function (manifestFromPackage) {
-                    // NOTE: overwrites mini-manifest data previously saved above.
                     theScope.apps[app.id].manifest = manifestFromPackage;
                 }));
             }
@@ -214,6 +214,8 @@ function addPromiseForManifest(subpromises, app) {
             // for apps that use appcache, add promises to retrieve the size of each
             // asset listed in the appcache manifest
             if (data.appcache_path) {
+                theScope.apps[app.id].appcache_entry_sizes = {};
+
                 // add a subpromise for the appcache manifest
                 subpromises.push(getAppcacheManifest(theScope.apps[app.id]).then(function (appcacheData) {
                     theScope.apps[app.id].appcache_manifest = appcacheData;
@@ -282,7 +284,7 @@ function emitCSV(inOutputFile, inData) {
 
 // emit a table with one row per app showing various attributes
 
-function emitPackageSizeTable(inOutputFile) {
+function emitMarketplaceAppTable(inOutputFile) {
     var rows = [];
 
     rows.push([
@@ -305,6 +307,10 @@ function emitPackageSizeTable(inOutputFile) {
 
         if (app.manifest && app.manifest.size) {
             cacheSize = app.manifest.size;
+        }
+
+        if (app.miniManifest && app.miniManifest.size) {
+            cacheSize = app.miniManifest.size;
         }
 
         if (app.appcache_entry_count) {
@@ -353,18 +359,27 @@ function emitPackageSizeSummary(inOutputFile, inFilterCB) {
 
     for (index in theScope.apps) {
         var app = theScope.apps[index];
+        var packageSize = -1;
 
         if (inFilterCB && (! inFilterCB(app))) {
             continue;
         }
 
         if (app.manifest && app.manifest.size) {
-            var mb = Math.round(app.manifest.size / 1000000);
+            packageSize = app.manifest.size;
+        }
+
+        if (app.miniManifest && app.miniManifest.size) {
+            packageSize = app.miniManifest.size;
+        }
+
+        if (packageSize >= 0) {
+            var mb = Math.round(packageSize / 1000000);
             countsByMB[mb] = countsByMB[mb] + 1;
 
-            appTotal = appTotal + Math.round(app.manifest.size);
-            min = Math.min(min, app.manifest.size);
-            max = Math.max(max, app.manifest.size);
+            appTotal = appTotal + Math.round(packageSize);
+            min = Math.min(min, packageSize);
+            max = Math.max(max, packageSize);
             appCount = appCount + 1;
         }
     }
@@ -519,7 +534,7 @@ if (argv['emit']) {
     });
 
 
-    emitPackageSizeTable('marketplace-app-table.csv');
+    emitMarketplaceAppTable('marketplace-app-table.csv');
     emitAppKindSummary('app-kind-summary.csv');
     emitPermissionUsageSummary('app-permission-summary.csv');
 }
