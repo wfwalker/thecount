@@ -434,8 +434,7 @@ function emitPermissionUsageSummary(inOutputFile) {
     emitCSV(inOutputFile, rows);
 }
 
-
-function emitLibrarySummary(inOutputFile) {
+function emitFilenameSummary(inOutputFile) {
     var filenameCounts = {};
     var rows = [];
 
@@ -585,6 +584,6 @@ if (argv['emit']) {
     emitAppKindSummary('app-kind-summary.csv');
     emitPermissionUsageSummary('app-permission-summary.csv');
 
-    emitLibrarySummary('app-library-summary.csv');
+    emitFilenameSummary('app-filename-summary.csv');
 }
 
