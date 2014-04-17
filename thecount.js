@@ -136,7 +136,7 @@ function getManifest(inApp) {
     return getPromiseForRequestAndParseJSON(inApp.manifest_url).catch(function (error) {
         console.log('getManifest ' + inApp.manifest_url + ' CATCH ' + error);
         // TODO: this doesn't seem to work
-        return {'error' : error};
+        return {'error' : error.toString() };
     });
 }
 
@@ -150,7 +150,7 @@ function getAppcacheManifest(inApp) {
     return getPromiseForRequest(appcacheManifestURL).catch(function (error) {
         console.log('getAppcacheManifest ' + appcacheManifestURL + ' CATCH ' + error);
         // TODO: this doesn't seem to work
-        return {'error' : error};
+        return {'error' : error.toString() };
     });
 }
 
@@ -166,7 +166,7 @@ function getAppPackageAndExtractManifest(inApp) {
     return getPromiseForDownloadPackageAndExtractManifest(packageURL, filename).catch(function (error) {
         console.log('getAppPackageAndExtractManifest app.id=' + inApp.id + ' ' + packageURL + ' CATCH ' + error);
         // TODO: this doesn't seem to work
-        return {'error' : error};
+        return {'error' : error.toString() };
     });
 }
 
@@ -435,6 +435,37 @@ function emitPermissionUsageSummary(inOutputFile) {
 }
 
 
+function emitLibrarySummary(inOutputFile) {
+    var filenameCounts = {};
+    var rows = [];
+
+    rows.push(['count', 'filename']);
+
+    for (index in theScope.apps) {
+        var app = theScope.apps[index];
+
+        if (app.appcache_entry_sizes) {
+            for (var entryIndex in app.appcache_entry_sizes) {
+                var filename = entryIndex.substring(entryIndex.lastIndexOf('/') + 1);
+
+                if (! filenameCounts[filename]) {
+                    filenameCounts[filename] = 0;
+                }
+
+                filenameCounts[filename]++;
+            }
+        }
+    }
+
+    for (countIndex in filenameCounts) {
+        if (filenameCounts[countIndex] > 10) {
+            rows.push([filenameCounts[countIndex], countIndex]);
+        }
+    }
+
+    emitCSV(inOutputFile, rows);
+}
+
 // Build a summary of all the common attributes of apps
 
 function emitAppKindSummary(inOutputFile) {
@@ -533,9 +564,10 @@ if (argv['emit']) {
         return (app.device_types.indexOf('android-tablet') > -1) || (app.device_types.indexOf('android-mobile') > -1);
     });
 
-
     emitMarketplaceAppTable('marketplace-app-table.csv');
     emitAppKindSummary('app-kind-summary.csv');
     emitPermissionUsageSummary('app-permission-summary.csv');
+
+    emitLibrarySummary('app-library-summary.csv');
 }
 
