@@ -1,4 +1,4 @@
-<html ng-app='carpetcrawlerApp'>
+<html ng-app='thecountApp'>
 	<head>
 		<title>The Count</title>
         <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
@@ -11,39 +11,57 @@
 	</head>
 
 	<body ng-controller='AppListCtrl'>
+		<x-layout>
+			<section>
+				<x-deck selected-index="0">
+					<x-card>
+						<div class='pagetitle'>{{apps.length | number}} apps</div>
 
-		<div class='pagetitle'>{{apps.length | number}} apps<div>
+						<div class='statrow'>
+							<span>{{(apps|filter:{app_type: 'hosted'}).length | number}} hosted</span> | 
+							<span>{{(apps|filter:{app_type: 'packaged'}).length | number}} packaged/unpriv</span> | 
+							<span>{{(apps|filter:{app_type: 'privileged'}).length | number}} packaged/privileged</span>
+						</div>
 
-		<div class='statrow'>
-			<span>{{(apps|filter:{app_type: 'hosted'}).length | number}} hosted</span> | 
-			<span>{{(apps|filter:{app_type: 'packaged'}).length | number}} packaged/unpriv</span> | 
-			<span>{{(apps|filter:{app_type: 'privileged'}).length | number}} packaged/privileged</span>
-		</div>
+						<div class='statrow'>
+							<span>{{(apps|filter:{device_types:'desktop'}).length | number}} desktop</span> |
+							<span>{{(apps|filter:{device_types:'android-tablet'}).length | number}} tablet</span> |
+							<span>{{(apps|filter:{device_types:'android-mobile'}).length | number}} mobile</span> |
+							<span>{{(apps|filter:{device_types:'firefoxos'}).length | number}} firefox os</span>
+						</div>
 
-		<div class='statrow'>
-			<span>{{(apps|filter:{device_types:'desktop'}).length | number}} desktop</span> |
-			<span>{{(apps|filter:{device_types:'android-tablet'}).length | number}} tablet</span> |
-			<span>{{(apps|filter:{device_types:'android-mobile'}).length | number}} mobile</span> |
-			<span>{{(apps|filter:{device_types:'firefoxos'}).length | number}} firefox os</span>
-		</div>
+						<div class='statrow'>
+							<span>{{(apps|filter:{premium_type:'free'}).length | number}} free</span> |
+							<span>{{(apps|filter:{premium_type:'premium'}).length | number}} paid</span> |
+							<span>{{(apps|filter:{premium_type:'free-inapp'}).length | number}} free w/in-app</span> |
+							<span>{{(apps|filter:{premium_type:'premium-inapp'}).length | number}} paid w/in-app</span>
+						</div>
+					</x-card>
 
-		<div class='statrow'>
-			<span>{{(apps|filter:{premium_type:'free'}).length | number}} free</span> |
-			<span>{{(apps|filter:{premium_type:'premium'}).length | number}} paid</span> |
-			<span>{{(apps|filter:{premium_type:'free-inapp'}).length | number}} free w/in-app</span> |
-			<span>{{(apps|filter:{premium_type:'premium-inapp'}).length | number}} paid w/in-app</span>
-		</div>
+					<x-card>
+						<div class='pagetitle'>{{appsRequestingPermissions}} apps with permissions</div>
+						<div class='permissionFrequencyChart barchart'> </div>
+					</x-card>
+				</x-deck>
+			</section>
 
-		<div class='permissionFrequencyChart barchart'> </div>
+			<div class='footer'>
+				<img src='thecount.jpg' />
+			</div>
 
-		<div class='footer'>
-			<img src='thecount.jpg' />
-		</div>
+		    <footer>
+			    <x-tabbar>
+			        <x-tabbar-tab target-selector="x-deck x-card:first-child">Overview</x-tabbar-tab>
+			        <x-tabbar-tab target-selector="x-deck x-card:nth-child(2)">Permissions</x-tabbar-tab>
+			    </x-tabbar>
+		    </footer>
+		</x-layout>
 
 		<script src="http://d3js.org/d3.v3.min.js"></script>
 	    <script src="http://cdn.jsdelivr.net/jquery/1.10.2/jquery-1.10.2.js" > </script>
 	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.2/angular.min.js" > </script>
 	    <script src="./brick-1.0.0/brick-1.0.0.js" > </script>
 	    <script src="./app.js" > </script>
+
 	</body>
 </html>

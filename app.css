@@ -4,6 +4,10 @@ body {
 	font-family: Oswald;
 }
 
+x-card {
+    overflow: auto !important
+}
+
 .pagetitle {
 	font-size: 48pt;
 }

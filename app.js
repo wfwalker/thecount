@@ -1,3 +1,4 @@
+// -------------- MARKETPLACE QUERY STUFF -------------------------------------------
 
 function getAppData(inAppName, inAppList) {
 	console.log('getAppData ' + inAppName);
@@ -17,9 +18,6 @@ function getAppData(inAppName, inAppList) {
         console.log(appErrorPlaceholder);
     });    
 }
-
-
-// http://jsonp.jit.su/?callback=&url=https%3A%2F%2Fmarketplace.firefox.com%2Fapp%2F0213a06f-2efb-4d4f-aab7-04dd267d4168%2Fmanifest.webapp
 
 function getManifest(inManifestURL) {
 	console.log(inManifestURL);
@@ -80,7 +78,7 @@ function findPrivilegedAppData(inAppList, cb) {
     searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?app_type=privileged&format=JSON&limit=200', inAppList, cb);
 }
 
-// -----------------------------------------------------------------------
+// ----------------------------- D3 STUFF ------------------------------------------
 
 function get(prop) {
   return function(d) {
@@ -110,6 +108,8 @@ function addFrequencyOfPermissionUse(inScope) {
             }
         }
     }
+
+    inScope.appsRequestingPermissions = appsFound;
 
     var chartData = [];
 
@@ -141,9 +141,9 @@ function addFrequencyOfPermissionUse(inScope) {
 
 // ------------------------------- ANGULAR STUFF -------------------------
 
-var carpetcrawlerApp = angular.module('carpetcrawlerApp', []);
+var thecountApp = angular.module('thecountApp', []);
  
-carpetcrawlerApp.controller('AppListCtrl', function ($scope) {
+thecountApp.controller('AppListCtrl', function ($scope) {
 	console.log('initialize');
     $scope.apps = [];
 });
