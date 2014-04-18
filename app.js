@@ -139,6 +139,52 @@ function addFrequencyOfPermissionUse(inScope) {
             .text(get('label'));
 }
 
+
+function addFrequencyOfLocales(inScope) {
+    inScope.localeCounts = {};
+
+    for (index in inScope.apps) {
+        var app = inScope.apps[index];
+
+        if (app.supported_locales && (Object.keys(app.supported_locales).length > 0)) {
+
+            for (var index in app.supported_locales) {
+                var supported_locale = app.supported_locales[index];
+
+                if (inScope.localeCounts[supported_locale]) {
+                    inScope.localeCounts[supported_locale]++;
+                } else {
+                    inScope.localeCounts[supported_locale] = 1;
+                }
+            }
+        }
+    }
+
+    var chartData = [];
+
+    for (index in inScope.localeCounts) {
+        chartData.push({ 'label' : index, 'val': inScope.localeCounts[index] });
+    }
+
+    chartData.sort(function(a, b) {
+        return b.val - a.val;
+    });
+
+    x = d3.scale.linear()
+        .domain([0, d3.max(chartData, get('val'))])
+        .range([0, 80]);
+
+    d3.select(".localeFrequencyChart")
+        .selectAll("div")
+            .data(chartData)
+        .enter().append("div")
+            .style("width", function(d) { 
+                return x(d.val) + "%"; })
+        .text(get('val'))
+        .append('span')
+            .attr('class', 'label')
+            .text(get('label'));
+}
 // ------------------------------- ANGULAR STUFF -------------------------
 
 var thecountApp = angular.module('thecountApp', []);
@@ -162,6 +208,7 @@ $(document).ready(function() {
         theScope.apps = apps;
         console.log('loaded ' + Object.keys(theScope.apps).length);
         addFrequencyOfPermissionUse(theScope);
+        addFrequencyOfLocales(theScope);
         angular.element('[ng-controller=AppListCtrl]').scope().$digest();
     }).fail(function (e) {
         console.log('failed to load cached json, doing it the old way');

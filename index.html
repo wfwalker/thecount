@@ -42,6 +42,11 @@
 						<div class='pagetitle'>{{appsRequestingPermissions}} apps with permissions</div>
 						<div class='permissionFrequencyChart barchart'> </div>
 					</x-card>
+
+					<x-card>
+						<div class='pagetitle'>Supported Locales</div>
+						<div class='localeFrequencyChart barchart'> </div>
+					</x-card>
 				</x-deck>
 			</section>
 
@@ -53,6 +58,7 @@
 			    <x-tabbar>
 			        <x-tabbar-tab target-selector="x-deck x-card:first-child">Overview</x-tabbar-tab>
 			        <x-tabbar-tab target-selector="x-deck x-card:nth-child(2)">Permissions</x-tabbar-tab>
+			        <x-tabbar-tab target-selector="x-deck x-card:nth-child(3)">Locales</x-tabbar-tab>
 			    </x-tabbar>
 		    </footer>
 		</x-layout>
