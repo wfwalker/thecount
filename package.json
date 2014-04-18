@@ -20,7 +20,7 @@
     "url": "git://github.com/wfwalker/thecount.git"
   },
   "author": "Bill Walker",
-  "license": "BSD-2-Clause",
+  "license": "MPL, v 2.0",
   "bugs": {
     "url": "https://github.com/wfwalker/thecount/issues"
   }
