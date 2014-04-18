@@ -1,0 +1,27 @@
+{
+  "name": "thecount",
+  "version": "0.0.0",
+  "description": "counts apps in the Firefox Marketplace",
+  "main": "thecount.js",
+  "dependencies": {
+    "adm-zip": "~0.4.4",
+    "parse-appcache-manifest": "~0.2.0",
+    "follow-redirects": "~0.0.3",
+    "minimist": "~0.0.8",
+    "q": "~1.0.0",
+    "request": "~2.34.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node thecount.js --build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/wfwalker/thecount.git"
+  },
+  "author": "Bill Walker",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/wfwalker/thecount/issues"
+  }
+}
