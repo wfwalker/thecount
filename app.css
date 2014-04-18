@@ -24,7 +24,7 @@ x-card {
 }
 
 .barchart div {
-	background: darkblue;
+	background: lightgray;
 	color: white;
 	box-sizing: border-box;
 	padding: .5em;
@@ -35,8 +35,8 @@ x-card {
 }
 
 .barchart .label {
-	text-wrap: none;
-	color: white;
+ 	text-overflow: ellipsis;
+ 	color: black;
 	position: absolute;
 	left: .5em;
 }
