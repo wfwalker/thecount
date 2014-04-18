@@ -80,6 +80,65 @@ function findPrivilegedAppData(inAppList, cb) {
     searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?app_type=privileged&format=JSON&limit=200', inAppList, cb);
 }
 
+// -----------------------------------------------------------------------
+
+function get(prop) {
+  return function(d) {
+    return d[prop];
+  };
+}
+
+function addFrequencyOfPermissionUse(inScope) {
+    inScope.permissionCounts = {};
+    var appsFound = 0;
+
+    for (index in inScope.apps) {
+        var app = inScope.apps[index];
+
+        if (app.manifest.permissions && (Object.keys(app.manifest.permissions).length > 0)) {
+            appsFound++;
+
+            var permissionKeys = Object.keys(app.manifest.permissions);
+            for (var permissionsIndex in permissionKeys) {
+                var permission = permissionKeys[permissionsIndex];
+
+                if (inScope.permissionCounts[permission]) {
+                    inScope.permissionCounts[permission]++;
+                } else {
+                    inScope.permissionCounts[permission] = 1;
+                }
+            }
+        }
+    }
+
+    var chartData = [];
+
+    for (index in inScope.permissionCounts) {
+        chartData.push({ 'label' : index, 'val': inScope.permissionCounts[index] });
+    }
+
+    console.log('done addFrequencyOfPermissionUse, found ' + appsFound);
+
+    chartData.sort(function(a, b) {
+        return b.val - a.val;
+    });
+
+    x = d3.scale.linear()
+        .domain([0, d3.max(chartData, get('val'))])
+        .range([0, 80]);
+
+    d3.select(".permissionFrequencyChart")
+        .selectAll("div")
+            .data(chartData)
+        .enter().append("div")
+            .style("width", function(d) { 
+                return x(d.val) + "%"; })
+        .text(get('val'))
+        .append('span')
+            .attr('class', 'label')
+            .text(get('label'));
+}
+
 // ------------------------------- ANGULAR STUFF -------------------------
 
 var carpetcrawlerApp = angular.module('carpetcrawlerApp', []);
@@ -92,7 +151,22 @@ carpetcrawlerApp.controller('AppListCtrl', function ($scope) {
 $(document).ready(function() {
 	var theScope = angular.element('[ng-controller=AppListCtrl]').scope();
 
-    findPrivilegedAppData(theScope.apps, function() { console.log("DONE PRIVILEGED"); });
-    findPackagedAppData(theScope.apps, function() { console.log("DONE PACKAGED"); });
-	findHostedAppData(theScope.apps, function() { console.log("DONE HOSTED"); });
+    console.log('try to load cached apps.json, built previously by thecount.js commandline tool');
+
+    $.ajax('./apps.json').done(function(appDictionary) {
+        var apps = [];
+        for (var appID in appDictionary) {
+            apps.push(appDictionary[appID]);
+        }
+
+        theScope.apps = apps;
+        console.log('loaded ' + Object.keys(theScope.apps).length);
+        addFrequencyOfPermissionUse(theScope);
+        angular.element('[ng-controller=AppListCtrl]').scope().$digest();
+    }).fail(function (e) {
+        console.log('failed to load cached json, doing it the old way');
+        findPrivilegedAppData(theScope.apps, function() { console.log("DONE PRIVILEGED"); });
+        findPackagedAppData(theScope.apps, function() { console.log("DONE PACKAGED"); });
+        findHostedAppData(theScope.apps, function() { console.log("DONE HOSTED"); });       
+    });
 });

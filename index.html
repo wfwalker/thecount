@@ -34,10 +34,13 @@
 			<span>{{(apps|filter:{premium_type:'premium-inapp'}).length | number}} paid w/in-app</span>
 		</div>
 
+		<div class='permissionFrequencyChart barchart'> </div>
+
 		<div class='footer'>
 			<img src='thecount.jpg' />
 		</div>
 
+		<script src="http://d3js.org/d3.v3.min.js"></script>
 	    <script src="http://cdn.jsdelivr.net/jquery/1.10.2/jquery-1.10.2.js" > </script>
 	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.2/angular.min.js" > </script>
 	    <script src="./brick-1.0.0/brick-1.0.0.js" > </script>

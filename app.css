@@ -18,3 +18,21 @@ body {
     bottom: 0;
     right: 0;
 }
+
+.barchart div {
+	background: darkblue;
+	color: white;
+	box-sizing: border-box;
+	padding: .5em;
+	font-size: 14px;
+	margin-bottom: 2px;
+	text-align: right;
+	position: relative;
+}
+
+.barchart .label {
+	text-wrap: none;
+	color: white;
+	position: absolute;
+	left: .5em;
+}
