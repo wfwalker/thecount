@@ -141,6 +141,10 @@ function get(prop) {
   };
 }
 
+function getAuthor(inApp) {
+    return [inApp.author];
+}
+
 function getPermissionKeys(inApp) {
     if (inApp.manifest.permissions && (Object.keys(inApp.manifest.permissions).length > 0)) {
         return Object.keys(inApp.manifest.permissions);
@@ -217,6 +221,7 @@ $(document).ready(function() {
         addFrequencyTable(theScope, getSupportedLocales, 'localeFrequencyChart');
         addFrequencyTable(theScope, getCategoryStrings, 'categoriesChart');
         addFrequencyTable(theScope, getPackageSize, 'packageSizesChart');
+        addFrequencyTable(theScope, getAuthor, 'authorsChart');
 
         angular.element('[ng-controller=AppListCtrl]').scope().$digest();
     }).fail(function (e) {
