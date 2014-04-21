@@ -80,111 +80,116 @@ function findPrivilegedAppData(inAppList, cb) {
 
 // ----------------------------- D3 STUFF ------------------------------------------
 
+function addFrequencyTable(inScope, getArrayOfStringsPerAppFn, inDivClass) {
+    var counts = {};
+    var appsFound = 0;
+
+    for (index in inScope.apps) {
+        var app = inScope.apps[index];
+        var strings = getArrayOfStringsPerAppFn(app);
+
+        if (strings.length > 0) {
+            appsFound++;
+
+            for (var stringIndex = 0; stringIndex < strings.length; stringIndex++) {
+                var stringKey = strings[stringIndex];
+
+                if (counts[stringKey]) {
+                    counts[stringKey]++;
+                } else {
+                    counts[stringKey] = 1;
+                }
+            }
+        }
+    }
+
+    console.log(counts);
+
+    var chartData = [];
+
+    for (index in counts) {
+        chartData.push({ 'label' : index, 'val': counts[index] });
+    }
+
+    console.log('done addFrequencyTable, found ' + appsFound);
+
+    chartData.sort(function(a, b) {
+        return b.val - a.val;
+    });
+
+    x = d3.scale.linear()
+        .domain([0, d3.max(chartData, get('val'))])
+        .range([0, 80]);
+
+    d3.select('.' + inDivClass)
+        .selectAll("div")
+            .data(chartData)
+        .enter().append("div")
+            .style("width", function(d) { 
+                return x(d.val) + "%"; })
+        .text(get('val'))
+        .append('span')
+            .attr('class', 'label')
+            .text(get('label'));
+}
+
+// ----------------------------------------------------------------------------
+
 function get(prop) {
   return function(d) {
     return d[prop];
   };
 }
 
-function addFrequencyOfPermissionUse(inScope) {
-    inScope.permissionCounts = {};
-    var appsFound = 0;
-
-    for (index in inScope.apps) {
-        var app = inScope.apps[index];
-
-        if (app.manifest.permissions && (Object.keys(app.manifest.permissions).length > 0)) {
-            appsFound++;
-
-            var permissionKeys = Object.keys(app.manifest.permissions);
-            for (var permissionsIndex in permissionKeys) {
-                var permission = permissionKeys[permissionsIndex];
-
-                if (inScope.permissionCounts[permission]) {
-                    inScope.permissionCounts[permission]++;
-                } else {
-                    inScope.permissionCounts[permission] = 1;
-                }
-            }
-        }
+function getPermissionKeys(inApp) {
+    if (inApp.manifest.permissions && (Object.keys(inApp.manifest.permissions).length > 0)) {
+        return Object.keys(inApp.manifest.permissions);
+    } else {
+        return [];
     }
-
-    inScope.appsRequestingPermissions = appsFound;
-
-    var chartData = [];
-
-    for (index in inScope.permissionCounts) {
-        chartData.push({ 'label' : index, 'val': inScope.permissionCounts[index] });
-    }
-
-    console.log('done addFrequencyOfPermissionUse, found ' + appsFound);
-
-    chartData.sort(function(a, b) {
-        return b.val - a.val;
-    });
-
-    x = d3.scale.linear()
-        .domain([0, d3.max(chartData, get('val'))])
-        .range([0, 80]);
-
-    d3.select(".permissionFrequencyChart")
-        .selectAll("div")
-            .data(chartData)
-        .enter().append("div")
-            .style("width", function(d) { 
-                return x(d.val) + "%"; })
-        .text(get('val'))
-        .append('span')
-            .attr('class', 'label')
-            .text(get('label'));
 }
 
-
-function addFrequencyOfLocales(inScope) {
-    inScope.localeCounts = {};
-
-    for (index in inScope.apps) {
-        var app = inScope.apps[index];
-
-        if (app.supported_locales && (Object.keys(app.supported_locales).length > 0)) {
-
-            for (var index in app.supported_locales) {
-                var supported_locale = app.supported_locales[index];
-
-                if (inScope.localeCounts[supported_locale]) {
-                    inScope.localeCounts[supported_locale]++;
-                } else {
-                    inScope.localeCounts[supported_locale] = 1;
-                }
-            }
-        }
+function getSupportedLocales(inApp) {
+    if (inApp.supported_locales) {
+        return inApp.supported_locales;
+    } else {
+        return [];
     }
-
-    var chartData = [];
-
-    for (index in inScope.localeCounts) {
-        chartData.push({ 'label' : index, 'val': inScope.localeCounts[index] });
-    }
-
-    chartData.sort(function(a, b) {
-        return b.val - a.val;
-    });
-
-    x = d3.scale.linear()
-        .domain([0, d3.max(chartData, get('val'))])
-        .range([0, 80]);
-
-    d3.select(".localeFrequencyChart")
-        .selectAll("div")
-            .data(chartData)
-        .enter().append("div")
-            .style("width", function(d) { 
-                return x(d.val) + "%"; })
-        .text(get('val'))
-        .append('span')
-            .attr('class', 'label')
-            .text(get('label'));
 }
+
+function getCategoryStrings(inApp) {
+    var categories = []
+
+    if (inApp.app_type == 'hosted') { categories.push('hosted'); }
+    if (inApp.app_type == 'privileged') { categories.push('privileged'); }
+    if (inApp.app_type == 'packaged') { categories.push('packaged'); }
+    if (inApp.manifest.appcache_path) { categories.push('appcache'); }
+
+    if (inApp.premium_type == 'free') { categories.push('freeapp'); }
+    if (inApp.premium_type == 'premium') { categories.push('premiumapp'); }
+    if (inApp.premium_type == 'free-inapp') { categories.push('freeinapp'); }
+    if (inApp.premium_type == 'premium-inapp') { categories.push('premiuminapp'); }
+
+    if (inApp.device_types.indexOf('desktop') > -1) { categories.push('desktop'); }
+    if (inApp.device_types.indexOf('firefoxos') > -1) { categories.push('firefoxos'); }
+    if (inApp.device_types.indexOf('android-tablet') > -1) { categories.push('androidtablet'); categories.push('android'); }
+    if (inApp.device_types.indexOf('android-mobile') > -1) { categories.push('androidmobile'); categories.push('android'); }
+    
+    return categories;
+}
+
+function getPackageSize(inApp) {
+    if (inApp.manifest && inApp.manifest.size) {
+        return [Math.round(inApp.manifest.size / 1000000)];
+    }
+
+    if (inApp.miniManifest && inApp.miniManifest.size) {
+        return [Math.round(inApp.miniManifest.size / 1000000)];
+    }
+
+    return [];
+}
+
 // ------------------------------- ANGULAR STUFF -------------------------
 
 var thecountApp = angular.module('thecountApp', []);
@@ -207,11 +212,16 @@ $(document).ready(function() {
 
         theScope.apps = apps;
         console.log('loaded ' + Object.keys(theScope.apps).length);
-        addFrequencyOfPermissionUse(theScope);
-        addFrequencyOfLocales(theScope);
+
+        addFrequencyTable(theScope, getPermissionKeys, 'permissionsChart');
+        addFrequencyTable(theScope, getSupportedLocales, 'localeFrequencyChart');
+        addFrequencyTable(theScope, getCategoryStrings, 'categoriesChart');
+        addFrequencyTable(theScope, getPackageSize, 'packageSizesChart');
+
         angular.element('[ng-controller=AppListCtrl]').scope().$digest();
     }).fail(function (e) {
         console.log('failed to load cached json, doing it the old way');
+
         findPrivilegedAppData(theScope.apps, function() { console.log("DONE PRIVILEGED"); });
         findPackagedAppData(theScope.apps, function() { console.log("DONE PACKAGED"); });
         findHostedAppData(theScope.apps, function() { console.log("DONE HOSTED"); });       

@@ -16,36 +16,22 @@
 				<x-deck selected-index="0">
 					<x-card>
 						<div class='pagetitle'>{{apps.length | number}} apps</div>
-
-						<div class='statrow'>
-							<span>{{(apps|filter:{app_type: 'hosted'}).length | number}} hosted</span> | 
-							<span>{{(apps|filter:{app_type: 'packaged'}).length | number}} packaged/unpriv</span> | 
-							<span>{{(apps|filter:{app_type: 'privileged'}).length | number}} packaged/privileged</span>
-						</div>
-
-						<div class='statrow'>
-							<span>{{(apps|filter:{device_types:'desktop'}).length | number}} desktop</span> |
-							<span>{{(apps|filter:{device_types:'android-tablet'}).length | number}} tablet</span> |
-							<span>{{(apps|filter:{device_types:'android-mobile'}).length | number}} mobile</span> |
-							<span>{{(apps|filter:{device_types:'firefoxos'}).length | number}} firefox os</span>
-						</div>
-
-						<div class='statrow'>
-							<span>{{(apps|filter:{premium_type:'free'}).length | number}} free</span> |
-							<span>{{(apps|filter:{premium_type:'premium'}).length | number}} paid</span> |
-							<span>{{(apps|filter:{premium_type:'free-inapp'}).length | number}} free w/in-app</span> |
-							<span>{{(apps|filter:{premium_type:'premium-inapp'}).length | number}} paid w/in-app</span>
-						</div>
+						<div class='categoriesChart barchart'> </div>
 					</x-card>
 
 					<x-card>
-						<div class='pagetitle'>{{appsRequestingPermissions}} apps with permissions</div>
-						<div class='permissionFrequencyChart barchart'> </div>
+						<div class='pagetitle'>most requested permissions</div>
+						<div class='permissionsChart barchart'> </div>
 					</x-card>
 
 					<x-card>
-						<div class='pagetitle'>Supported Locales</div>
+						<div class='pagetitle'>most supported locales</div>
 						<div class='localeFrequencyChart barchart'> </div>
+					</x-card>
+
+					<x-card>
+						<div class='pagetitle'>package sizes</div>
+						<div class='packageSizesChart barchart'> </div>
 					</x-card>
 				</x-deck>
 			</section>
@@ -59,6 +45,7 @@
 			        <x-tabbar-tab target-selector="x-deck x-card:first-child">Overview</x-tabbar-tab>
 			        <x-tabbar-tab target-selector="x-deck x-card:nth-child(2)">Permissions</x-tabbar-tab>
 			        <x-tabbar-tab target-selector="x-deck x-card:nth-child(3)">Locales</x-tabbar-tab>
+			        <x-tabbar-tab target-selector="x-deck x-card:nth-child(4)">Package Size</x-tabbar-tab>
 			    </x-tabbar>
 		    </footer>
 		</x-layout>
