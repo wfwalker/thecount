@@ -344,96 +344,6 @@ function sumAppcacheEntrySizes(inAppcacheEntrySizes) {
     }
 }
 
-function emitPackageSizeSummary(inOutputFile, inFilterCB) {
-    var appTotal = 0.0;
-    var appCount = 0;
-    var min = 100000000.0;
-    var max = 0.0;
-    var rows = [];
-
-    var countsByMB = [];
-
-    for (var index = 0; index < 50; index++) {
-        countsByMB[index] = 0;
-    }
-
-    for (index in theScope.apps) {
-        var app = theScope.apps[index];
-        var packageSize = -1;
-
-        if (inFilterCB && (! inFilterCB(app))) {
-            continue;
-        }
-
-        if (app.manifest && app.manifest.size) {
-            packageSize = app.manifest.size;
-        }
-
-        if (app.miniManifest && app.miniManifest.size) {
-            packageSize = app.miniManifest.size;
-        }
-
-        if (packageSize >= 0) {
-            var mb = Math.round(packageSize / 1000000);
-            countsByMB[mb] = countsByMB[mb] + 1;
-
-            appTotal = appTotal + Math.round(packageSize);
-            min = Math.min(min, packageSize);
-            max = Math.max(max, packageSize);
-            appCount = appCount + 1;
-        }
-    }
-
-    rows.push(['total', appTotal]);
-    rows.push(['count', appCount]);
-    rows.push(['average', Math.round(appTotal / appCount)]);
-    rows.push(['min', min]);
-    rows.push(['max', max]);
-
-    rows.push(['size', 'count']);
-
-    for (var index = 0; index < 50; index++) {
-        rows.push(['"' + index + '"', countsByMB[index]]);
-    }
-
-    emitCSV(inOutputFile, rows);
-}
-
-function emitPermissionUsageSummary(inOutputFile) {
-    var rows = [];
-
-    var permissionCounts = {};
-    var appsFound = 0;
-
-    for (index in theScope.apps) {
-        var app = theScope.apps[index];
-
-        if (app.manifest.permissions && (Object.keys(app.manifest.permissions).length > 0)) {
-            appsFound++;
-
-            var permissionKeys = Object.keys(app.manifest.permissions);
-            for (var permissionsIndex in permissionKeys) {
-                var permission = permissionKeys[permissionsIndex];
-
-                if (permissionCounts[permission]) {
-                    permissionCounts[permission]++;
-                } else {
-                    permissionCounts[permission] = 1;
-                }
-            }
-        }
-    }
-
-    rows.push(['total apps wanting permissions', appsFound]);
-
-    for (countKey in permissionCounts) {
-        var count = permissionCounts[countKey];
-        rows.push([countKey, count]);
-    }
-
-    emitCSV(inOutputFile, rows);
-}
-
 function emitFilenameSummary(inOutputFile) {
     var filenameCounts = {};
     var rows = [];
@@ -482,57 +392,6 @@ function emitFilenameSummary(inOutputFile) {
     emitCSV(inOutputFile, rows);
 }
 
-// Build a summary of all the common attributes of apps
-
-function emitAppKindSummary(inOutputFile) {
-    var rows = [];
-
-    var packaged = 0, privileged = 0, hosted = 0, appcache = 0;
-
-    var desktop = 0, firefoxos = 0, androidtablet = 0, androidmobile = 0, android = 0;
-
-    var freeapp = 0, premiumapp = 0, freeinapp = 0, premiuminapp = 0;
-
-    for (index in theScope.apps) {
-        var app = theScope.apps[index];
-
-        if (app.app_type == 'hosted') { hosted++; }
-        if (app.app_type == 'privileged') { privileged++; }
-        if (app.app_type == 'packaged') { packaged++; }
-        if (app.manifest.appcache_path) { appcache++; }
-
-        if (app.premium_type == 'free') { freeapp++; }
-        if (app.premium_type == 'premium') { premiumapp++; }
-        if (app.premium_type == 'free-inapp') { freeinapp++; }
-        if (app.premium_type == 'premium-inapp') { premiuminapp++; }
-
-        if (app.device_types.indexOf('desktop') > -1) { desktop++; }
-        if (app.device_types.indexOf('firefoxos') > -1) { firefoxos++; }
-        if (app.device_types.indexOf('android-tablet') > -1) { androidtablet++; android++; }
-        if (app.device_types.indexOf('android-mobile') > -1) { androidmobile++; android++; }
-    }
-
-    rows.push(['total', Object.keys(theScope.apps).length]);
-    rows.push(['hosted', hosted]);
-    rows.push(['privileged', privileged]);
-    rows.push(['packaged', packaged]);
-    rows.push(['appcache', appcache]);
-
-    rows.push(['free', freeapp]);
-    rows.push(['premium', premiumapp]);
-    rows.push(['free-inapp', freeinapp]);
-    rows.push(['premium-inapp', premiuminapp]);
-
-    rows.push(['desktop', desktop]);
-    rows.push(['firefoxos', firefoxos]);
-    rows.push(['android-tablet', androidtablet]);
-    rows.push(['android-mobile', androidmobile]);
-    rows.push(['android-total', android]);
-
-    emitCSV(inOutputFile, rows);
-}
-
-
 // Creating and Loading the local database
 
 function loadDB(inJSONFilename) {
@@ -574,16 +433,8 @@ if (argv['build']) {
 
 if (argv['emit']) {
     loadDB('apps.json');
-    emitPackageSizeSummary('package-size-summary.csv');
-
-    emitPackageSizeSummary('android-package-size-summary.csv', function (app) {
-        return (app.device_types.indexOf('android-tablet') > -1) || (app.device_types.indexOf('android-mobile') > -1);
-    });
 
     emitMarketplaceAppTable('marketplace-app-table.csv');
-    emitAppKindSummary('app-kind-summary.csv');
-    emitPermissionUsageSummary('app-permission-summary.csv');
-
     emitFilenameSummary('app-filename-summary.csv');
 }
 
