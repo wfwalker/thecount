@@ -98,6 +98,32 @@ function getSupportedLocales(inApp) {
     return uniqueLocales;
 }
 
+function getFilenames(inApp) {
+    var unionOfFilenames = [];
+    var stopNames = ['', 'manifest.webapp', 'zigbert.rsa', 'zigbert.sf', 'manifest.mf', 'ids.json', 'index.html'];
+
+    if (inApp.package_entries) {
+        unionOfFilenames.push.apply(unionOfFilenames, inApp.package_entries);
+    }
+
+    if (inApp.appcache_entry_sizes) {
+        for (var entryIndex in inApp.appcache_entry_sizes) {
+            unionOfFilenames.push(entryIndex.substring(entryIndex.lastIndexOf('/') + 1));
+        }
+    } 
+
+    var uniqueFilenames = unionOfFilenames.filter(function(elem, pos, self) {
+        return self.indexOf(elem) == pos;
+    });
+
+    var filteredFilenames = uniqueFilenames.filter(function(elem, pos, self) {
+        return elem.indexOf('.js') > 0 && stopNames.indexOf(elem) == -1;
+    });
+
+    return filteredFilenames;
+}
+
+
 function getCategoryStrings(inApp) {
     var categories = []
 
@@ -162,6 +188,7 @@ $(document).ready(function() {
         addFrequencyTable(theScope, getCategoryStrings, 'categoriesChart');
         addFrequencyTable(theScope, getPackageSize, 'packageSizesChart');
         addFrequencyTable(theScope, getAuthor, 'authorsChart');
+        addFrequencyTable(theScope, getFilenames, 'filenamesChart');
 
         angular.element('[ng-controller=AppListCtrl]').scope().$digest();
     }).fail(function (e) {
