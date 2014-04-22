@@ -17,6 +17,26 @@
 					<x-card>
 						<div class='pagetitle'>{{apps.length | number}} apps</div>
 						<div class='categoriesChart barchart'> </div>
+						
+						<div class='statrow'>
+							<span>{{(apps|filter:{app_type: 'hosted'}).length | number}} hosted</span> | 
+							<span>{{(apps|filter:{app_type: 'packaged'}).length | number}} packaged/unpriv</span> | 
+							<span>{{(apps|filter:{app_type: 'privileged'}).length | number}} packaged/privileged</span>
+						</div>
+
+						<div class='statrow'>
+							<span>{{(apps|filter:{device_types:'desktop'}).length | number}} desktop</span> |
+							<span>{{(apps|filter:{device_types:'android-tablet'}).length | number}} tablet</span> |
+							<span>{{(apps|filter:{device_types:'android-mobile'}).length | number}} mobile</span> |
+							<span>{{(apps|filter:{device_types:'firefoxos'}).length | number}} firefox os</span>
+						</div>
+
+						<div class='statrow'>
+							<span>{{(apps|filter:{premium_type:'free'}).length | number}} free</span> |
+							<span>{{(apps|filter:{premium_type:'premium'}).length | number}} paid</span> |
+							<span>{{(apps|filter:{premium_type:'free-inapp'}).length | number}} free w/in-app</span> |
+							<span>{{(apps|filter:{premium_type:'premium-inapp'}).length | number}} paid w/in-app</span>
+						</div>	
 					</x-card>
 
 					<x-card>
@@ -60,6 +80,7 @@
 	    <script src="http://cdn.jsdelivr.net/jquery/1.10.2/jquery-1.10.2.js" > </script>
 	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.2/angular.min.js" > </script>
 	    <script src="./brick-1.0.0/brick-1.0.0.js" > </script>
+	    <script src="./marketplace.js" > </script>
 	    <script src="./app.js" > </script>
 
 	</body>
