@@ -208,6 +208,17 @@ function addPromiseForManifest(subpromises, app) {
 
                 subpromises.push(getAppPackageAndExtractManifest(theScope.apps[app.id]).then(function (manifestFromPackage) {
                     theScope.apps[app.id].manifest = manifestFromPackage;
+
+                    // now that the package is here, grab the filenames
+                    var packageFilename = '/tmp/' + app.id + '.zip';
+                    var zip = new admZip(packageFilename);
+                    var zipEntries = zip.getEntries(); // an array of ZipEntry records
+                    theScope.apps[app.id].package_entries = [];
+
+                    zipEntries.forEach(function(zipEntry) {
+                        var filename = zipEntry.entryName.substring(zipEntry.entryName.lastIndexOf('/') + 1);
+                        theScope.apps[app.id].package_entries.push(filename);
+                    });
                 }));
             }
 
@@ -373,7 +384,6 @@ function emitFilenameSummary(inOutputFile) {
         if (app.manifest.package_path) {
             var packageFilename = '/tmp/' + app.id + '.zip';
             var zip = new admZip(packageFilename);
-            var manifestBuffer = zip.readFile("manifest.webapp");
             var zipEntries = zip.getEntries(); // an array of ZipEntry records
 
             zipEntries.forEach(function(zipEntry) {
@@ -416,6 +426,9 @@ function createMarketplaceCatalogDB(inOutputFile) {
     return findAppData().then(function() {
         console.log('DONE ALL ' + Object.keys(theScope.apps).length + ', still pending ' + theScope.pendingRequests); 
 
+    }).catch(function (error) {
+        console.log('createMarketplaceCatalogDB err ' + error);
+    }).finally(function() {
         fs.writeFile(inOutputFile, JSON.stringify(theScope.apps, null, 4), function(err) {
             if (err) {
               console.log('error writing JSON: ' + err);
@@ -423,8 +436,6 @@ function createMarketplaceCatalogDB(inOutputFile) {
               console.log("JSON saved to " + inOutputFile);
             }
         }); 
-    }).catch(function (error) {
-        console.log('createMarketplaceCatalogDB err ' + error);
     });
 }
 
