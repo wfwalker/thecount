@@ -284,7 +284,7 @@ function emitCSV(inOutputFile, inData) {
 
 // emit a table with one row per app showing various attributes
 
-function emitMarketplaceAppTable(inOutputFile) {
+function emitMarketplaceAppTable(inOutputFile, inFilterCB) {
     var rows = [];
 
     rows.push([
@@ -299,6 +299,11 @@ function emitMarketplaceAppTable(inOutputFile) {
 
     for (index in theScope.apps) {
         var app = theScope.apps[index];
+
+        if (inFilterCB && (! inFilterCB(app))) {
+            continue;
+        }
+
         var appNameKeys = Object.keys(app.name);
 
         var manifestURL = url.parse(app.manifest_url);
@@ -435,6 +440,11 @@ if (argv['emit']) {
     loadDB('apps.json');
 
     emitMarketplaceAppTable('marketplace-app-table.csv');
+
+    emitMarketplaceAppTable('marketplace-notification-app-table.csv', function(app) {
+        return app.manifest.permissions && Object.keys(app.manifest.permissions).indexOf('desktop-notification') >= 0;
+    });
+
     emitFilenameSummary('app-filename-summary.csv');
 }
 
