@@ -63,6 +63,31 @@
 						<div class='pagetitle'>filenames</div>
 						<div class='filenamesChart barchart'> </div>
 					</x-card>
+
+					<x-card>
+						<div class='pagetitle'>table</div>
+
+						<table>
+						<thead>
+						<tr>
+							<td>id</td>
+							<td>type</td>
+							<td>payment</td>
+							<td>downloads</td>
+							<td>size</td>
+							<td>created</td>
+						</tr>
+						</thead>
+						<tr ng-repeat='app in apps'>
+							<td>{{firstAppName(app)}}</td>
+							<td>{{app.app_type}}</td>
+							<td>{{app.premium_type}}</td>
+							<td>{{app.weekly_downloads}}</td>
+							<td>{{getCacheSize(app)}}</td>
+							<td>{{app.created}}</td>
+						</tr>
+						</table>
+					</x-card>
 				</x-deck>
 			</section>
 
@@ -78,6 +103,7 @@
 			        <x-tabbar-tab target-selector="x-deck x-card:nth-child(4)">Package Size</x-tabbar-tab>
 			        <x-tabbar-tab target-selector="x-deck x-card:nth-child(5)">Authors</x-tabbar-tab>
 			        <x-tabbar-tab target-selector="x-deck x-card:nth-child(6)">Filenames</x-tabbar-tab>
+			        <x-tabbar-tab target-selector="x-deck x-card:nth-child(7)">Table</x-tabbar-tab>
 			    </x-tabbar>
 		    </footer>
 		</x-layout>

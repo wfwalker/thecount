@@ -159,11 +159,42 @@ function getPackageSize(inApp) {
 
 // ------------------------------- ANGULAR STUFF -------------------------
 
+
 var thecountApp = angular.module('thecountApp', []);
  
 thecountApp.controller('AppListCtrl', function ($scope) {
 	console.log('initialize');
     $scope.apps = [];
+
+    $scope.getCacheSize = function (app) {
+        if (app.manifest && app.manifest.size) {
+            return app.manifest.size;
+        }
+
+        if (app.miniManifest && app.miniManifest.size) {
+            return app.miniManifest.size;
+        }
+
+        if (app.appcache_entry_count) {
+            var cacheSize = 0;
+
+            for (var entryIndex in app.appcache_entry_sizes) {
+                var entry = app.appcache_entry_sizes[entryIndex];
+                if (parseInt(entry) != NaN) {
+                    cacheSize += parseInt(entry);
+                }
+            }
+
+            return cacheSize;
+        }
+
+        return '';
+    }
+
+    $scope.firstAppName = function(app) {
+        var appNameKeys = Object.keys(app.name);
+        return app.name[appNameKeys[0]].replace(/,/g, '');
+    }
 });
 
 $(document).ready(function() {
@@ -188,7 +219,7 @@ $(document).ready(function() {
         addFrequencyTable(theScope, getCategoryStrings, 'categoriesChart', 15);
         addFrequencyTable(theScope, getPackageSize, 'packageSizesChart', 15);
         addFrequencyTable(theScope, getAuthor, 'authorsChart', 15);
-        addFrequencyTable(theScope, getFilenames, 'filenamesChart', 50);
+        addFrequencyTable(theScope, getFilenames, 'filenamesChart', 100);
 
         angular.element('[ng-controller=AppListCtrl]').scope().$digest();
     }).fail(function (e) {
