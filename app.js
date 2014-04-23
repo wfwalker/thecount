@@ -1,7 +1,7 @@
 
 // ----------------------------- D3 STUFF ------------------------------------------
 
-function addFrequencyTable(inScope, getArrayOfStringsPerAppFn, inDivClass) {
+function addFrequencyTable(inScope, getArrayOfStringsPerAppFn, inDivClass, inLimit) {
     var counts = {};
     var appsFound = 0;
 
@@ -38,7 +38,7 @@ function addFrequencyTable(inScope, getArrayOfStringsPerAppFn, inDivClass) {
         return b.val - a.val;
     });
 
-    chartData = chartData.slice(0, 15);
+    chartData = chartData.slice(0, inLimit);
 
     x = d3.scale.linear()
         .domain([0, d3.max(chartData, get('val'))])
@@ -100,7 +100,7 @@ function getSupportedLocales(inApp) {
 
 function getFilenames(inApp) {
     var unionOfFilenames = [];
-    var stopNames = ['', 'manifest.webapp', 'zigbert.rsa', 'zigbert.sf', 'manifest.mf', 'ids.json', 'index.html'];
+    var stopNames = ['', 'app.js', 'main.js', 'manifest.webapp', 'zigbert.rsa', 'zigbert.sf', 'manifest.mf', 'ids.json', 'index.html'];
 
     if (inApp.package_entries) {
         unionOfFilenames.push.apply(unionOfFilenames, inApp.package_entries);
@@ -183,12 +183,12 @@ $(document).ready(function() {
         // hide the statrows, only use those for when we don't have cached JSON
         $('.statrow').hide();
 
-        addFrequencyTable(theScope, getPermissionKeys, 'permissionsChart');
-        addFrequencyTable(theScope, getSupportedLocales, 'localeFrequencyChart');
-        addFrequencyTable(theScope, getCategoryStrings, 'categoriesChart');
-        addFrequencyTable(theScope, getPackageSize, 'packageSizesChart');
-        addFrequencyTable(theScope, getAuthor, 'authorsChart');
-        addFrequencyTable(theScope, getFilenames, 'filenamesChart');
+        addFrequencyTable(theScope, getPermissionKeys, 'permissionsChart', 15);
+        addFrequencyTable(theScope, getSupportedLocales, 'localeFrequencyChart', 15);
+        addFrequencyTable(theScope, getCategoryStrings, 'categoriesChart', 15);
+        addFrequencyTable(theScope, getPackageSize, 'packageSizesChart', 15);
+        addFrequencyTable(theScope, getAuthor, 'authorsChart', 15);
+        addFrequencyTable(theScope, getFilenames, 'filenamesChart', 50);
 
         angular.element('[ng-controller=AppListCtrl]').scope().$digest();
     }).fail(function (e) {
