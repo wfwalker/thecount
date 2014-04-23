@@ -297,91 +297,6 @@ function verifyLocales() {
     }    
 }
 
-// CSV REPORT GENERATION --------------------------------------------------------------------------------------
-
-// Emitting CSV into the given file for the given data rows
-
-function emitCSV(inOutputFile, inData) {
-    var stream = fs.createWriteStream(inOutputFile);
-
-    stream.once('open', function(fd) {
-        for (var index in inData) {
-            var row = inData[index];
-            stream.write(row.join(',') + '\n');
-        }
-        stream.end();
-
-        console.log('wrote ' + inData.length + ' rows to ' + inOutputFile);
-    });     
-}
-
-// emit a table with one row per app showing various attributes
-
-function emitMarketplaceAppTable(inOutputFile, inFilterCB) {
-    var rows = [];
-
-    rows.push([
-        'name',
-        'type',
-        'payments',
-        'ratings',
-        'weekly_downloads',
-        'created',
-        'cache size',
-    ]);
-
-    for (index in theScope.apps) {
-        var app = theScope.apps[index];
-
-        if (inFilterCB && (! inFilterCB(app))) {
-            continue;
-        }
-
-        var appNameKeys = Object.keys(app.name);
-
-        var manifestURL = url.parse(app.manifest_url);
-
-        var cacheSize = '';
-
-        if (app.manifest && app.manifest.size) {
-            cacheSize = app.manifest.size;
-        }
-
-        if (app.miniManifest && app.miniManifest.size) {
-            cacheSize = app.miniManifest.size;
-        }
-
-        if (app.appcache_entry_count) {
-            cacheSize = sumAppcacheEntrySizes(app.appcache_entry_sizes);
-        }
-
-        rows.push([
-            app.name[appNameKeys[0]].replace(/,/g, ''),
-            app.app_type,
-            app.premium_type,
-            app.ratings ? app.ratings.count : '',
-            (app.weekly_downloads != 'null') ? app.weekly_downloads: '',
-            app.created.substring(0, 10),
-            cacheSize
-        ]);
-    }
-
-    emitCSV(inOutputFile, rows);
-}
-
-// Compute the distribution of packaged app sizes
-
-function sumAppcacheEntrySizes(inAppcacheEntrySizes) {
-    var total = 0;
-
-    for (var entryIndex in inAppcacheEntrySizes) {
-        var entry = inAppcacheEntrySizes[entryIndex];
-        if (parseInt(entry) != NaN) {
-            total += parseInt(entry);
-        }
-    }
-}
-
 // Creating and Loading the local database
 
 function loadDB(inJSONFilename) {
@@ -427,14 +342,3 @@ if (argv['verify']) {
 
     verifyLocales();
 }
-
-if (argv['emit']) {
-    loadDB('apps.json');
-
-    emitMarketplaceAppTable('marketplace-app-table.csv');
-
-    emitMarketplaceAppTable('marketplace-notification-app-table.csv', function(app) {
-        return app.manifest.permissions && Object.keys(app.manifest.permissions).indexOf('desktop-notification') >= 0;
-    });
-}
-
