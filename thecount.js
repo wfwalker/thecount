@@ -275,6 +275,28 @@ function findAppData() {
     return searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?format=JSON&limit=200');
 }
 
+// VERIFICATION -------------------------------------------------------------------------------
+
+function verifyLocales() {
+    for (index in theScope.apps) {
+        var app = theScope.apps[index];
+
+        if (app.default_locale) {
+            if (app.supported_locales.length == 0) {
+                // console.log('app ' + app.id + ' has default locale but no supported_locales');
+            }
+        }
+
+        if (app.supported_locales.length > 0) {
+            if (! app.manifest.locales) {
+                console.log('app ' + app.id + ' has supported_locales but no manifest.locales');
+            } else if (Object.keys(app.manifest.locales).length != app.supported_locales.length) {
+                console.log('app ' + app.id + ' has ' + Object.keys(app.manifest.locales).length + ' manifest locales but ' + app.supported_locales.length + ' supported locales')
+            }
+        }
+    }    
+}
+
 // CSV REPORT GENERATION --------------------------------------------------------------------------------------
 
 // Emitting CSV into the given file for the given data rows
@@ -360,53 +382,6 @@ function sumAppcacheEntrySizes(inAppcacheEntrySizes) {
     }
 }
 
-function emitFilenameSummary(inOutputFile) {
-    var filenameCounts = {};
-    var rows = [];
-
-    rows.push(['count', 'filename']);
-
-    for (index in theScope.apps) {
-        var app = theScope.apps[index];
-
-        if (app.appcache_entry_sizes) {
-            for (var entryIndex in app.appcache_entry_sizes) {
-                var filename = entryIndex.substring(entryIndex.lastIndexOf('/') + 1);
-
-                if (! filenameCounts[filename]) {
-                    filenameCounts[filename] = 0;
-                }
-
-                filenameCounts[filename]++;
-            }
-        }
-
-        if (app.manifest.package_path) {
-            var packageFilename = '/tmp/' + app.id + '.zip';
-            var zip = new admZip(packageFilename);
-            var zipEntries = zip.getEntries(); // an array of ZipEntry records
-
-            zipEntries.forEach(function(zipEntry) {
-                var filename = zipEntry.entryName.substring(zipEntry.entryName.lastIndexOf('/') + 1);
-
-                if (! filenameCounts[filename]) {
-                    filenameCounts[filename] = 0;
-                }
-
-                filenameCounts[filename]++;
-            });
-        }
-    }
-
-    for (countIndex in filenameCounts) {
-        if (filenameCounts[countIndex] > 20) {
-            rows.push([filenameCounts[countIndex], countIndex]);
-        }
-    }
-
-    emitCSV(inOutputFile, rows);
-}
-
 // Creating and Loading the local database
 
 function loadDB(inJSONFilename) {
@@ -447,6 +422,12 @@ if (argv['build']) {
     createMarketplaceCatalogDB('apps.json');
 }
 
+if (argv['verify']) {
+    loadDB('apps.json');
+
+    verifyLocales();
+}
+
 if (argv['emit']) {
     loadDB('apps.json');
 
@@ -455,7 +436,5 @@ if (argv['emit']) {
     emitMarketplaceAppTable('marketplace-notification-app-table.csv', function(app) {
         return app.manifest.permissions && Object.keys(app.manifest.permissions).indexOf('desktop-notification') >= 0;
     });
-
-    emitFilenameSummary('app-filename-summary.csv');
 }
 
