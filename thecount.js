@@ -9,6 +9,7 @@ var parseArgs = require('minimist');
 var url = require('url');
 var parseAppcacheManifest = require("parse-appcache-manifest");
 var admZip = require('adm-zip');
+var util = require('util');
 
 // global scope
 
@@ -275,6 +276,50 @@ function findAppData() {
     return searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?format=JSON&limit=200');
 }
 
+// QUERIES --------------------------------------------
+
+function getFilenames(inApp) {
+    var unionOfFilenames = [];
+    var stopNames = ['', 'app.js', 'main.js', 'manifest.webapp', 'zigbert.rsa', 'zigbert.sf', 'manifest.mf', 'ids.json', 'index.html'];
+
+    if (inApp.package_entries) {
+        unionOfFilenames.push.apply(unionOfFilenames, inApp.package_entries);
+    }
+
+    if (inApp.appcache_entry_sizes) {
+        for (var entryIndex in inApp.appcache_entry_sizes) {
+            unionOfFilenames.push(entryIndex.substring(entryIndex.lastIndexOf('/') + 1));
+        }
+    } 
+
+    var uniqueFilenames = unionOfFilenames.filter(function(elem, pos, self) {
+        return self.indexOf(elem) == pos;
+    });
+
+    var filteredFilenames = uniqueFilenames.filter(function(elem, pos, self) {
+        return elem.indexOf('.js') > 0 && stopNames.indexOf(elem) == -1;
+    });
+
+    return filteredFilenames;
+}
+
+function firstAppName(app) {
+    var appNameKeys = Object.keys(app.name);
+    return app.name[appNameKeys[0]].replace(/,/g, '');
+}
+
+function whoUsesFile(inFilename) {
+    console.log('who uses "' + inFilename + "'");
+    for (index in theScope.apps) {
+        var app = theScope.apps[index];
+
+        var filenames = getFilenames(app);
+        if (filenames.indexOf(inFilename) >= 0) {
+            console.log(firstAppName(app) + ' by ' + app.author);
+        }
+    }
+}
+
 // VERIFICATION -------------------------------------------------------------------------------
 
 function verifyLocales() {
@@ -335,6 +380,11 @@ var argv = parseArgs(process.argv.slice(2));
 
 if (argv['build']) {
     createMarketplaceCatalogDB('apps.json');
+}
+
+if (argv['file']) {
+    loadDB('apps.json');
+    whoUsesFile(argv['file']);
 }
 
 if (argv['verify']) {
