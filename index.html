@@ -12,10 +12,12 @@
 
 	<body ng-controller='AppListCtrl'>
 		<x-layout>
+			<x-appbar>
+				<div>The Count - {{selectedTab}} - {{apps.length | number}} apps</div>
+			</x-appbar>
 			<section>
 				<x-deck selected-index="0">
-					<x-card>
-						<div class='pagetitle'>{{apps.length | number}} apps</div>
+					<x-card data-appbar-title='overview'>
 						<div class='categoriesChart barchart'> </div>
 						
 						<div class='statrow'>
@@ -39,34 +41,27 @@
 						</div>	
 					</x-card>
 
-					<x-card>
-						<div class='pagetitle'>most requested permissions</div>
+					<x-card data-appbar-title='permissions'>
 						<div class='permissionsChart barchart'> </div>
 					</x-card>
 
-					<x-card>
-						<div class='pagetitle'>most supported locales</div>
+					<x-card data-appbar-title='locales'>
 						<div class='localeFrequencyChart barchart'> </div>
 					</x-card>
 
-					<x-card>
-						<div class='pagetitle'>package sizes</div>
+					<x-card data-appbar-title='package sizes'>
 						<div class='packageSizesChart barchart'> </div>
 					</x-card>
 
-					<x-card>
-						<div class='pagetitle'>authors</div>
+					<x-card data-appbar-title='authors'>
 						<div class='authorsChart barchart'> </div>
 					</x-card>
 
-					<x-card>
-						<div class='pagetitle'>filenames</div>
+					<x-card data-appbar-title='filenames'>
 						<div class='filenamesChart barchart'> </div>
 					</x-card>
 
 					<x-card>
-						<div class='pagetitle'>table</div>
-
 						<table>
 						<thead>
 						<tr>

@@ -202,12 +202,15 @@ $(document).ready(function() {
 
     console.log('try to load cached apps.json, built previously by thecount.js commandline tool');
 
+    theScope.selectedTab = 'loading';
+
     $.ajax('./apps.json').done(function(appDictionary) {
         var apps = [];
         for (var appID in appDictionary) {
             apps.push(appDictionary[appID]);
         }
 
+        theScope.selectedTab = 'loaded';
         theScope.apps = apps;
         console.log('loaded ' + Object.keys(theScope.apps).length);
 
@@ -228,5 +231,12 @@ $(document).ready(function() {
         findPrivilegedAppData(theScope.apps, function() { console.log("DONE PRIVILEGED"); });
         findPackagedAppData(theScope.apps, function() { console.log("DONE PACKAGED"); });
         findHostedAppData(theScope.apps, function() { console.log("DONE HOSTED"); });       
+    });
+
+    $('x-deck').on('show', function(e) {
+        console.log('x-deck show');
+        theScope.selectedTab = e.target.getAttribute('data-appbar-title');
+        console.log(e.target.getAttribute('data-appbar-title'));
+        angular.element('[ng-controller=AppListCtrl]').scope().$digest();
     });
 });

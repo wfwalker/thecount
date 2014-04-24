@@ -23,6 +23,14 @@ x-card {
     right: 0;
 }
 
+x-tabbar-tab[selected] {
+	background-color: #00405D;
+}
+x-tabbar-tab[selected]:hover {
+	background-color: #00405D;
+}
+
+
 .barchart div {
 	background: lightgray;
 	color: white;
