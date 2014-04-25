@@ -98,9 +98,77 @@ function getSupportedLocales(inApp) {
     return uniqueLocales;
 }
 
+var knownLibraries = {};
+knownLibraries['bootstrap.js'] = 'Bootstrap';
+knownLibraries['bootstrap.min.js'] = 'Bootstrap';
+
+knownLibraries['jquery.js'] = 'jQuery';
+knownLibraries['jquery-1.8.2.js'] = 'jQuery';
+knownLibraries['jquery-1.10.2.min.js'] = 'jQuery';
+knownLibraries['jquery-1.9.1.min.js'] = 'jQuery';
+knownLibraries['jquery-1.3.1.min.js'] = 'jQuery';
+knownLibraries['jquery-1.7.1-min.js'] = 'jQuery';
+knownLibraries['jquery-1.7.1.min.js'] = 'jQuery';
+knownLibraries['jquery-1.10.1.min.js'] = 'jQuery';
+
+knownLibraries['jquery.min.js'] = 'jQuery';
+knownLibraries['jquery-2.0.0.min.js'] = 'jQuery';
+knownLibraries['jquery-2.0.3.min.js'] = 'jQuery';
+knownLibraries['jquery-2.1.0.min.js'] = 'jQuery';
+knownLibraries['jquery-1.7.2.min.js'] = 'jQuery';
+knownLibraries['jquery-1.8.2.min.js'] = 'jQuery';
+
+knownLibraries['jquery.mobile-1.3.2.min.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile-1.3.1.min.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile-1.2.0.min.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile.min.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile-1.4.0.min.js'] = 'jQuery Mobile';
+
+knownLibraries['Model.js'] = 'Mippin';
+knownLibraries['View.js'] = 'Mippin';
+knownLibraries['Controller.js'] = 'Mippin';
+knownLibraries['require.js'] = 'Require.js';
+knownLibraries['zepto.js'] = 'Zepto.js';
+knownLibraries['zepto.min.js'] = 'Zepto.js';
+knownLibraries['c2runtime.js'] = 'Construct 2';
+knownLibraries['c2webappstart.js'] = 'Construct 2';
+knownLibraries['angular.js'] = 'Angular';
+knownLibraries['angular.min.js'] = 'Angular';
+knownLibraries['cordova.js'] = 'Cordova';
+knownLibraries['cordova_plugins.js'] = 'Cordova';
+knownLibraries['cordova.min.js'] = 'Cordova';
+
+knownLibraries['iscroll.js'] = 'Cubiq iSCroll.js';
+knownLibraries['add2home.js'] = 'Cubiq Add to home screen';
+
+knownLibraries['inneractive.js'] = 'InnerActive Ads';
+knownLibraries['receiptverifier.js'] = 'mozPay receipt verifier';
+
+
+
+function getLibraryNames(inApp) {
+    var filteredFilenames = getFilenames(inApp);
+
+    var libraries = [];
+
+    for (var filename in knownLibraries) {
+        var library = knownLibraries[filename];
+
+        if (filteredFilenames.indexOf(filename) >= 0) {
+            libraries.push(library);
+        }
+    }
+
+    uniqueLibraries = libraries.filter(function(elem, pos, self) {
+        return self.indexOf(elem) == pos;
+    });
+
+    return uniqueLibraries;
+}
+
 function getFilenames(inApp) {
     var unionOfFilenames = [];
-    var stopNames = ['', 'app.js', 'main.js', 'manifest.webapp', 'zigbert.rsa', 'zigbert.sf', 'manifest.mf', 'ids.json', 'index.html'];
+    var stopNames = ['', 'app.js', 'main.js', 'script.js', 'manifest.webapp', 'zigbert.rsa', 'zigbert.sf', 'manifest.mf', 'ids.json', 'index.html'];
 
     if (inApp.package_entries) {
         unionOfFilenames.push.apply(unionOfFilenames, inApp.package_entries);
@@ -123,10 +191,20 @@ function getFilenames(inApp) {
     return filteredFilenames;
 }
 
+function getUnknownFilenames(inApp) {
+    allFilenames = getFilenames(inApp);
+
+    var filteredFilenames = allFilenames.filter(function(elem, pos, self) {
+        return ! knownLibraries[elem];
+    });
+
+    return filteredFilenames;
+}
 
 function getCategoryStrings(inApp) {
     var categories = []
 
+    if (inApp.content_ratings && inApp.content_ratings.rating) { categories.push('esrb'); } else { categories.push('unrated'); }
     if (inApp.app_type == 'hosted') { categories.push('hosted'); }
     if (inApp.app_type == 'privileged') { categories.push('privileged'); }
     if (inApp.app_type == 'packaged') { categories.push('packaged'); }
@@ -222,7 +300,8 @@ $(document).ready(function() {
         addFrequencyTable(theScope, getCategoryStrings, 'categoriesChart', 15);
         addFrequencyTable(theScope, getPackageSize, 'packageSizesChart', 15);
         addFrequencyTable(theScope, getAuthor, 'authorsChart', 15);
-        addFrequencyTable(theScope, getFilenames, 'filenamesChart', 100);
+        addFrequencyTable(theScope, getLibraryNames, 'librariesChart', 100);
+        addFrequencyTable(theScope, getUnknownFilenames, 'filenamesChart', 100);
 
         angular.element('[ng-controller=AppListCtrl]').scope().$digest();
     }).fail(function (e) {
