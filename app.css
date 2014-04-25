@@ -23,6 +23,10 @@ x-card {
     right: 0;
 }
 
+x-tabbar-tab {
+	border-right: solid 1px white;
+}
+
 x-tabbar-tab[selected] {
 	background-color: #00405D;
 }
