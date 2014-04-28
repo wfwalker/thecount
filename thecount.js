@@ -16,6 +16,7 @@ var util = require('util');
 var theScope = {};
 theScope.apps = {};
 theScope.pendingRequests = 0;
+theScope.timeout = 120000;
 
 // creates a Q promise that 
 //      resolves upon getting the bytes at the supplied URL and parsing them as JSON
@@ -26,7 +27,7 @@ function getPromiseForRequestAndParseJSON(inURL) {
 
     theScope.pendingRequests += 1;
 
-    request({ uri: inURL, strictSSL: false }, function (error, response, body) {
+    request({ uri: inURL, strictSSL: false, timeout: theScope.timeout }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             theScope.pendingRequests -= 1;
 
@@ -57,7 +58,7 @@ function getPromiseForDownloadPackageAndExtractManifest(inURL, inFilename) {
 
     theScope.pendingRequests += 1;
 
-    request({ uri: inURL, strictSSL: false, encoding: null }, function (error, response, body) {
+    request({ uri: inURL, strictSSL: false, timeout: theScope.timeout, encoding: null }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             theScope.pendingRequests -= 1;
 
@@ -92,7 +93,7 @@ function getPromiseForRequest(inURL) {
 
     theScope.pendingRequests += 1;
 
-    request(inURL, function (error, response, body) {
+    request({ uri: inURL, strictSSL: false, timeout: theScope.timeout }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             theScope.pendingRequests -= 1;
             deferred.resolve(body);
@@ -115,7 +116,7 @@ function getPromiseForResponseContentSize(inURL) {
 
     theScope.pendingRequests += 1;
 
-    request(inURL, function (error, response, body) {
+    request({ uri: inURL, strictSSL: false, timeout: theScope.timeout }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             theScope.pendingRequests -= 1;
             deferred.resolve(response.headers['content-length']);
@@ -207,7 +208,9 @@ function addPromiseForManifest(subpromises, app) {
             if (data.package_path) {
                 theScope.apps[app.id].miniManifest = data;
 
-                subpromises.push(getAppPackageAndExtractManifest(theScope.apps[app.id]).then(function (manifestFromPackage) {
+                subpromises.push(getAppPackageAndExtractManifest(theScope.apps[app.id]).catch(function () {
+                    console.log('catch getAppPackageAndExtractManifest inside addPromiseForManifest');
+                }).then(function (manifestFromPackage) {
                     theScope.apps[app.id].manifest = manifestFromPackage;
 
                     // now that the package is here, grab the filenames
@@ -229,7 +232,9 @@ function addPromiseForManifest(subpromises, app) {
                 theScope.apps[app.id].appcache_entry_sizes = {};
 
                 // add a subpromise for the appcache manifest
-                subpromises.push(getAppcacheManifest(theScope.apps[app.id]).then(function (appcacheData) {
+                subpromises.push(getAppcacheManifest(theScope.apps[app.id]).catch(function () {
+                    console.log('catch getAppcacheManifest inside addPromiseForManifest');
+                }).then(function (appcacheData) {
                     theScope.apps[app.id].appcache_manifest = appcacheData;
 
                     var entries = parseAppcacheManifest(appcacheData);
@@ -360,7 +365,6 @@ function loadDB(inJSONFilename) {
 function createMarketplaceCatalogDB(inOutputFile) {
     return findAppData().then(function() {
         console.log('DONE ALL ' + Object.keys(theScope.apps).length + ', still pending ' + theScope.pendingRequests); 
-
     }).catch(function (error) {
         console.log('createMarketplaceCatalogDB err ' + error);
     }).finally(function() {
