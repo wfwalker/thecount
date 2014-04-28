@@ -282,7 +282,9 @@ $(document).ready(function() {
 
     theScope.selectedTab = 'loading';
 
-    theScope.predicate = 'app.app_created';
+    // fields for controlling table sort
+    theScope.predicate = 'app_created';
+    theScope.reverseSort = false;
 
     $.ajax('./apps.json').done(function(appDictionary) {
         var apps = [];
