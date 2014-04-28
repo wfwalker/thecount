@@ -68,14 +68,14 @@
 						<thead>
 						<tr>
 							<td>id</td>
-							<td>type</td>
-							<td>payment</td>
-							<td>downloads</td>
+							<td><a href="" ng-click="predicate = 'app.app_type'">type</a></td>
+							<td><a href="" ng-click="predicate = 'app.premium_type'">payment</a></td>
+							<td><a href="" ng-click="predicate = 'app.weekly_downloads'">downloads</a></td>
 							<td>size</td>
-							<td>created</td>
+							<td><a href="" ng-click="predicate = 'app.created'">created</a></td>
 						</tr>
 						</thead>
-						<tr ng-repeat='app in apps'>
+						<tr ng-repeat='app in apps | orderBy:predicate'>
 							<td>{{firstAppName(app)}}</td>
 							<td>{{app.app_type}}</td>
 							<td>{{app.premium_type}}</td>

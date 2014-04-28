@@ -32,7 +32,7 @@ function addFrequencyTable(inScope, getArrayOfStringsPerAppFn, inDivClass, inLim
         chartData.push({ 'label' : index, 'val': counts[index] });
     }
 
-    console.log('done addFrequencyTable, found ' + appsFound);
+    console.log('done addFrequencyTable ' + inDivClass + ', found ' + appsFound);
 
     chartData.sort(function(a, b) {
         return b.val - a.val;
@@ -69,7 +69,7 @@ function getAuthor(inApp) {
 }
 
 function getPermissionKeys(inApp) {
-    if (inApp.manifest.permissions && (Object.keys(inApp.manifest.permissions).length > 0)) {
+    if (inApp.manifest && inApp.manifest.permissions && (Object.keys(inApp.manifest.permissions).length > 0)) {
         return Object.keys(inApp.manifest.permissions);
     } else {
         return [];
@@ -208,7 +208,7 @@ function getCategoryStrings(inApp) {
     if (inApp.app_type == 'hosted') { categories.push('hosted'); }
     if (inApp.app_type == 'privileged') { categories.push('privileged'); }
     if (inApp.app_type == 'packaged') { categories.push('packaged'); }
-    if (inApp.manifest.appcache_path) { categories.push('appcache'); }
+    if (inApp.manifest && inApp.manifest.appcache_path) { categories.push('appcache'); }
 
     if (inApp.premium_type == 'free') { categories.push('freeapp'); }
     if (inApp.premium_type == 'premium') { categories.push('premiumapp'); }
@@ -281,6 +281,8 @@ $(document).ready(function() {
     console.log('try to load cached apps.json, built previously by thecount.js commandline tool');
 
     theScope.selectedTab = 'loading';
+
+    theScope.predicate = 'app.app_created';
 
     $.ajax('./apps.json').done(function(appDictionary) {
         var apps = [];
