@@ -102,8 +102,14 @@ var knownLibraries = {};
 knownLibraries['bootstrap.js'] = 'Bootstrap';
 knownLibraries['bootstrap.min.js'] = 'Bootstrap';
 
+knownLibraries['backbone.js'] = 'Backbone';
+knownLibraries['backbone.min.js'] = 'Backbone';
+
 knownLibraries['jquery.js'] = 'jQuery';
 knownLibraries['jquery-1.8.2.js'] = 'jQuery';
+knownLibraries['jquery-1.9.1.js'] = 'jQuery';
+knownLibraries['jquery-2.0.2.js'] = 'jQuery';
+
 knownLibraries['jquery-1.10.2.min.js'] = 'jQuery';
 knownLibraries['jquery-1.9.1.min.js'] = 'jQuery';
 knownLibraries['jquery-1.3.1.min.js'] = 'jQuery';
@@ -117,12 +123,20 @@ knownLibraries['jquery-2.0.3.min.js'] = 'jQuery';
 knownLibraries['jquery-2.1.0.min.js'] = 'jQuery';
 knownLibraries['jquery-1.7.2.min.js'] = 'jQuery';
 knownLibraries['jquery-1.8.2.min.js'] = 'jQuery';
+knownLibraries['jquery-1.8.3.min.js'] = 'jQuery';
 
 knownLibraries['jquery.mobile-1.3.2.min.js'] = 'jQuery Mobile';
 knownLibraries['jquery.mobile-1.3.1.min.js'] = 'jQuery Mobile';
 knownLibraries['jquery.mobile-1.2.0.min.js'] = 'jQuery Mobile';
 knownLibraries['jquery.mobile.min.js'] = 'jQuery Mobile';
 knownLibraries['jquery.mobile-1.4.0.min.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile-1.4.2.min.js'] = 'jQuery Mobile';
+
+knownLibraries['jquery-ui.min.js'] = 'jQuery UI';
+
+knownLibraries['tgl-1.0.min.js'] = 'TreSensa';
+knownLibraries['tgl.boot.min.js'] = 'TreSensa';
+
 
 knownLibraries['Model.js'] = 'Mippin';
 knownLibraries['View.js'] = 'Mippin';
@@ -139,6 +153,7 @@ knownLibraries['cordova_plugins.js'] = 'Cordova';
 knownLibraries['cordova.min.js'] = 'Cordova';
 
 knownLibraries['iscroll.js'] = 'Cubiq iSCroll.js';
+knownLibraries['iscroll-lite.min.js'] = 'Cubiq iSCroll.js';
 knownLibraries['add2home.js'] = 'Cubiq Add to home screen';
 
 knownLibraries['inneractive.js'] = 'InnerActive Ads';
@@ -210,15 +225,15 @@ function getCategoryStrings(inApp) {
     if (inApp.app_type == 'packaged') { categories.push('packaged'); }
     if (inApp.manifest && inApp.manifest.appcache_path) { categories.push('appcache'); }
 
-    if (inApp.premium_type == 'free') { categories.push('freeapp'); }
-    if (inApp.premium_type == 'premium') { categories.push('premiumapp'); }
-    if (inApp.premium_type == 'free-inapp') { categories.push('freeinapp'); }
-    if (inApp.premium_type == 'premium-inapp') { categories.push('premiuminapp'); }
+    if (inApp.premium_type == 'free') { categories.push('free'); }
+    if (inApp.premium_type == 'premium') { categories.push('premium'); }
+    if (inApp.premium_type == 'free-inapp') { categories.push('free w/inapp'); }
+    if (inApp.premium_type == 'premium-inapp') { categories.push('premium w/inapp'); }
 
     if (inApp.device_types.indexOf('desktop') > -1) { categories.push('desktop'); }
-    if (inApp.device_types.indexOf('firefoxos') > -1) { categories.push('firefoxos'); }
-    if (inApp.device_types.indexOf('android-tablet') > -1) { categories.push('androidtablet'); categories.push('android'); }
-    if (inApp.device_types.indexOf('android-mobile') > -1) { categories.push('androidmobile'); categories.push('android'); }
+    if (inApp.device_types.indexOf('firefoxos') > -1) { categories.push('firefox os'); }
+    if (inApp.device_types.indexOf('android-tablet') > -1) { categories.push('android tablet'); categories.push('android'); }
+    if (inApp.device_types.indexOf('android-mobile') > -1) { categories.push('android mobile'); categories.push('android'); }
     
     return categories;
 }
@@ -289,7 +304,11 @@ $(document).ready(function() {
     $.ajax('./apps.json').done(function(appDictionary) {
         var apps = [];
         for (var appID in appDictionary) {
-            apps.push(appDictionary[appID]);
+            var app = appDictionary[appID];
+            if (app.weekly_downloads) {
+                app.weekly_downloads = parseInt(app.weekly_downloads);                
+            }
+            apps.push(app);
         }
 
         theScope.selectedTab = 'loaded';
