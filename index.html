@@ -57,7 +57,7 @@
 						<div class='authorsChart barchart'> </div>
 					</x-card>
 
-					<x-card data-appbar-title='filenames'>
+					<x-card data-appbar-title='libraries'>
 						<div class='librariesChart barchart'> </div>
 						<h2>unknown files</h2>
 						<div class='filenamesChart barchart'> </div>
@@ -68,19 +68,21 @@
 						<thead>
 						<tr>
 							<td>id</td>
+							<td><a href="" ng-click="predicate = 'author'; reverseSort = !reverseSort">author</a></td>
 							<td><a href="" ng-click="predicate = 'app_type'; reverseSort = !reverseSort">type</a></td>
 							<td><a href="" ng-click="predicate = 'premium_type'; reverseSort = !reverseSort">payment</a></td>
 							<td><a href="" ng-click="predicate = 'weekly_downloads'; reverseSort = !reverseSort">downloads</a></td>
-							<td>size</td>
+							<td><a href="" ng-click="predicate = 'size'; reverseSort = !reverseSort">size</a></td>
 							<td><a href="" ng-click="predicate = 'created'; reverseSort = !reverseSort">created</a></td>
 						</tr>
 						</thead>
 						<tr ng-repeat='app in apps | orderBy:predicate:reverseSort'>
 							<td>{{firstAppName(app)}}</td>
+							<td>{{app.author}}</td>
 							<td>{{app.app_type}}</td>
 							<td>{{app.premium_type}}</td>
 							<td>{{app.weekly_downloads}}</td>
-							<td>{{getCacheSize(app)}}</td>
+							<td>{{app.size|number}}</td>
 							<td>{{app.created}}</td>
 						</tr>
 						</table>
@@ -99,7 +101,7 @@
 			        <x-tabbar-tab target-selector="x-deck x-card:nth-child(3)">Locales</x-tabbar-tab>
 			        <x-tabbar-tab target-selector="x-deck x-card:nth-child(4)">Package Size</x-tabbar-tab>
 			        <x-tabbar-tab target-selector="x-deck x-card:nth-child(5)">Authors</x-tabbar-tab>
-			        <x-tabbar-tab target-selector="x-deck x-card:nth-child(6)">Filenames</x-tabbar-tab>
+			        <x-tabbar-tab target-selector="x-deck x-card:nth-child(6)">Libraries</x-tabbar-tab>
 			        <x-tabbar-tab target-selector="x-deck x-card:nth-child(7)">Table</x-tabbar-tab>
 			    </x-tabbar>
 		    </footer>

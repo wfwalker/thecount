@@ -103,7 +103,7 @@ knownLibraries['bootstrap.js'] = 'Bootstrap';
 knownLibraries['bootstrap.min.js'] = 'Bootstrap';
 
 knownLibraries['backbone.js'] = 'Backbone';
-knownLibraries['backbone.min.js'] = 'Backbone';
+knownLibraries['backbone-min.js'] = 'Backbone';
 
 knownLibraries['jquery.js'] = 'jQuery';
 knownLibraries['jquery-1.8.2.js'] = 'jQuery';
@@ -141,6 +141,11 @@ knownLibraries['tgl.boot.min.js'] = 'TreSensa';
 knownLibraries['Model.js'] = 'Mippin';
 knownLibraries['View.js'] = 'Mippin';
 knownLibraries['Controller.js'] = 'Mippin';
+knownLibraries['AppUX.js'] = 'Mippin';
+knownLibraries['Vars.js'] = 'Mippin';
+
+knownLibraries['tappable.js'] = 'Tappable';
+
 knownLibraries['require.js'] = 'Require.js';
 knownLibraries['zepto.js'] = 'Zepto.js';
 knownLibraries['zepto.min.js'] = 'Zepto.js';
@@ -183,7 +188,7 @@ function getLibraryNames(inApp) {
 
 function getFilenames(inApp) {
     var unionOfFilenames = [];
-    var stopNames = ['', 'app.js', 'main.js', 'script.js', 'manifest.webapp', 'zigbert.rsa', 'zigbert.sf', 'manifest.mf', 'ids.json', 'index.html'];
+    var stopNames = ['', 'ads.js', 'app.js', 'index.js', 'main.js', 'script.js', 'manifest.webapp', 'zigbert.rsa', 'zigbert.sf', 'manifest.mf', 'ids.json', 'index.html'];
 
     if (inApp.package_entries) {
         unionOfFilenames.push.apply(unionOfFilenames, inApp.package_entries);
@@ -250,6 +255,31 @@ function getPackageSize(inApp) {
     return [];
 }
 
+function getSize(app) {
+    if (app.manifest && app.manifest.size) {
+        return app.manifest.size;
+    }
+
+    if (app.miniManifest && app.miniManifest.size) {
+        return app.miniManifest.size;
+    }
+
+    if (app.appcache_entry_count) {
+        var cacheSize = 0;
+
+        for (var entryIndex in app.appcache_entry_sizes) {
+            var entry = app.appcache_entry_sizes[entryIndex];
+            if (parseInt(entry) != NaN) {
+                cacheSize += parseInt(entry);
+            }
+        }
+
+        return cacheSize;
+    }
+
+    return null;
+}
+
 // ------------------------------- ANGULAR STUFF -------------------------
 
 
@@ -258,31 +288,6 @@ var thecountApp = angular.module('thecountApp', []);
 thecountApp.controller('AppListCtrl', function ($scope) {
 	console.log('initialize');
     $scope.apps = [];
-
-    $scope.getCacheSize = function (app) {
-        if (app.manifest && app.manifest.size) {
-            return app.manifest.size;
-        }
-
-        if (app.miniManifest && app.miniManifest.size) {
-            return app.miniManifest.size;
-        }
-
-        if (app.appcache_entry_count) {
-            var cacheSize = 0;
-
-            for (var entryIndex in app.appcache_entry_sizes) {
-                var entry = app.appcache_entry_sizes[entryIndex];
-                if (parseInt(entry) != NaN) {
-                    cacheSize += parseInt(entry);
-                }
-            }
-
-            return cacheSize;
-        }
-
-        return '';
-    }
 
     $scope.firstAppName = function(app) {
         var appNameKeys = Object.keys(app.name);
@@ -305,9 +310,15 @@ $(document).ready(function() {
         var apps = [];
         for (var appID in appDictionary) {
             var app = appDictionary[appID];
+
             if (app.weekly_downloads) {
                 app.weekly_downloads = parseInt(app.weekly_downloads);                
             }
+
+            if (getSize(app)) {
+                app.size = getSize(app);                
+            }
+
             apps.push(app);
         }
 
