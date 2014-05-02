@@ -71,7 +71,8 @@
 							<td><a href="" ng-click="predicate = 'author'; reverseSort = !reverseSort">author</a></td>
 							<td><a href="" ng-click="predicate = 'app_type'; reverseSort = !reverseSort">type</a></td>
 							<td><a href="" ng-click="predicate = 'premium_type'; reverseSort = !reverseSort">payment</a></td>
-							<td><a href="" ng-click="predicate = 'weekly_downloads'; reverseSort = !reverseSort">downloads</a></td>
+							<td><a href="" ng-click="predicate = 'ratings.count'; reverseSort = !reverseSort"># ratings</a></td>
+							<td><a href="" ng-click="predicate = 'ratings.average'; reverseSort = !reverseSort">avg ratings</a></td>
 							<td><a href="" ng-click="predicate = 'size'; reverseSort = !reverseSort">size</a></td>
 							<td><a href="" ng-click="predicate = 'created'; reverseSort = !reverseSort">created</a></td>
 						</tr>
@@ -81,7 +82,8 @@
 							<td>{{app.author}}</td>
 							<td>{{app.app_type}}</td>
 							<td>{{app.premium_type}}</td>
-							<td>{{app.weekly_downloads}}</td>
+							<td>{{app.ratings.count|number}}</td>
+							<td>{{app.ratings.average|number}}</td>
 							<td>{{app.size|number}}</td>
 							<td>{{app.created}}</td>
 						</tr>
