@@ -16,7 +16,7 @@ var util = require('util');
 var theScope = {};
 theScope.apps = {};
 theScope.pendingRequests = 0;
-theScope.timeout = 120000;
+theScope.timeout = 240000;
 
 // creates a Q promise that 
 //      resolves upon getting the bytes at the supplied URL and parsing them as JSON
