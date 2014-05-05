@@ -298,13 +298,23 @@ thecountApp.controller('AppListCtrl', function ($scope) {
 $(document).ready(function() {
 	var theScope = angular.element('[ng-controller=AppListCtrl]').scope();
 
-    console.log('try to load cached apps.json, built previously by thecount.js commandline tool');
 
     theScope.selectedTab = 'loading';
 
     // fields for controlling table sort
     theScope.predicate = 'app_created';
     theScope.reverseSort = false;
+
+    console.log('try to load cached tara-results.json');   
+
+    $.ajax('./tara-results.json').done(function(taraDictionary) {
+        console.log("got tara results");
+        theScope.taraResults = taraDictionary;
+    }).fail(function (e) {
+        console.log("DID NOT got tara results");
+    });       
+
+    console.log('try to load cached apps.json, built previously by thecount.js commandline tool');   
 
     $.ajax('./apps.json').done(function(appDictionary) {
         var apps = [];
@@ -317,6 +327,10 @@ $(document).ready(function() {
 
             if (getSize(app)) {
                 app.size = getSize(app);                
+            }
+
+            if (theScope.taraResults[app.slug]) {
+                app.tara_status = theScope.taraResults[app.slug].status;
             }
 
             apps.push(app);
