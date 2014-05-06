@@ -1,6 +1,64 @@
 
 // ----------------------------- D3 STUFF ------------------------------------------
 
+function addDistributionTable(inScope, getIntValuePerAppFn, inDivClass) {
+    var counts = {};
+    var appsFound = 0;
+    var maxValue = -999;
+    var minValue = 999;
+
+    for (index in inScope.apps) {
+        var app = inScope.apps[index];
+        var intValue = getIntValuePerAppFn(app);
+
+        if (intValue != null) {
+            appsFound++;
+
+            if (counts[intValue]) {
+                counts[intValue]++;
+            } else {
+                counts[intValue] = 1;
+            }
+
+            minValue = Math.min(minValue, intValue);
+            maxValue = Math.max(maxValue, intValue);            
+        } else {
+            if (app.is_packaged) {
+                console.log("FFREAK OUT " + app.id);
+            }
+        }
+    }
+
+    console.log(counts);
+
+    var chartData = [];
+
+    for (var index = minValue; index <= maxValue; index++) {
+        if (counts[index]) {
+            chartData.push({ 'label' : index, 'val': counts[index] });
+        } else {
+            chartData.push({ 'label' : index, 'val': 0 });
+        }
+    }
+
+    console.log('done addDistributionTable ' + inDivClass + ', found ' + appsFound);
+
+    x = d3.scale.linear()
+        .domain([0, d3.max(chartData, get('val'))])
+        .range([0, 80]);
+
+    d3.select('.' + inDivClass)
+        .selectAll("div")
+            .data(chartData)
+        .enter().append("div")
+            .style("width", function(d) { 
+                return x(d.val) + "%"; })
+        .text(get('val'))
+        .append('span')
+            .attr('class', 'label')
+            .text(get('label'));
+}
+
 function addFrequencyTable(inScope, getArrayOfStringsPerAppFn, inDivClass, inLimit) {
     var counts = {};
     var appsFound = 0;
@@ -98,6 +156,20 @@ function getSupportedLocales(inApp) {
     return uniqueLocales;
 }
 
+function getSupportedRegions(inApp) {
+    var regions = [];
+
+    if (inApp.regions) {
+        for (var index in inApp.regions) {
+            var region = inApp.regions[index];
+            regions.push(region.name);
+        }
+    }
+
+    return regions;
+}
+
+
 var knownLibraries = {};
 knownLibraries['bootstrap.js'] = 'Bootstrap';
 knownLibraries['bootstrap.min.js'] = 'Bootstrap';
@@ -125,6 +197,7 @@ knownLibraries['jquery-1.7.2.min.js'] = 'jQuery';
 knownLibraries['jquery-1.8.2.min.js'] = 'jQuery';
 knownLibraries['jquery-1.8.3.min.js'] = 'jQuery';
 
+knownLibraries['jquery.mobile-1.3.0.min.js'] = 'jQuery Mobile';
 knownLibraries['jquery.mobile-1.3.2.min.js'] = 'jQuery Mobile';
 knownLibraries['jquery.mobile-1.3.1.min.js'] = 'jQuery Mobile';
 knownLibraries['jquery.mobile-1.2.0.min.js'] = 'jQuery Mobile';
@@ -134,9 +207,11 @@ knownLibraries['jquery.mobile-1.4.2.min.js'] = 'jQuery Mobile';
 
 knownLibraries['jquery-ui.min.js'] = 'jQuery UI';
 
+knownLibraries['tgs-adapters-0.3.min.js'] = 'TreSensa';
+knownLibraries['tgs-0.3.min.js'] = 'TreSensa';
+knownLibraries['tge-1.0.min.js'] = 'TreSensa';
 knownLibraries['tgl-1.0.min.js'] = 'TreSensa';
 knownLibraries['tgl.boot.min.js'] = 'TreSensa';
-
 
 knownLibraries['Model.js'] = 'Mippin';
 knownLibraries['View.js'] = 'Mippin';
@@ -164,7 +239,7 @@ knownLibraries['add2home.js'] = 'Cubiq Add to home screen';
 knownLibraries['inneractive.js'] = 'InnerActive Ads';
 knownLibraries['receiptverifier.js'] = 'mozPay receipt verifier';
 
-
+knownLibraries['l10n.js'] = 'Web L10n';
 
 function getLibraryNames(inApp) {
     var filteredFilenames = getFilenames(inApp);
@@ -244,15 +319,15 @@ function getCategoryStrings(inApp) {
 }
 
 function getPackageSize(inApp) {
-    if (inApp.manifest && inApp.manifest.size) {
-        return [Math.round(inApp.manifest.size / 1000000)];
-    }
-
     if (inApp.miniManifest && inApp.miniManifest.size) {
-        return [Math.round(inApp.miniManifest.size / 1000000)];
+        return Math.round(inApp.miniManifest.size / 1000000);
     }
 
-    return [];
+    if (inApp.manifest && inApp.manifest.size) {
+        return Math.round(inApp.manifest.size / 1000000);
+    }
+
+    return null;
 }
 
 function getSize(app) {
@@ -345,8 +420,9 @@ $(document).ready(function() {
 
         addFrequencyTable(theScope, getPermissionKeys, 'permissionsChart', 15);
         addFrequencyTable(theScope, getSupportedLocales, 'localeFrequencyChart', 15);
+        addFrequencyTable(theScope, getSupportedRegions, 'regionFrequencyChart', 15);
         addFrequencyTable(theScope, getCategoryStrings, 'categoriesChart', 15);
-        addFrequencyTable(theScope, getPackageSize, 'packageSizesChart', 15);
+        addDistributionTable(theScope, getPackageSize, 'packageSizesChart');
         addFrequencyTable(theScope, getAuthor, 'authorsChart', 15);
         addFrequencyTable(theScope, getLibraryNames, 'librariesChart', 100);
         addFrequencyTable(theScope, getUnknownFilenames, 'filenamesChart', 100);
