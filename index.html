@@ -84,8 +84,8 @@
 							<td><a href="" ng-click="predicate = 'created'; reverseSort = !reverseSort">created</a></td>
 						</tr>
 						</thead>
-						<tr ng-repeat='app in apps | orderBy:predicate:reverseSort'>
-							<td>{{firstAppName(app)}}</td>
+						<tr ng-repeat='app in apps | filter:filterPredicate | orderBy:predicate:reverseSort'>
+							<td><a target='_blank' href='http://marketplace.firefox.com/app/{{app.slug}}'>{{firstAppName(app)}}</a></td>
 							<td>{{app.author}}</td>
 							<td>{{app.app_type}}</td>
 							<td>{{app.premium_type}}</td>

@@ -22,10 +22,6 @@ function addDistributionTable(inScope, getIntValuePerAppFn, inDivClass) {
 
             minValue = Math.min(minValue, intValue);
             maxValue = Math.max(maxValue, intValue);            
-        } else {
-            if (app.is_packaged) {
-                console.log("FFREAK OUT " + app.id);
-            }
         }
     }
 
@@ -386,6 +382,7 @@ $(document).ready(function() {
 
     // fields for controlling table sort
     theScope.predicate = 'app_created';
+    theScope.filterPredicate = {}; //{ author : "Mippin" }
     theScope.reverseSort = false;
 
     console.log('try to load cached tara-results.json');   
