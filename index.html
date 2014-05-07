@@ -19,6 +19,10 @@
 				<x-deck selected-index="0">
 					<x-card data-appbar-title='overview'>
 						<div class='categoriesChart barchart'> </div>
+
+						<h2>average of >10 ratings</h2>
+
+						<div class='averageRatingChart barchart'> </div>
 						
 						<div class='statrow'>
 							<span>{{(apps|filter:{app_type: 'hosted'}).length | number}} hosted</span> | 

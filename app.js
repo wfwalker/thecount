@@ -296,6 +296,14 @@ function getUnknownFilenames(inApp) {
     return filteredFilenames;
 }
 
+function getAverageRating(inApp) {
+    if (inApp.ratings && inApp.ratings.count > 10) {
+        return Math.round(inApp.ratings.average);
+    } else {
+        return null;
+    }
+}
+
 function getCategoryStrings(inApp) {
     var categories = []
 
@@ -423,6 +431,7 @@ $(document).ready(function() {
         addFrequencyTable(theScope, getSupportedRegions, 'regionFrequencyChart', 15);
         addFrequencyTable(theScope, getCategoryStrings, 'categoriesChart', 15);
         addDistributionTable(theScope, getPackageSize, 'packageSizesChart');
+        addDistributionTable(theScope, getAverageRating, 'averageRatingChart');
         addFrequencyTable(theScope, getAuthor, 'authorsChart', 15);
         addFrequencyTable(theScope, getLibraryNames, 'librariesChart', 100);
         addFrequencyTable(theScope, getUnknownFilenames, 'filenamesChart', 100);
