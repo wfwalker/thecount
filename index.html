@@ -13,14 +13,16 @@
 	<body ng-controller='AppListCtrl'>
 		<x-layout>
 			<x-appbar>
-				<div>The Count - {{selectedTab}} - {{apps.length | number}} apps</div>
+				<h1>The Count - {{apps.length | number}} apps</h1>
 			</x-appbar>
 			<section>
 				<x-deck selected-index="0">
 					<x-card data-appbar-title='overview'>
+						<h2>categories</h2>
+
 						<div class='categoriesChart barchart'> </div>
 
-						<h2>average of >10 ratings</h2>
+						<h2>average of >5 ratings</h2>
 
 						<div class='averageRatingChart barchart'> </div>
 						
@@ -46,30 +48,39 @@
 					</x-card>
 
 					<x-card data-appbar-title='permissions'>
+						<h2>permissions</h2>
+
 						<div class='permissionsChart barchart'> </div>
 					</x-card>
 
 					<x-card data-appbar-title='locales'>
+						<h2>locales</h2>
 						<div class='localeFrequencyChart barchart'> </div>
+
 						<h2>regions</h2>
 						<div class='regionFrequencyChart barchart'> </div>
 					</x-card>
 
 					<x-card data-appbar-title='package sizes'>
+						<h2>package sizes</h2>
 						<div class='packageSizesChart barchart'> </div>
 					</x-card>
 
 					<x-card data-appbar-title='authors'>
+						<h2>authors</h2>
 						<div class='authorsChart barchart'> </div>
 					</x-card>
 
 					<x-card data-appbar-title='libraries'>
+						<h2>libraries</h2>
 						<div class='librariesChart barchart'> </div>
+
 						<h2>unknown files</h2>
 						<div class='filenamesChart barchart'> </div>
 					</x-card>
 
 					<x-card data-appbar-title='table'>
+						<a href="" ng-click="filterPredicate = ''">Reset</a>
 						<table>
 						<thead>
 						<tr>
@@ -86,7 +97,7 @@
 						</thead>
 						<tr ng-repeat='app in apps | filter:filterPredicate | orderBy:predicate:reverseSort'>
 							<td><a target='_blank' href='http://marketplace.firefox.com/app/{{app.slug}}'>{{firstAppName(app)}}</a></td>
-							<td>{{app.author}}</td>
+							<td><a href="" ng-click="$parent.filterPredicate = app.author">{{app.author}}</a></td>
 							<td>{{app.app_type}}</td>
 							<td>{{app.premium_type}}</td>
 							<td>{{app.ratings.count|number}}</td>

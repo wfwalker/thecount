@@ -23,7 +23,12 @@ x-card {
     right: 0;
 }
 
+x-appbar h1 {
+	font-family: Oswald;
+}
+
 x-tabbar-tab {
+	font-family: Oswald;
 	border-right: solid 1px white;
 }
 
@@ -33,7 +38,6 @@ x-tabbar-tab[selected] {
 x-tabbar-tab[selected]:hover {
 	background-color: #00405D;
 }
-
 
 .barchart div {
 	background: lightgray;

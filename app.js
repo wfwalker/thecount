@@ -293,7 +293,7 @@ function getUnknownFilenames(inApp) {
 }
 
 function getAverageRating(inApp) {
-    if (inApp.ratings && inApp.ratings.count > 10) {
+    if (inApp.ratings && inApp.ratings.count > 5) {
         return Math.round(inApp.ratings.average);
     } else {
         return null;
@@ -303,7 +303,8 @@ function getAverageRating(inApp) {
 function getCategoryStrings(inApp) {
     var categories = []
 
-    if (inApp.content_ratings && inApp.content_ratings.rating) { categories.push('esrb'); } else { categories.push('unrated'); }
+    if (inApp.ratings && inApp.ratings.count > 5) { categories.push('five user ratings'); }
+    if (inApp.content_ratings && inApp.content_ratings.rating) { categories.push('esrb'); } else { categories.push('NO esrb'); }
     if (inApp.app_type == 'hosted') { categories.push('hosted'); }
     if (inApp.app_type == 'privileged') { categories.push('privileged'); }
     if (inApp.app_type == 'packaged') { categories.push('packaged'); }
@@ -425,7 +426,7 @@ $(document).ready(function() {
 
         addFrequencyTable(theScope, getPermissionKeys, 'permissionsChart', 15);
         addFrequencyTable(theScope, getSupportedLocales, 'localeFrequencyChart', 15);
-        addFrequencyTable(theScope, getSupportedRegions, 'regionFrequencyChart', 15);
+        addFrequencyTable(theScope, getSupportedRegions, 'regionFrequencyChart', 30);
         addFrequencyTable(theScope, getCategoryStrings, 'categoriesChart', 15);
         addDistributionTable(theScope, getPackageSize, 'packageSizesChart');
         addDistributionTable(theScope, getAverageRating, 'averageRatingChart');
