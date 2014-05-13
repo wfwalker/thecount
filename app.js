@@ -177,6 +177,7 @@ knownLibraries['jquery.js'] = 'jQuery';
 knownLibraries['jquery-1.8.2.js'] = 'jQuery';
 knownLibraries['jquery-1.9.1.js'] = 'jQuery';
 knownLibraries['jquery-2.0.2.js'] = 'jQuery';
+knownLibraries['jquery-2.0.3.js'] = 'jQuery';
 
 knownLibraries['jquery-1.10.2.min.js'] = 'jQuery';
 knownLibraries['jquery-1.9.1.min.js'] = 'jQuery';
@@ -187,19 +188,28 @@ knownLibraries['jquery-1.10.1.min.js'] = 'jQuery';
 
 knownLibraries['jquery.min.js'] = 'jQuery';
 knownLibraries['jquery-2.0.0.min.js'] = 'jQuery';
+knownLibraries['jquery-2.0.2.min.js'] = 'jQuery';
 knownLibraries['jquery-2.0.3.min.js'] = 'jQuery';
 knownLibraries['jquery-2.1.0.min.js'] = 'jQuery';
 knownLibraries['jquery-1.7.2.min.js'] = 'jQuery';
 knownLibraries['jquery-1.8.2.min.js'] = 'jQuery';
 knownLibraries['jquery-1.8.3.min.js'] = 'jQuery';
+knownLibraries['jquery-1.11.0.min.js'] = 'jQuery';
+knownLibraries['jquery-1.4.2.min.js'] = 'jQuery';
+
+knownLibraries['game.js'] = 'GameJS';
+knownLibraries['game.min.js'] = 'GameJS';
 
 knownLibraries['jquery.mobile-1.3.0.min.js'] = 'jQuery Mobile';
 knownLibraries['jquery.mobile-1.3.2.min.js'] = 'jQuery Mobile';
 knownLibraries['jquery.mobile-1.3.1.min.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile-1.2.0.js'] = 'jQuery Mobile';
 knownLibraries['jquery.mobile-1.2.0.min.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile-1.1.0.min.js'] = 'jQuery Mobile';
 knownLibraries['jquery.mobile.min.js'] = 'jQuery Mobile';
 knownLibraries['jquery.mobile-1.4.0.min.js'] = 'jQuery Mobile';
 knownLibraries['jquery.mobile-1.4.2.min.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile.js'] = 'jQuery Mobile';
 
 knownLibraries['jquery-ui.min.js'] = 'jQuery UI';
 
@@ -208,6 +218,8 @@ knownLibraries['tgs-0.3.min.js'] = 'TreSensa';
 knownLibraries['tge-1.0.min.js'] = 'TreSensa';
 knownLibraries['tgl-1.0.min.js'] = 'TreSensa';
 knownLibraries['tgl.boot.min.js'] = 'TreSensa';
+knownLibraries['GameConfig.js'] = 'TreSensa';
+knownLibraries['viewporter.min.js'] = 'TreSensa';
 
 knownLibraries['Model.js'] = 'Mippin';
 knownLibraries['View.js'] = 'Mippin';
@@ -235,7 +247,13 @@ knownLibraries['add2home.js'] = 'Cubiq Add to home screen';
 knownLibraries['inneractive.js'] = 'InnerActive Ads';
 knownLibraries['receiptverifier.js'] = 'mozPay receipt verifier';
 
+knownLibraries['PxLoader.min.js'] = 'PixelLab preloader';
+knownLibraries['PxLoaderImage.min.js'] = 'PixelLab preloader';
+
 knownLibraries['l10n.js'] = 'Web L10n';
+
+knownLibraries['underscore.js'] = 'Underscore';
+knownLibraries['underscore.min.js'] = 'Underscore';
 
 function getLibraryNames(inApp) {
     var filteredFilenames = getFilenames(inApp);
@@ -259,7 +277,7 @@ function getLibraryNames(inApp) {
 
 function getFilenames(inApp) {
     var unionOfFilenames = [];
-    var stopNames = ['', 'ads.js', 'app.js', 'index.js', 'main.js', 'script.js', 'manifest.webapp', 'zigbert.rsa', 'zigbert.sf', 'manifest.mf', 'ids.json', 'index.html'];
+    var stopNames = ['', 'ads.js', 'init.js', 'app.js', 'index.js', 'main.js', 'script.js', 'manifest.webapp', 'zigbert.rsa', 'zigbert.sf', 'manifest.mf', 'ids.json', 'index.html'];
 
     if (inApp.package_entries) {
         unionOfFilenames.push.apply(unionOfFilenames, inApp.package_entries);
