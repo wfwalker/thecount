@@ -253,7 +253,7 @@ knownLibraries['PxLoaderImage.min.js'] = 'PixelLab preloader';
 knownLibraries['l10n.js'] = 'Web L10n';
 
 knownLibraries['underscore.js'] = 'Underscore';
-knownLibraries['underscore.min.js'] = 'Underscore';
+knownLibraries['underscore-min.js'] = 'Underscore';
 
 function getLibraryNames(inApp) {
     var filteredFilenames = getFilenames(inApp);
