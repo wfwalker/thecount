@@ -325,6 +325,31 @@ function whoUsesFile(inFilename) {
     }
 }
 
+function whoUsesPermission(inPermission) {
+    console.log('who uses "' + inPermission + "'");
+    for (index in theScope.apps) {
+        var app = theScope.apps[index];
+
+        if (app.manifest && app.manifest.permissions) {
+            if (app.manifest.permissions[inPermission]) {
+                console.log(firstAppName(app) + ' by ' + app.author);
+            }
+        }
+    }
+}
+
+
+function whoHasAppcache() {
+    console.log('who has appcache');
+    for (index in theScope.apps) {
+        var app = theScope.apps[index];
+
+        if (app.manifest.appcache_path) {
+            console.log(firstAppName(app) + ' by ' + app.author);
+        }
+    }
+}
+
 // VERIFICATION -------------------------------------------------------------------------------
 
 function verifyLocales() {
@@ -389,6 +414,16 @@ if (argv['build']) {
 if (argv['file']) {
     loadDB('apps.json');
     whoUsesFile(argv['file']);
+}
+
+if (argv['permission']) {
+    loadDB('apps.json');
+    whoUsesPermission(argv['permission']);
+}
+
+if (argv['appcache']) {
+    loadDB('apps.json');
+    whoHasAppcache();
 }
 
 if (argv['verify']) {
