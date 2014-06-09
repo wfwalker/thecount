@@ -4,7 +4,10 @@ block content
   h2 #{title}
 
   div(class='barchart distribution')
+  div(class='histogram')
 
   script(type='text/javascript').
-    $(document).ready(createDistributionGraph('distribution', !{JSON.stringify(chartData)}));
+    $(document).ready(function() {
+      createHistogram(!{JSON.stringify(values)});
+    });
 

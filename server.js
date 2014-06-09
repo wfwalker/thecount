@@ -45,6 +45,7 @@ app.param('app_id', function(req, resp, next, id) {
 // addTwoDeeTable(theScope, getTypeAndRating, 'twodee');
 
 var graphs = [
+    { kind: 'distribution', routeFragment: 'rating_count', title: 'number of ratings', getter: statistics.getRatingCount },
     { kind: 'distribution', routeFragment: 'rating', title: 'average rating', getter: statistics.getAverageRating },
     { kind: 'distribution', routeFragment: 'package_size', title: 'package size', getter: statistics.getPackageSize },
     { kind: 'frequency', routeFragment: 'library', title: 'library', getter: statistics.getLibraryNames },
@@ -68,7 +69,7 @@ function privateAddDistributionRoute(aGraph) {
     console.log(aGraph);
     app.get('/distribution/' + aGraph.routeFragment, function(req, resp, next) {
         resp.render('distribution',
-            { graphsMenu: graphs, title: aGraph.title, chartData: statistics.getDistribution(marketplaceCatalog, aGraph.getter) }
+            { graphsMenu: graphs, title: aGraph.title, values: statistics.getValues(marketplaceCatalog, aGraph.getter), chartData: statistics.getDistribution(marketplaceCatalog, aGraph.getter) }
         );
     });
 }

@@ -1,6 +1,29 @@
 
 // DISTRIBUTION HEPLER CODE
 
+function getValues(inApps, getIntValuePerAppFn) {
+    var values = [];
+    var appsFound = 0;
+    var maxValue = -999;
+    var minValue = 999;
+
+    for (index in inApps) {
+        var app = inApps[index];
+        var intValue = getIntValuePerAppFn(app);
+
+        if (intValue != null) {
+            appsFound++;
+
+            values.push(intValue);
+
+            minValue = Math.min(minValue, intValue);
+            maxValue = Math.max(maxValue, intValue);            
+        }
+    }
+
+    return { values: values, range: [minValue, maxValue] }
+}
+
 function getDistribution(inApps, getIntValuePerAppFn) {
     var counts = {};
     var appsFound = 0;
@@ -44,9 +67,17 @@ function getDistribution(inApps, getIntValuePerAppFn) {
 
 function getAverageRating(inApp) {
     if (inApp.ratings && inApp.ratings.count > 5) {
-        return Math.round(inApp.ratings.average);
+        return inApp.ratings.average;
     } else {
         return null;
+    }
+}
+
+function getRatingCount(inApp) {
+    if (! inApp.ratings){ 
+        return null;
+    } else {
+        return inApp.ratings.count;
     }
 }
 
@@ -340,6 +371,9 @@ function getLibraryNames(inApp) {
 
 module.exports.getLibraryNames = getLibraryNames;
 module.exports.getDistribution = getDistribution;
+module.exports.getValues = getValues;
+
+module.exports.getRatingCount = getRatingCount;
 module.exports.getAverageRating = getAverageRating;
 module.exports.getPackageSize = getPackageSize;
 
