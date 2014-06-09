@@ -1,0 +1,38 @@
+extend layout
+
+block content
+  h2
+    img(src='#{appData.icons["128"]}', width=32, height=32)
+    span #{appData.name['en-US']} by #{appData.author}
+
+  if appData.is_packaged
+    a(href='#',onclick='myInstallPackage("#{appData.manifest_url}")') mozApps.installPackage
+  else
+    a(href='#',onclick='myInstallHosted("#{appData.manifest_url}")') mozApps.installHosted
+
+  p
+    a(target='_blank',href='http://marketplace.firefox.com/app/#{appData.slug}') @Marketplace
+
+  
+
+  p #{appData.description['en-US']}
+
+  div
+    each type in appData.device_types
+      span #{type}, 
+
+  div
+    each category in appData.categories
+      span #{category}, 
+
+  .row
+    each preview in appData.previews
+      div(class='col-xs-6 col-md-3')
+        a(href="#", class="thumbnail")
+          img(src='#{preview.thumbnail_url}')
+
+  p version #{appData.manifest.version}
+
+  p default_locale #{appData.manifest.default_locale}
+
+  p ratings #{appData.ratings.count} average #{appData.ratings.average}

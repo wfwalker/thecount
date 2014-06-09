@@ -1,0 +1,9 @@
+extend layout
+
+block content
+  h2 #{title}
+
+  div(class='barchart frequency')
+
+  script(type='text/javascript').
+    $(document).ready(createDistributionGraph('frequency', !{JSON.stringify(chartData)}));

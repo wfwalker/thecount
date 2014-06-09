@@ -1,0 +1,10 @@
+extend layout
+
+block content
+  h2 #{title}
+
+  div(class='barchart distribution')
+
+  script(type='text/javascript').
+    $(document).ready(createDistributionGraph('distribution', !{JSON.stringify(chartData)}));
+
