@@ -46,10 +46,7 @@ function createFrequencyGraph(inDivClass, chartData) {
 
 }
 
-function createHistogram(valueStruct) {
-    console.log("START createHistogram");
-    console.log(valueStruct);
-
+function createHistogram(values) {
     // A formatter for counts.
     var formatCount = d3.format(",.0f");
 
@@ -58,13 +55,13 @@ function createHistogram(valueStruct) {
         height = 500 - margin.top - margin.bottom;
 
     var x = d3.scale.linear()
-        .domain(d3.extent(valueStruct.values))
+        .domain(d3.extent(values))
         .range([0, width]);
 
     // Generate a histogram using twenty uniformly-spaced bins.
     var data = d3.layout.histogram()
         .bins(x.ticks(20))
-        (valueStruct.values);
+        (values);
 
     var y = d3.scale.linear()
         .domain([0, d3.max(data, function(d) { return d.y; })])
@@ -85,9 +82,6 @@ function createHistogram(valueStruct) {
       .enter().append("g")
         .attr("class", "bar")
         .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
-
-    console.log(' width ' + x(data[0].x + data[0].dx));
-    console.log(data[0]);
 
     bar.append("rect")
         .attr("x", 1)

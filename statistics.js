@@ -3,25 +3,17 @@
 
 function getValues(inApps, getIntValuePerAppFn) {
     var values = [];
-    var appsFound = 0;
-    var maxValue = -999;
-    var minValue = 999;
 
     for (index in inApps) {
         var app = inApps[index];
         var intValue = getIntValuePerAppFn(app);
 
         if (intValue != null) {
-            appsFound++;
-
             values.push(intValue);
-
-            minValue = Math.min(minValue, intValue);
-            maxValue = Math.max(maxValue, intValue);            
         }
     }
 
-    return { values: values, range: [minValue, maxValue] }
+    return values
 }
 
 function getDistribution(inApps, getIntValuePerAppFn) {
@@ -59,8 +51,6 @@ function getDistribution(inApps, getIntValuePerAppFn) {
             chartData.push({ 'label' : index, 'val': 0 });
         }
     }
-
-    console.log('done getDistribution, found ' + appsFound);
 
     return chartData;
 }
@@ -125,15 +115,11 @@ function getFrequency(inApps, getArrayOfStringsPerAppFn, inLimit) {
         }
     }
 
-    console.log(counts);
-
     var chartData = [];
 
     for (index in counts) {
         chartData.push({ 'label' : index, 'val': counts[index] });
     }
-
-    console.log('done addFrequencyTable, found ' + appsFound);
 
     chartData.sort(function(a, b) {
         return b.val - a.val;

@@ -69,7 +69,7 @@ function privateAddDistributionRoute(aGraph) {
     console.log(aGraph);
     app.get('/distribution/' + aGraph.routeFragment, function(req, resp, next) {
         resp.render('distribution',
-            { graphsMenu: graphs, title: aGraph.title, values: statistics.getValues(marketplaceCatalog, aGraph.getter), chartData: statistics.getDistribution(marketplaceCatalog, aGraph.getter) }
+            { graphsMenu: graphs, title: aGraph.title, values: statistics.getValues(marketplaceCatalog, aGraph.getter) }
         );
     });
 }
