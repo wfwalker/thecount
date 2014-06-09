@@ -12,19 +12,18 @@
 
 	<body ng-controller='AppListCtrl'>
 		<x-layout>
-			<x-appbar>
-				<h1>The Count - {{apps.length | number}} apps</h1>
-			</x-appbar>
 			<section>
 				<x-deck selected-index="0">
 					<x-card data-appbar-title='overview'>
-						<h2>categories</h2>
+						<h2>Categories</h2>
 
 						<div class='categoriesChart barchart'> </div>
 
-						<h2>average of >5 ratings</h2>
+						<h2>Average of >5 ratings</h2>
 
 						<div class='averageRatingChart barchart'> </div>
+
+						<h2>Average rating versus App Type</h2>
 
 						<div class='twodee'></div>
 						
@@ -50,31 +49,31 @@
 					</x-card>
 
 					<x-card data-appbar-title='permissions'>
-						<h2>permissions</h2>
+						<h2>Permissions</h2>
 
 						<div class='permissionsChart barchart'> </div>
 					</x-card>
 
 					<x-card data-appbar-title='locales'>
-						<h2>locales</h2>
+						<h2>Locales</h2>
 						<div class='localeFrequencyChart barchart'> </div>
 
-						<h2>regions</h2>
+						<h2>Regions</h2>
 						<div class='regionFrequencyChart barchart'> </div>
 					</x-card>
 
 					<x-card data-appbar-title='package sizes'>
-						<h2>package sizes</h2>
+						<h2>Package sizes</h2>
 						<div class='packageSizesChart barchart'> </div>
 					</x-card>
 
 					<x-card data-appbar-title='authors'>
-						<h2>authors</h2>
+						<h2>Authors</h2>
 						<div class='authorsChart barchart'> </div>
 					</x-card>
 
 					<x-card data-appbar-title='libraries'>
-						<h2>libraries</h2>
+						<h2>Libraries</h2>
 						<div class='librariesChart barchart'> </div>
 					</x-card>
 

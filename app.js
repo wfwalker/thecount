@@ -110,6 +110,8 @@ function addTwoDeeTable(inScope, getPairOfStringsPerAppFn, inDivClass) {
 }
 
 function addFrequencyTable(inScope, getArrayOfStringsPerAppFn, inDivClass, inLimit) {
+    console.log('start addFrequencyTable ' + inDivClass);
+
     var counts = {};
     var appsFound = 0;
 
@@ -121,7 +123,12 @@ function addFrequencyTable(inScope, getArrayOfStringsPerAppFn, inDivClass, inLim
             appsFound++;
 
             for (var stringIndex = 0; stringIndex < strings.length; stringIndex++) {
-                var stringKey = strings[stringIndex];
+                if (! strings[stringIndex]) {
+                    console.log('AOOGAH ' + app.id);
+                    console.log(strings);
+                }
+
+                var stringKey = strings[stringIndex].replace(':', '-');
 
                 if (counts[stringKey]) {
                     counts[stringKey]++;
@@ -156,6 +163,7 @@ function addFrequencyTable(inScope, getArrayOfStringsPerAppFn, inDivClass, inLim
         .selectAll("div")
             .data(chartData)
         .enter().append("div")
+            .attr('class', get('label'))
             .style("width", function(d) { 
                 return x(d.val) + "%"; })
         .text(get('val'))
@@ -173,7 +181,11 @@ function get(prop) {
 }
 
 function getAuthor(inApp) {
-    return [inApp.author];
+    if (inApp.author && inApp.author != '') {
+        return [inApp.author];
+    } else {
+        return [];
+    }
 }
 
 function getTypeAndRating(inApp) {
@@ -301,6 +313,8 @@ knownLibraries['angular.min.js'] = 'Angular';
 knownLibraries['cordova.js'] = 'Cordova';
 knownLibraries['cordova_plugins.js'] = 'Cordova';
 knownLibraries['cordova.min.js'] = 'Cordova';
+knownLibraries['phonegap.js'] = 'Cordova';
+knownLibraries['phonegap.min.js'] = 'Cordova';
 
 knownLibraries['iscroll.js'] = 'Cubiq iSCroll.js';
 knownLibraries['iscroll-lite.min.js'] = 'Cubiq iSCroll.js';
@@ -479,6 +493,8 @@ $(document).ready(function() {
 
     $.ajax('./apps.json').done(function(appDictionary) {
         var apps = [];
+        var totalRatingsCount = 0;
+
         for (var appID in appDictionary) {
             var app = appDictionary[appID];
 
@@ -494,18 +510,24 @@ $(document).ready(function() {
                 app.tara_status = theScope.taraResults[app.slug].status;
             }
 
+            if (app.ratings) {
+                totalRatingsCount += app.ratings.count;
+            }
+
+
             apps.push(app);
         }
 
         theScope.selectedTab = 'loaded';
         theScope.apps = apps;
         console.log('loaded ' + Object.keys(theScope.apps).length);
+        console.log('total ratings ' + totalRatingsCount);
 
         // hide the statrows, only use those for when we don't have cached JSON
         $('.statrow').hide();
 
         addFrequencyTable(theScope, getPermissionKeys, 'permissionsChart', 15);
-        addFrequencyTable(theScope, getSupportedLocales, 'localeFrequencyChart', 15);
+        addFrequencyTable(theScope, getSupportedLocales, 'localeFrequencyChart', 30);
         addFrequencyTable(theScope, getSupportedRegions, 'regionFrequencyChart', 30);
         addFrequencyTable(theScope, getCategoryStrings, 'categoriesChart', 15);
         addDistributionTable(theScope, getPackageSize, 'packageSizesChart');
