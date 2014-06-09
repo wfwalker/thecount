@@ -55,6 +55,60 @@ function addDistributionTable(inScope, getIntValuePerAppFn, inDivClass) {
             .text(get('label'));
 }
 
+function addTwoDeeTable(inScope, getPairOfStringsPerAppFn, inDivClass) {
+    var counts = {};
+    var columnKeys = [];
+    var appsFound = 0;
+
+    for (index in inScope.apps) {
+        var app = inScope.apps[index];
+        var pair = getPairOfStringsPerAppFn(app);
+
+        if (columnKeys.indexOf(pair[1]) == -1) {
+            columnKeys.push(pair[1]);
+        }
+
+        if (pair.length == 2) {
+            appsFound++;
+
+            if (! counts[pair[0]]) {
+                counts[pair[0]] = {};
+            }
+
+            if (counts[pair[0]][pair[1]]) {
+                counts[pair[0]][pair[1]]++;
+            } else {
+                counts[pair[0]][pair[1]] = 1;
+            }
+        }
+    }
+
+    console.log(counts);
+
+    var table = $('<table></table>');
+
+    var headerRow = $('<tr></tr>').appendTo(table);
+    var headerCell = $('<td></td>').appendTo(headerRow);
+    for (var columnIndex in columnKeys) {
+        var headerCell = $('<td class="numericCell">' + columnKeys[columnIndex] + '</td>').appendTo(headerRow);
+    }
+
+    for (var rowIndex in counts) {
+        var row = $('<tr></tr>').appendTo(table);
+
+        var headerCell = $('<td>' + rowIndex + '</td>').appendTo(row);
+
+        for (var columnIndex in columnKeys) {
+            if (! counts[rowIndex][columnKeys[columnIndex]]) {
+                counts[rowIndex][columnKeys[columnIndex]] = 0;
+            }
+            var cell = $('<td class="numericCell">' + counts[rowIndex][columnKeys[columnIndex]] + '</td>').appendTo(row);
+        }
+    }
+
+    table.appendTo($('.' + inDivClass));
+}
+
 function addFrequencyTable(inScope, getArrayOfStringsPerAppFn, inDivClass, inLimit) {
     var counts = {};
     var appsFound = 0;
@@ -120,6 +174,14 @@ function get(prop) {
 
 function getAuthor(inApp) {
     return [inApp.author];
+}
+
+function getTypeAndRating(inApp) {
+    if (inApp.ratings && inApp.ratings.count > 5) {
+        return [inApp.app_type, '' + Math.round(inApp.ratings.average)];
+    } else {
+        return [inApp.app_type, '-'];
+    }
 }
 
 function getPermissionKeys(inApp) {
@@ -450,7 +512,7 @@ $(document).ready(function() {
         addDistributionTable(theScope, getAverageRating, 'averageRatingChart');
         addFrequencyTable(theScope, getAuthor, 'authorsChart', 15);
         addFrequencyTable(theScope, getLibraryNames, 'librariesChart', 100);
-        addFrequencyTable(theScope, getUnknownFilenames, 'filenamesChart', 100);
+        addTwoDeeTable(theScope, getTypeAndRating, 'twodee');
 
         angular.element('[ng-controller=AppListCtrl]').scope().$digest();
     }).fail(function (e) {

@@ -23,6 +23,11 @@ x-card {
     right: 0;
 }
 
+.numericCell {
+	text-align: right;
+	padding: 10px;
+}
+
 x-appbar h1 {
 	font-family: Oswald;
 }
