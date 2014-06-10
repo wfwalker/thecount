@@ -26,6 +26,7 @@ console.log('parsed catalog');
 // CONFIGURE SERVER
 
 // statically serve up some assets
+app.use("/images", express.static('images'));
 app.use("/scripts", express.static('scripts'));
 app.use("/stylesheets", express.static('stylesheets'));
 
@@ -45,8 +46,8 @@ app.param('app_id', function(req, resp, next, id) {
 // addTwoDeeTable(theScope, getTypeAndRating, 'twodee');
 
 var graphs = [
-    { kind: 'distribution', routeFragment: 'rating_count', title: 'number of ratings', getter: statistics.getRatingCount },
-    { kind: 'distribution', routeFragment: 'rating', title: 'average rating', getter: statistics.getAverageRating },
+    { kind: 'distribution', routeFragment: 'rating_count', title: 'num ratings', getter: statistics.getRatingCount },
+    { kind: 'distribution', routeFragment: 'rating', title: 'avg rating', getter: statistics.getAverageRating },
     { kind: 'distribution', routeFragment: 'package_size', title: 'package size', getter: statistics.getPackageSize },
     { kind: 'frequency', routeFragment: 'library', title: 'library', getter: statistics.getLibraryNames },
     { kind: 'frequency', routeFragment: 'category', title: 'category', getter: statistics.getCategoryStrings },
@@ -61,6 +62,18 @@ var graphs = [
 app.get('/app/:app_id', function(req, resp, next) {
     resp.render('appdetail',
         { graphsMenu: graphs, title : req.appData.author, appData: req.appData }
+    );
+});
+
+app.get('/listing', function(req, resp, next) {
+    var apps = [];
+
+    for (var index in marketplaceCatalog) {
+        apps.push(marketplaceCatalog[index]);
+    }
+
+    resp.render('applisting',
+        { apps: apps, graphsMenu: graphs, title: 'listing' }
     );
 });
 

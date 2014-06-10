@@ -1,0 +1,6 @@
+extend layout
+
+block content
+  each app in apps
+    div
+      a(href='/app/#{app.id}') #{app.author}
