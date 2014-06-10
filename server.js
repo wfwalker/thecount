@@ -107,13 +107,17 @@ app.get('/listing/author/:author', function(req, resp, next) {
 
 app.get('/listing/num_ratings/:num_ratings', function(req, resp, next) {
     resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'num_ratings ' + req.author }
+        { apps: req.apps, graphsMenu: graphs, title: 'num_ratings ' + req.num_ratings }
+    );
+});
+
+app.get('/home', function(req, resp, next) {
+    resp.render('home',
+        { graphsMenu: graphs, title: 'home' }
     );
 });
 
 function privateAddDistributionRoute(aGraph) {
-    console.log('privateAddDistributionRoute');
-    console.log(aGraph);
     app.get('/distribution/' + aGraph.routeFragment, function(req, resp, next) {
         resp.render('distribution',
             { graphsMenu: graphs, title: aGraph.title, values: statistics.getValues(marketplaceCatalog, aGraph.getter) }
@@ -122,8 +126,6 @@ function privateAddDistributionRoute(aGraph) {
 }
 
 function privateAddFrequencyRoute(aGraph) {
-    console.log('privateAddFrequencyRoute');
-    console.log(aGraph);
     app.get('/frequency/' + aGraph.routeFragment, function(req, resp, next) {
         resp.render('frequency',
             { graphsMenu: graphs, title: aGraph.title, chartData: statistics.getFrequency(marketplaceCatalog, aGraph.getter, 10) }
@@ -132,8 +134,6 @@ function privateAddFrequencyRoute(aGraph) {
 }
 
 function privateAddPieRoute(aGraph) {
-    console.log('privateAddPieRoute');
-    console.log(aGraph);
     app.get('/pie/' + aGraph.routeFragment, function(req, resp, next) {
         resp.render('pie',
             { graphsMenu: graphs, title: aGraph.title, chartData: statistics.getFrequency(marketplaceCatalog, aGraph.getter, 10) }
