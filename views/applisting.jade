@@ -1,6 +1,8 @@
 extend layout
 
 block content
-  each app in apps
-    div
-      a(href='/app/#{app.id}') #{app.author}
+	each app in apps
+		div
+			a(href='/app/#{app.id}')
+				img(src='#{app.icons["128"]}', width=32, height=32)
+				span #{app.name['en-US']}

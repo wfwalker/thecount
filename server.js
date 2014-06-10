@@ -38,10 +38,28 @@ app.set('views', __dirname + '/views');
 
 app.param('app_id', function(req, resp, next, id) {
 	var appID = parseInt(req.param('app_id'));
-	console.log('mooo ' + appID);
+	console.log('app_id ' + appID);
 	req.appData = marketplaceCatalog[appID];
 	next();
 });
+
+app.param('author', function(req, resp, next, id) {
+    var author = req.param('author')
+    console.log('author ' + author);
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        if (app.author == author) {
+            apps.push(app);
+        }
+    }
+
+    req.author = author;
+    req.apps = apps;
+    next();
+});
+
 
 // addTwoDeeTable(theScope, getTypeAndRating, 'twodee');
 
@@ -56,7 +74,7 @@ var graphs = [
     { kind: 'frequency', routeFragment: 'region', title: 'region', getter: statistics.getSupportedRegions },
     { kind: 'frequency', routeFragment: 'permission', title: 'permission', getter: statistics.getPermissionKeys },
     { kind: 'frequency', routeFragment: 'activity', title: 'activity', getter: statistics.getActivityKeys },
-    { kind: 'frequency', routeFragment: 'installs_allowed_from', title: 'installs allowed from', getter: statistics.getInstallsAllowedFrom }
+    { kind: 'pie', routeFragment: 'installs_allowed_from', title: 'installs allowed from', getter: statistics.getInstallsAllowedFrom }
 ]
 
 app.get('/app/:app_id', function(req, resp, next) {
@@ -65,15 +83,9 @@ app.get('/app/:app_id', function(req, resp, next) {
     );
 });
 
-app.get('/listing', function(req, resp, next) {
-    var apps = [];
-
-    for (var index in marketplaceCatalog) {
-        apps.push(marketplaceCatalog[index]);
-    }
-
+app.get('/listing/author/:author', function(req, resp, next) {
     resp.render('applisting',
-        { apps: apps, graphsMenu: graphs, title: 'listing' }
+        { apps: req.apps, graphsMenu: graphs, title: 'author ' + req.author }
     );
 });
 
@@ -97,11 +109,24 @@ function privateAddFrequencyRoute(aGraph) {
     });
 }
 
+function privateAddPieRoute(aGraph) {
+    console.log('privateAddPieRoute');
+    console.log(aGraph);
+    app.get('/pie/' + aGraph.routeFragment, function(req, resp, next) {
+        resp.render('pie',
+            { graphsMenu: graphs, title: aGraph.title, chartData: statistics.getFrequency(marketplaceCatalog, aGraph.getter, 10) }
+        );
+    });
+}
+
+// read through the list of graphs and add them to the menu
 for(var graphIndex = 0; graphIndex < graphs.length; graphIndex++) {
     var aGraph = graphs[graphIndex];
 
     if (aGraph.kind == 'distribution') {
         privateAddDistributionRoute(aGraph);
+    } else if (aGraph.kind == 'pie') {
+        privateAddPieRoute(aGraph);
     } else {
         privateAddFrequencyRoute(aGraph);
     }

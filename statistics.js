@@ -141,7 +141,7 @@ function getInstallsAllowedFrom(inApp) {
     if (inApp.manifest && inApp.manifest.installs_allowed_from) {
         return inApp.manifest.installs_allowed_from;
     } else {
-        return [];
+        return ['none'];
     }
 }
 
