@@ -13,9 +13,7 @@ block content
   p
     a(target='_blank',href='http://marketplace.firefox.com/app/#{appData.slug}') @Marketplace
 
-  
-
-  p #{appData.description['en-US']}
+  p !{appData.description['en-US']}
 
   div
     each type in appData.device_types
