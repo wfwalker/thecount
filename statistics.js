@@ -63,8 +63,10 @@ function getAverageRating(inApp) {
     }
 }
 
+// NOTE: don't show the tiny handful of apps with more than 50 ratings since 
+// showing them makes the graph useless
 function getRatingCount(inApp) {
-    if (! inApp.ratings){ 
+    if (! inApp.ratings || inApp.ratings.count > 50){ 
         return null;
     } else {
         return inApp.ratings.count;

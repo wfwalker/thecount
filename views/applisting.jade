@@ -5,4 +5,8 @@ block content
 		div
 			a(href='/app/#{app.id}')
 				img(src='#{app.icons["128"]}', width=32, height=32)
-				span #{app.name['en-US']}
+				
+				if app.name['en-US']
+					span #{app.name['en-US']}
+				else
+					span #{app.name[Object.keys(app.name)[0]]}				

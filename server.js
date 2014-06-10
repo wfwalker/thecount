@@ -60,6 +60,22 @@ app.param('author', function(req, resp, next, id) {
     next();
 });
 
+app.param('num_ratings', function(req, resp, next, id) {
+    var num_ratings = req.param('num_ratings')
+    console.log('num_ratings ' + num_ratings);
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        if (app.ratings && app.ratings.count > num_ratings) {
+            apps.push(app);
+        }
+    }
+
+    req.num_ratings = num_ratings;
+    req.apps = apps;
+    next();
+});
 
 // addTwoDeeTable(theScope, getTypeAndRating, 'twodee');
 
@@ -86,6 +102,12 @@ app.get('/app/:app_id', function(req, resp, next) {
 app.get('/listing/author/:author', function(req, resp, next) {
     resp.render('applisting',
         { apps: req.apps, graphsMenu: graphs, title: 'author ' + req.author }
+    );
+});
+
+app.get('/listing/num_ratings/:num_ratings', function(req, resp, next) {
+    resp.render('applisting',
+        { apps: req.apps, graphsMenu: graphs, title: 'num_ratings ' + req.author }
     );
 });
 

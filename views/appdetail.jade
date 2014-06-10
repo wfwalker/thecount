@@ -3,7 +3,10 @@ extend layout
 block content
   h2
     img(src='#{appData.icons["128"]}', width=32, height=32)
-    span #{appData.name['en-US']} by #{appData.author}
+    if appData.name['en-US']
+      span #{appData.name['en-US']} by #{appData.author}
+    else
+      span #{appData.name[Object.keys(appData.name)[0]]} by #{appData.author}       
 
   if appData.is_packaged
     a(href='#',onclick='myInstallPackage("#{appData.manifest_url}")') mozApps.installPackage
