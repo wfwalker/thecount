@@ -193,6 +193,8 @@ function getSupportedRegions(inApp) {
 function getCategoryStrings(inApp) {
     var categories = []
 
+    if (inApp.categories) { categories.push.apply(categories, inApp.categories); }
+
     if (inApp.ratings && inApp.ratings.count > 5) { categories.push('five user ratings'); }
     if (inApp.content_ratings && inApp.content_ratings.rating) { categories.push('esrb'); } else { categories.push('NO esrb'); }
     if (inApp.app_type == 'hosted') { categories.push('hosted'); }

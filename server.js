@@ -77,6 +77,24 @@ app.param('num_ratings', function(req, resp, next, id) {
     next();
 });
 
+app.param('library', function(req, resp, next, id) {
+    var library = req.param('library')
+    console.log('library ' + library);
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        if (statistics.getLibraryNames(app).indexOf(library) >= 0) {
+            apps.push(app);
+        }
+    }
+
+    req.library = library;
+    req.apps = apps;
+    next();
+});
+
+
 // addTwoDeeTable(theScope, getTypeAndRating, 'twodee');
 
 var graphs = [
@@ -111,6 +129,13 @@ app.get('/listing/num_ratings/:num_ratings', function(req, resp, next) {
     );
 });
 
+app.get('/listing/library/:library', function(req, resp, next) {
+    resp.render('applisting',
+        { apps: req.apps, graphsMenu: graphs, title: 'library ' + req.library }
+    );
+});
+
+
 app.get('/home', function(req, resp, next) {
     resp.render('home',
         { graphsMenu: graphs, title: 'home' }
@@ -128,7 +153,7 @@ function privateAddDistributionRoute(aGraph) {
 function privateAddFrequencyRoute(aGraph) {
     app.get('/frequency/' + aGraph.routeFragment, function(req, resp, next) {
         resp.render('frequency',
-            { graphsMenu: graphs, title: aGraph.title, chartData: statistics.getFrequency(marketplaceCatalog, aGraph.getter, 10) }
+            { graphsMenu: graphs, title: aGraph.title, chartData: statistics.getFrequency(marketplaceCatalog, aGraph.getter, 20) }
         );
     });
 }
@@ -136,7 +161,7 @@ function privateAddFrequencyRoute(aGraph) {
 function privateAddPieRoute(aGraph) {
     app.get('/pie/' + aGraph.routeFragment, function(req, resp, next) {
         resp.render('pie',
-            { graphsMenu: graphs, title: aGraph.title, chartData: statistics.getFrequency(marketplaceCatalog, aGraph.getter, 10) }
+            { graphsMenu: graphs, title: aGraph.title, chartData: statistics.getFrequency(marketplaceCatalog, aGraph.getter, 20) }
         );
     });
 }
