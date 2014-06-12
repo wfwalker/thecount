@@ -6,15 +6,15 @@ block content
     if appData.name['en-US']
       span #{appData.name['en-US']} by #{appData.author}
     else
-      span #{appData.name[Object.keys(appData.name)[0]]} by #{appData.author}       
+      span #{appData.name[Object.keys(appData.name)[0]]} by #{appData.author}
 
   if appData.is_packaged
-    a(href='#',onclick='myInstallPackage("#{appData.manifest_url}")') mozApps.installPackage
+    button(data-package-manifest-url='#{appData.manifest_url}', class='btn') Install Packaged
   else
-    a(href='#',onclick='myInstallHosted("#{appData.manifest_url}")') mozApps.installHosted
+    button(data-manifest-url='#{appData.manifest_url}', class='btn') Install Hosted
 
   p
-    a(target='_blank',href='http://marketplace.firefox.com/app/#{appData.slug}') @Marketplace
+    a(target='_blank',href='http://marketplace.firefox.com/app/#{appData.slug}') open at firefox marketplace
 
   p !{appData.description['en-US']}
 

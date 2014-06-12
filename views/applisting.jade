@@ -2,13 +2,21 @@ extend layout
 
 block content
 	h2 #{title}
-	
-	each app in apps
-		div
-			a(href='/app/#{app.id}')
-				img(src='#{app.icons["128"]}', width=32, height=32)
 
-				if app.name['en-US']
-					span #{app.name['en-US']}
-				else
-					span #{app.name[Object.keys(app.name)[0]]}				
+	table
+		each app in apps
+			tr
+				td
+					a(href='/app/#{app.id}')
+						img(src='#{app.icons["128"]}', width=32, height=32)
+
+						if app.name['en-US']
+							span #{app.name['en-US']}
+						else
+							span #{app.name[Object.keys(app.name)[0]]}		
+
+				td
+					if app.is_packaged
+						span packaged #{app.miniManifest.size}
+					else
+						span hosted		
