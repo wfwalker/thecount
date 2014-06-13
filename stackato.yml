@@ -1,0 +1,12 @@
+name: thecount
+
+mem: 512M
+
+framework:
+  type: node
+  runtime: node010
+
+processes:
+  web: node server.js
+
+ignores: ["node_modules"]  

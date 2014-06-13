@@ -1,8 +1,8 @@
 {
   "name": "thecount",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "counts apps in the Firefox Marketplace",
-  "main": "thecount.js",
+  "main": "server.js",
   "dependencies": {
     "adm-zip": "~0.4.4",
     "parse-appcache-manifest": "~0.2.0",

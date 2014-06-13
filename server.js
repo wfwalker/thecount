@@ -16,19 +16,36 @@ var app = express();
 
 var statistics = require('./statistics.js');
 
-// PARSE CATALOG
-
-console.log('about to parse catalog');
-var marketplaceCatalog = require('./apps.json');
-console.log('loaded ' + Object.keys(marketplaceCatalog).length + ' apps');
-console.log('parsed catalog');
-
 // CONFIGURE SERVER
 
 // statically serve up some assets
 app.use("/images", express.static('images'));
 app.use("/scripts", express.static('scripts'));
 app.use("/stylesheets", express.static('stylesheets'));
+
+// LAUNCH SERVER
+
+var myPort = process.env.PORT || 8080;
+var mHost = process.env.VCAP_APP_HOST || "127.0.0.1";
+
+app.listen(myPort);
+
+console.log("running " + mHost + " " + myPort);
+
+// PARSE CATALOG
+
+var marketplaceCatalog = {};
+
+try {
+    console.log('About to Parse Catalog');
+    var marketplaceCatalog = require('./apps.json');
+    console.log('loaded ' + Object.keys(marketplaceCatalog).length + ' apps');
+    console.log('parsed catalog'); 
+}
+catch (e) {
+    console.log('error parsing catalog');
+    console.log(e);
+}
 
 // Set the view engine
 app.set('view engine', 'jade');
@@ -180,11 +197,3 @@ for(var graphIndex = 0; graphIndex < graphs.length; graphIndex++) {
 }
 
 
-// LAUNCH SERVER
-
-console.log("running");
-
-var myPort = process.env.PORT || 8080;
-var mHost = process.env.VCAP_APP_HOST || "127.0.0.1";
-
-app.listen(myPort);
