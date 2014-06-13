@@ -10,6 +10,11 @@ block content
 
   if appData.is_packaged
     button(data-package-manifest-url='#{appData.manifest_url}', class='btn') Install Packaged
+    p
+      | note: to install packaged apps from thecount, go to 
+      tt about:config 
+      | and add this host to 
+      tt dom.mozApps.signed_apps_installable_from
   else
     button(data-manifest-url='#{appData.manifest_url}', class='btn') Install Hosted
 
@@ -37,3 +42,4 @@ block content
   p default_locale #{appData.manifest.default_locale}
 
   p ratings #{appData.ratings.count} average #{appData.ratings.average}
+
