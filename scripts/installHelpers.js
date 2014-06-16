@@ -1,47 +1,52 @@
+function installLog(inMessage) {
+	console.log(inMessage);
+	$('#progress').text(inMessage);
+}
+
 function installSuccess(e) {
-	console.log('success');
+	installLog('success');
 	var appRecord = this.result;
 	appRecord.ondownloaderror = function(e) {
-		console.log('ondownloaderror');
-		console.log(appRecord.downloadError.name);
+		installLog('ondownloaderror');
+		installLog(appRecord.downloadError.name);
 		$('button').addClass('btn-danger');
 	}
 	appRecord.ondownloadsuccess = function(e) {
-		console.log('ondownloadsuccess');
+		installLog('ondownloadsuccess');
 	}
 }
 
 function installFail(e) {
-	console.log('error ' + this.error.name);
+	installLog('error ' + this.error.name);
 	$('button').addClass('btn-danger');
 }
 
 function installButtonEventHandler(e) {
-	console.log("clicked " + e.target.innerHTML.trim());
+	installLog("clicked " + e.target.innerHTML.trim());
 	// document.getElementById('installSpinner').style.display = 'block';
 
 	if (e.target.getAttribute("data-manifest-url")) {
-		console.log("install hosted " + e.target.innerHTML.trim());
+		installLog("install hosted " + e.target.innerHTML.trim());
 
 		var url = e.target.getAttribute("data-manifest-url");
-		console.log("hosted manifest url " + url);
+		installLog("hosted manifest url " + url);
 
 		var request = navigator.mozApps.install(url);
 		request.onsuccess = installSuccess;
 		request.onerror = installFail;
 
 	} else if (e.target.getAttribute("data-package-manifest-url")) {
-		console.log("install packaged " + e.target.innerHTML.trim());
+		installLog("install packaged " + e.target.innerHTML.trim());
 
 		var url = e.target.getAttribute("data-package-manifest-url");
-		console.log("packaged manifest url " + url);
+		installLog("packaged manifest url " + url);
 
 		var request = navigator.mozApps.installPackage(url);
 		request.onsuccess = installSuccess;
 		request.onerror = installFail;
 		
 	} else {
-		console.log("ERROR: found neither data-packaged-manifest-url nor data-manifest-url");
+		installLog("ERROR: found neither data-packaged-manifest-url nor data-manifest-url");
 	}
 }
 

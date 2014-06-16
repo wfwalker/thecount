@@ -10,6 +10,8 @@ block content
 
   if appData.is_packaged
     button(data-package-manifest-url='#{appData.manifest_url}', class='btn') Install Packaged
+    span#progress hi
+
     p
       | note: to install packaged apps from thecount, go to 
       tt about:config 
