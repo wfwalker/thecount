@@ -10,6 +10,8 @@ block content
 					a(href='/app/#{app.id}')
 						img(src='#{app.icons["128"]}', width=32, height=32)
 
+				td
+					a(href='/app/#{app.id}')
 						if app.name['en-US']
 							span #{app.name['en-US']}
 						else
@@ -17,6 +19,10 @@ block content
 
 				td
 					if app.is_packaged
-						span packaged #{app.miniManifest.size}
+						span packaged
 					else
 						span hosted		
+
+				td(align='right')
+					if app.is_packaged
+						span #{app.miniManifest.size}

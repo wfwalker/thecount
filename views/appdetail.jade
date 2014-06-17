@@ -10,7 +10,8 @@ block content
 
   if appData.is_packaged
     button(data-package-manifest-url='#{appData.manifest_url}', class='btn') Install Packaged
-    span#progress hi
+    span#progress
+      hi
 
     p
       | note: to install packaged apps from thecount, go to 
@@ -19,6 +20,8 @@ block content
       tt dom.mozApps.signed_apps_installable_from
   else
     button(data-manifest-url='#{appData.manifest_url}', class='btn') Install Hosted
+    span#progress
+      hi
 
   p
     a(target='_blank',href='http://marketplace.firefox.com/app/#{appData.slug}') open at firefox marketplace
@@ -45,3 +48,6 @@ block content
 
   p ratings #{appData.ratings.count} average #{appData.ratings.average}
 
+  p created #{appData.created}
+
+  p reviewed #{appData.reviewed}
