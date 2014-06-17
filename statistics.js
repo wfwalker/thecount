@@ -85,6 +85,12 @@ function getPackageSize(inApp) {
     return null;
 }
 
+function getDaysOld(inApp) {
+    var reviewedDate = Date.parse(inApp.reviewed);
+    var now = Date.now();
+    return (now - reviewedDate) / (24 * 60 * 60 * 1000.0);
+}
+
 // FREQUENCY HELPER CODE
 
 function getFrequency(inApps, getArrayOfStringsPerAppFn, inLimit) {
@@ -157,7 +163,6 @@ function getPermissionKeys(inApp) {
 
 function getIconSizes(inApp) {
     if (inApp.manifest && inApp.manifest.icons) {
-        console.log(inApp.manifest.icons);
         return Object.keys(inApp.manifest.icons);
     } else {
         return [];
@@ -375,6 +380,7 @@ module.exports.getValues = getValues;
 module.exports.getRatingCount = getRatingCount;
 module.exports.getAverageRating = getAverageRating;
 module.exports.getPackageSize = getPackageSize;
+module.exports.getDaysOld = getDaysOld;
 
 module.exports.getFrequency = getFrequency;
 module.exports.getAuthor = getAuthor;

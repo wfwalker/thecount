@@ -123,6 +123,24 @@ app.param('library', function(req, resp, next, id) {
     next();
 });
 
+// deal with a days_old parameter by retrieving all the apps that were published within that many days
+
+app.param('days_old', function(req, resp, next, id) {
+    var days_old = req.param('days_old')
+    console.log('days_old ' + days_old);
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        if (statistics.getDaysOld(app) < days_old) {
+            apps.push(app);
+        }
+    }
+
+    req.days_old = days_old;
+    req.apps = apps;
+    next();
+});
 
 // This data structure defines all the routes for analytics in TheCount, their paths, their getter functions
 
@@ -170,6 +188,14 @@ app.get('/listing/num_ratings/:num_ratings', function(req, resp, next) {
 app.get('/listing/library/:library', function(req, resp, next) {
     resp.render('applisting',
         { apps: req.apps, graphsMenu: graphs, title: 'library ' + req.library }
+    );
+});
+
+// route requests to retrieve apps by how old they are
+
+app.get('/listing/days_old/:days_old', function(req, resp, next) {
+    resp.render('applisting',
+        { apps: req.apps, graphsMenu: graphs, title: 'days_old ' + req.days_old }
     );
 });
 
