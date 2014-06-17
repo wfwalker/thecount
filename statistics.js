@@ -155,6 +155,15 @@ function getPermissionKeys(inApp) {
     }
 }
 
+function getIconSizes(inApp) {
+    if (inApp.manifest && inApp.manifest.icons) {
+        console.log(inApp.manifest.icons);
+        return Object.keys(inApp.manifest.icons);
+    } else {
+        return [];
+    }
+}
+
 function getSupportedLocales(inApp) {
     var unionOfLocales = [];
 
@@ -371,6 +380,7 @@ module.exports.getFrequency = getFrequency;
 module.exports.getAuthor = getAuthor;
 module.exports.getInstallsAllowedFrom = getInstallsAllowedFrom;
 module.exports.getPermissionKeys = getPermissionKeys;
+module.exports.getIconSizes = getIconSizes;
 module.exports.getSupportedLocales = getSupportedLocales;
 module.exports.getSupportedRegions = getSupportedRegions;
 module.exports.getCategoryStrings = getCategoryStrings;
