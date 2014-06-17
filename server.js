@@ -104,6 +104,29 @@ app.param('num_ratings', function(req, resp, next, id) {
     next();
 });
 
+// deal with an activity parameter by retrieving all the apps that support that activity
+
+app.param('activity', function(req, resp, next, id) {
+    var activity = req.param('activity')
+    console.log('activity ' + activity);
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+
+        if (app.manifest && app.manifest.activities && (Object.keys(app.manifest.activities).length > 0)) {
+            if (Object.keys(app.manifest.activities).indexOf(activity) >= 0) {
+                apps.push(app);
+            }
+        }
+    }
+
+    req.activity = activity;
+    req.apps = apps;
+    next();
+});
+
+
 // deal with a library parameter by retrieving all the apps that use the given JS/CSS library (i. e., jQuery)
 
 app.param('library', function(req, resp, next, id) {
@@ -180,6 +203,22 @@ app.get('/listing/author/:author', function(req, resp, next) {
 app.get('/listing/num_ratings/:num_ratings', function(req, resp, next) {
     resp.render('applisting',
         { apps: req.apps, graphsMenu: graphs, title: 'num_ratings ' + req.num_ratings }
+    );
+});
+
+// route requests to retrieve apps by supported activity
+
+app.get('/listing/activity/:activity', function(req, resp, next) {
+    resp.render('applisting',
+        { apps: req.apps, graphsMenu: graphs, title: 'activity ' + req.activity }
+    );
+});
+
+// route requests to retrieve apps by what activities they support
+
+app.get('/listing/activity/:activity', function(req, resp, next) {
+    resp.render('applisting',
+        { apps: req.apps, graphsMenu: graphs, title: 'activity ' + req.activity }
     );
 });
 
