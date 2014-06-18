@@ -9,7 +9,7 @@ block content
       span #{appData.name[Object.keys(appData.name)[0]]} by #{appData.author}
 
   if appData.is_packaged
-    button(data-package-manifest-url='#{appData.manifest_url}', class='btn') Install Packaged
+    button(data-package-manifest-url='#{appData.manifest_url}', class='btn btn-default') Install Packaged
     span#progress
       hi
 
@@ -19,7 +19,7 @@ block content
       | and add this host to 
       tt dom.mozApps.signed_apps_installable_from
   else
-    button(data-manifest-url='#{appData.manifest_url}', class='btn') Install Hosted
+    button(data-manifest-url='#{appData.manifest_url}', class='btn btn-default') Install Hosted
     span#progress
       hi
 
