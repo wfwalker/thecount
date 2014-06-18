@@ -1,45 +1,64 @@
+// code for making app install buttons and their interactions
+
+// utility logging function for updates
 function installLog(inMessage) {
 	console.log(inMessage);
 	$('#progress').text(inMessage);
 }
 
+// install() or installPackage() succeeded
+// start tracking download events
 function installSuccess(e) {
 	installLog('success');
+	$('button').off('click');
+	$('button').click(launchButtonEventHandler);
+	$('button').html('Launch');
+
 	var appRecord = this.result;
 	appRecord.ondownloaderror = function(e) {
-		installLog('ondownloaderror');
-		installLog(appRecord.downloadError.name);
+		installLog('download error: ' + appRecord.downloadError.name);
 		$('button').addClass('btn-danger');
 	}
 	appRecord.ondownloadsuccess = function(e) {
-		installLog('ondownloadsuccess');
+		installLog('download succeeded');
 	}
 }
 
+// install() or installPackage() failed
 function installFail(e) {
-	installLog('error ' + this.error.name);
+	installLog('install failed: ' + this.error.name);
 	$('button').addClass('btn-danger');
 }
 
-function installButtonEventHandler(e) {
-	installLog("clicked " + e.target.innerHTML.trim());
-	// document.getElementById('installSpinner').style.display = 'block';
+// when clicking on launch button
+// get the App object for that manifest and launch it
+function launchButtonEventHandler(e) {
+	installLog("clicked launch");
+	var url = '';
 
 	if (e.target.getAttribute("data-manifest-url")) {
-		installLog("install hosted " + e.target.innerHTML.trim());
+		url = e.target.getAttribute("data-manifest-url");
+	} else if (e.target.getAttribute("data-package-manifest-url")) {
+		url = e.target.getAttribute("data-package-manifest-url");
+	} else {
+		installLog("ERROR: found neither data-packaged-manifest-url nor data-manifest-url");
+	}
 
+	installLog(url);
+}
+
+function installButtonEventHandler(e) {
+	installLog("clicked install");
+
+	if (e.target.getAttribute("data-manifest-url")) {
 		var url = e.target.getAttribute("data-manifest-url");
-		installLog("hosted manifest url " + url);
 
 		var request = navigator.mozApps.install(url);
 		request.onsuccess = installSuccess;
 		request.onerror = installFail;
 
 	} else if (e.target.getAttribute("data-package-manifest-url")) {
-		installLog("install packaged " + e.target.innerHTML.trim());
-
 		var url = e.target.getAttribute("data-package-manifest-url");
-		installLog("packaged manifest url " + url);
 
 		var request = navigator.mozApps.installPackage(url);
 		request.onsuccess = installSuccess;
@@ -59,8 +78,8 @@ function wireUpInstallButtons(installedManifestURLs) {
 		var button = buttons[index];
 
 		if (button.getAttribute('data-manifest-url') && installedManifestURLs.indexOf(button.getAttribute('data-manifest-url')) >= 0) {
-			console.log("INSTALLIFIED");
-			button.setAttribute('disabled', 'true');
+			console.log("app already installed");
+			button.addEventListener('click', launchButtonEventHandler);
 			button.innerHTML = 'Launch';
 		} else {
 			button.addEventListener('click', installButtonEventHandler);
