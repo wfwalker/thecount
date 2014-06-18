@@ -6,6 +6,9 @@ function installLog(inMessage) {
 	$('#progress').text(inMessage);
 }
 
+// global dictionary of app records
+var appRecordsByManifest = {};
+
 // install() or installPackage() succeeded
 // start tracking download events
 function installSuccess(e) {
@@ -44,7 +47,13 @@ function launchButtonEventHandler(e) {
 		installLog("ERROR: found neither data-packaged-manifest-url nor data-manifest-url");
 	}
 
-	installLog(url);
+	if (appRecordsByManifest[url]) {
+		installLog('launching');
+		appRecordsByManifest[url].launch();	
+		installLog('launched');
+	} else {
+		installLog('manifest not found');		
+	}
 }
 
 function installButtonEventHandler(e) {
@@ -99,7 +108,9 @@ $(document).ready(function() {
 
 	installListRequest.onsuccess = function(e) {
 		for (var installListIndex = 0; installListIndex < installListRequest.result.length; installListIndex++) {
-			installedManifestURLs.push(installListRequest.result[installListIndex].manifestURL);
+			var manifestURL = installListRequest.result[installListIndex].manifestURL;
+			installedManifestURLs.push(manifestURL);
+			appRecordsByManifest[manifestURL] = installListRequest.result[installListIndex];
 		}
 
 		wireUpInstallButtons(installedManifestURLs);
