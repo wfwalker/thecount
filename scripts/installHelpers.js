@@ -14,10 +14,17 @@ var appRecordsByManifest = {};
 function installSuccess(e) {
 	installLog('success');
 	$('button').off('click');
+	console.log('disabled click handlers');
+
+	// add the newly installed app to appRecordsByManifest
+	var appRecord = this.result;
+	appRecordsByManifest[appRecord.manifestURL] = appRecord;
+
 	$('button').click(launchButtonEventHandler);
+	console.log('enabled launch handler');
 	$('button').html('Launch');
 
-	var appRecord = this.result;
+	console.log(appRecord);
 	appRecord.ondownloaderror = function(e) {
 		installLog('download error: ' + appRecord.downloadError.name);
 		$('button').addClass('btn-danger');
@@ -87,7 +94,11 @@ function wireUpInstallButtons(installedManifestURLs) {
 		var button = buttons[index];
 
 		if (button.getAttribute('data-manifest-url') && installedManifestURLs.indexOf(button.getAttribute('data-manifest-url')) >= 0) {
-			console.log("app already installed");
+			console.log("hosted app already installed");
+			button.addEventListener('click', launchButtonEventHandler);
+			button.innerHTML = 'Launch';
+		} else if (button.getAttribute('data-package-manifest-url') && installedManifestURLs.indexOf(button.getAttribute('data-package-manifest-url')) >= 0) {
+			console.log("packaged app already installed");
 			button.addEventListener('click', launchButtonEventHandler);
 			button.innerHTML = 'Launch';
 		} else {
