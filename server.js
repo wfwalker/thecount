@@ -85,21 +85,40 @@ app.param('author', function(req, resp, next, id) {
     next();
 });
 
-// deal with an num_ratings parameter by retrieving all the apps that have at least that many user ratings
+// deal with an min_ratings parameter by retrieving all the apps that have at least that many user ratings
 
-app.param('num_ratings', function(req, resp, next, id) {
-    var num_ratings = req.param('num_ratings')
-    console.log('num_ratings ' + num_ratings);
+app.param('min_ratings', function(req, resp, next, id) {
+    var min_ratings = req.param('min_ratings')
+    console.log('min_ratings ' + min_ratings);
     var apps = [];
 
     for (index in marketplaceCatalog) {
         var app = marketplaceCatalog[index];
-        if (app.ratings && app.ratings.count > num_ratings) {
+        if (app.ratings && app.ratings.count > min_ratings) {
             apps.push(app);
         }
     }
 
-    req.num_ratings = num_ratings;
+    req.min_ratings = min_ratings;
+    req.apps = apps;
+    next();
+});
+
+// deal with an min_ratings parameter by retrieving all the apps that have at least that many user ratings
+
+app.param('max_ratings', function(req, resp, next, id) {
+    var max_ratings = req.param('max_ratings')
+    console.log('max_ratings ' + max_ratings);
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        if (app.ratings && app.ratings.count <= max_ratings) {
+            apps.push(app);
+        }
+    }
+
+    req.max_ratings = max_ratings;
     req.apps = apps;
     next();
 });
@@ -200,9 +219,17 @@ app.get('/listing/author/:author', function(req, resp, next) {
 
 // route requests to retrieve apps by number of user ratings
 
-app.get('/listing/num_ratings/:num_ratings', function(req, resp, next) {
+app.get('/listing/min_ratings/:min_ratings', function(req, resp, next) {
     resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'num_ratings ' + req.num_ratings }
+        { apps: req.apps, graphsMenu: graphs, title: 'min_ratings ' + req.min_ratings }
+    );
+});
+
+// route requests to retrieve apps by number of user ratings
+
+app.get('/listing/max_ratings/:max_ratings', function(req, resp, next) {
+    resp.render('applisting',
+        { apps: req.apps, graphsMenu: graphs, title: 'max_ratings ' + req.max_ratings }
     );
 });
 
