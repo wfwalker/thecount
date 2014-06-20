@@ -25,4 +25,4 @@ block content
 
 				td(align='right')
 					if app.is_packaged
-						span #{app.miniManifest.size}
+						span #{numeral(app.miniManifest.size).format('0,0')}

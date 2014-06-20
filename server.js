@@ -11,10 +11,12 @@ var url = require('url');
 var http = require('http');
 var https = require('https');
 var jade = require('jade');
+var statistics = require('./statistics.js');
 
 var app = express();
 
-var statistics = require('./statistics.js');
+// make numeral available within Jade
+app.locals.numeral = require('numeral');
 
 // CONFIGURE SERVER
 
