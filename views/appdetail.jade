@@ -51,3 +51,8 @@ block content
   p created #{appData.created}
 
   p reviewed #{appData.reviewed}
+
+  if appData.is_packaged
+    p
+      a(href='#{appData.miniManifest.package_path}') download package
+
