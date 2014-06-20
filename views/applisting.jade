@@ -19,9 +19,12 @@ block content
 
 				td
 					if app.is_packaged
-						span packaged
+						span.glyphicon.glyphicon-file
 					else
-						span hosted		
+						span.glyphicon.glyphicon-cloud
+
+					if app.is_offline
+						span.glyphicon.glyphicon-plane
 
 				td(align='right')
 					if app.is_packaged

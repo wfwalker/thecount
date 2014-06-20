@@ -24,6 +24,7 @@ block content
       hi
 
   p
+    span.glyphicon.glyphicon-share-alt
     a(target='_blank',href='http://marketplace.firefox.com/app/#{appData.slug}') open at firefox marketplace
 
   p !{appData.description['en-US']}
@@ -48,11 +49,23 @@ block content
 
   p ratings #{appData.ratings.count} average #{appData.ratings.average}
 
-  p created #{appData.created}
+  p
+    span.glyphicon.glyphicon-time
+    created #{appData.created}
 
-  p reviewed #{appData.reviewed}
+  p
+    span.glyphicon.glyphicon-time
+    reviewed #{appData.reviewed}
 
   if appData.is_packaged
     p
+      span.glyphicon.glyphicon-file
       a(href='#{appData.miniManifest.package_path}') download package (#{numeral(appData.miniManifest.size).format('0,0')} bytes)
 
+  if appData.manifest
+    h3 app manifest
+    pre #{JSON.stringify(appData.manifest,null,2)}
+
+  if appData.appcache_manifest
+    h3 appcache manifest
+    pre #{appData.appcache_manifest}

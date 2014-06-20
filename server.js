@@ -21,6 +21,7 @@ app.locals.numeral = require('numeral');
 // CONFIGURE SERVER
 
 // statically serve up some assets
+app.use("/fonts", express.static('fonts'));
 app.use("/images", express.static('images'));
 app.use("/scripts", express.static('scripts'));
 app.use("/stylesheets", express.static('stylesheets'));
