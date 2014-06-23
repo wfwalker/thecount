@@ -216,7 +216,7 @@ app.get('/app/:app_id', function(req, resp, next) {
 
 app.get('/listing/author/:author', function(req, resp, next) {
     resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'author ' + req.author }
+        { apps: req.apps, graphsMenu: graphs, title: 'Published by ' + req.author }
     );
 });
 
@@ -224,7 +224,7 @@ app.get('/listing/author/:author', function(req, resp, next) {
 
 app.get('/listing/min_ratings/:min_ratings', function(req, resp, next) {
     resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'min_ratings ' + req.min_ratings }
+        { apps: req.apps, graphsMenu: graphs, title: req.min_ratings + ' or more ratings' }
     );
 });
 
@@ -232,7 +232,7 @@ app.get('/listing/min_ratings/:min_ratings', function(req, resp, next) {
 
 app.get('/listing/max_ratings/:max_ratings', function(req, resp, next) {
     resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'max_ratings ' + req.max_ratings }
+        { apps: req.apps, graphsMenu: graphs, title: req.max_ratings + ' or fewer ratings' }
     );
 });
 
@@ -240,15 +240,7 @@ app.get('/listing/max_ratings/:max_ratings', function(req, resp, next) {
 
 app.get('/listing/activity/:activity', function(req, resp, next) {
     resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'activity ' + req.activity }
-    );
-});
-
-// route requests to retrieve apps by what activities they support
-
-app.get('/listing/activity/:activity', function(req, resp, next) {
-    resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'activity ' + req.activity }
+        { apps: req.apps, graphsMenu: graphs, title: 'Provides activity ' + req.activity }
     );
 });
 
@@ -256,7 +248,7 @@ app.get('/listing/activity/:activity', function(req, resp, next) {
 
 app.get('/listing/library/:library', function(req, resp, next) {
     resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'library ' + req.library }
+        { apps: req.apps, graphsMenu: graphs, title: 'Uses ' + req.library }
     );
 });
 
@@ -264,7 +256,7 @@ app.get('/listing/library/:library', function(req, resp, next) {
 
 app.get('/listing/days_old/:days_old', function(req, resp, next) {
     resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'days_old ' + req.days_old }
+        { apps: req.apps, graphsMenu: graphs, title: 'Reviewed in the last ' + req.days_old + ' days' }
     );
 });
 
@@ -272,7 +264,7 @@ app.get('/listing/days_old/:days_old', function(req, resp, next) {
 
 app.get('/home', function(req, resp, next) {
     resp.render('home',
-        { graphsMenu: graphs, title: 'home' }
+        { graphsMenu: graphs, title: 'TheCount' }
     );
 });
 
