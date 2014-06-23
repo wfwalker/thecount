@@ -153,6 +153,20 @@ function getInstallsAllowedFrom(inApp) {
     }
 }
 
+function getOrientation(inApp) {
+    var orientations = [];
+
+    if (inApp.manifest && inApp.manifest.fullscreen) {
+        orientations.push('fullscreen');
+    }
+
+    if (inApp.manifest && inApp.manifest.orientation) {
+        orientations = orientations.concat(inApp.manifest.orientation);
+    }
+
+    return orientations;
+}
+
 function getPermissionKeys(inApp) {
     if (inApp.manifest && inApp.manifest.permissions && (Object.keys(inApp.manifest.permissions).length > 0)) {
         return Object.keys(inApp.manifest.permissions);
@@ -215,6 +229,7 @@ function getCategoryStrings(inApp) {
     if (inApp.app_type == 'privileged') { categories.push('privileged'); }
     if (inApp.app_type == 'packaged') { categories.push('packaged'); }
     if (inApp.manifest && inApp.manifest.appcache_path) { categories.push('appcache'); }
+    if (inApp.manifest && inApp.manifest.fullscreen) { categories.push('fullscreen'); }
 
     if (inApp.premium_type == 'free') { categories.push('free'); }
     if (inApp.premium_type == 'premium') { categories.push('premium'); }
@@ -384,6 +399,7 @@ module.exports.getDaysOld = getDaysOld;
 
 module.exports.getFrequency = getFrequency;
 module.exports.getAuthor = getAuthor;
+module.exports.getOrientation = getOrientation;
 module.exports.getInstallsAllowedFrom = getInstallsAllowedFrom;
 module.exports.getPermissionKeys = getPermissionKeys;
 module.exports.getIconSizes = getIconSizes;

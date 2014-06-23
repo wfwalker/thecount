@@ -201,6 +201,7 @@ var graphs = [
     { kind: 'frequency', routeFragment: 'region', title: 'region', getter: statistics.getSupportedRegions },
     { kind: 'frequency', routeFragment: 'permission', title: 'permission', getter: statistics.getPermissionKeys },
     { kind: 'frequency', routeFragment: 'activity', title: 'activity', getter: statistics.getActivityKeys },
+    { kind: 'frequency', routeFragment: 'orientation', title: 'orientation', getter: statistics.getOrientation },
     { kind: 'pie', routeFragment: 'installs_allowed_from', title: 'installs allowed from', getter: statistics.getInstallsAllowedFrom }
 ]
 
@@ -219,6 +220,28 @@ app.get('/listing/author/:author', function(req, resp, next) {
         { apps: req.apps, graphsMenu: graphs, title: 'Published by ' + req.author }
     );
 });
+
+// route requests to retrieve fullscreen portrait-primary apps
+
+app.get('/listing/fullscreen-primary-portrait', function(req, resp, next) {
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        if (app.manifest && app.manifest.fullscreen && app.manifest.orientation) {
+            if ((app.manifest.orientation == 'portrait-primary') || (app.manifest.orientation.indexOf('portrait-primary') >= 0)) {
+                apps.push(app);
+            }
+        }
+    }
+
+    req.apps = apps;
+
+    resp.render('applisting',
+        { apps: req.apps, graphsMenu: graphs, title: 'Fullscreen and portrait-primary' }
+    );
+});
+
 
 // route requests to retrieve apps by number of user ratings
 
