@@ -1,33 +1,51 @@
 extend layout
 
 block content
-  h2
-    img(src='#{appData.icons["128"]}', width=32, height=32)
-    if appData.name['en-US']
-      span #{appData.name['en-US']} by #{appData.author}
-    else
-      span #{appData.name[Object.keys(appData.name)[0]]} by #{appData.author}
+  .row
+    .col-md-10
+      h2
+        img(src='#{appData.icons["128"]}', width=32, height=32)
+        if appData.name['en-US']
+          span #{appData.name['en-US']}
+        else
+          span #{appData.name[Object.keys(appData.name)[0]]}
+    .col-md-2
+      h2 #{appData.author}
 
   if appData.is_packaged
     button(data-package-manifest-url='#{appData.manifest_url}', class='btn btn-default') Install Packaged
     span#progress
-      hi
+    span
+      a(href='#{appData.miniManifest.package_path}', class='btn btn-default')
+        span.glyphicon.glyphicon-file
+        span download package (#{numeral(appData.miniManifest.size).format('0,0')} bytes)
+  else
+    button(data-manifest-url='#{appData.manifest_url}', class='btn btn-default') Install Hosted
+    span#progress
 
+  span
+    a(target='_blank',href='http://marketplace.firefox.com/app/#{appData.slug}',class='btn btn-default')
+      span.glyphicon.glyphicon-share-alt
+      span marketplace
+
+  if appData.is_packaged
     p
       | note: to install packaged apps from thecount, go to 
       tt about:config 
       | and add this host to 
       tt dom.mozApps.signed_apps_installable_from
-  else
-    button(data-manifest-url='#{appData.manifest_url}', class='btn btn-default') Install Hosted
-    span#progress
-      hi
 
-  p
-    span.glyphicon.glyphicon-share-alt
-    a(target='_blank',href='http://marketplace.firefox.com/app/#{appData.slug}') open at firefox marketplace
+  hr
 
   p !{appData.description['en-US']}
+
+  .row
+    each preview in appData.previews
+      div(class='col-xs-6 col-md-3')
+        a(href="#", class="thumbnail")
+          img(src='#{preview.thumbnail_url}')
+
+  hr
 
   div
     each type in appData.device_types
@@ -36,12 +54,6 @@ block content
   div
     each category in appData.categories
       span #{category}, 
-
-  .row
-    each preview in appData.previews
-      div(class='col-xs-6 col-md-3')
-        a(href="#", class="thumbnail")
-          img(src='#{preview.thumbnail_url}')
 
   p version #{appData.manifest.version}
 
@@ -65,6 +77,10 @@ block content
   if appData.manifest
     h3 app manifest
     pre #{JSON.stringify(appData.manifest,null,2)}
+
+  if appData.miniManifest
+    h3 app mini manifest
+    pre #{JSON.stringify(appData.miniManifest,null,2)}
 
   if appData.appcache_manifest
     h3 appcache manifest
