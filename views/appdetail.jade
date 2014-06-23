@@ -13,14 +13,14 @@ block content
       h3 #{appData.author}
 
   if appData.is_packaged
-    button(data-package-manifest-url='#{appData.manifest_url}', class='btn btn-primary') Install Packaged
+    button(data-package-manifest-url='#{appData.manifest_url}', class='btn btn-primary installButton') Install Packaged
     span#progress
     span
       a(href='#{appData.miniManifest.package_path}', class='btn btn-primary')
         span.glyphicon.glyphicon-file
         span download package (#{numeral(appData.miniManifest.size).format('0,0')} bytes)
   else
-    button(data-manifest-url='#{appData.manifest_url}', class='btn btn-primary') Install Hosted
+    button(data-manifest-url='#{appData.manifest_url}', class='btn btn-primary installButton') Install Hosted
     span#progress
 
   span

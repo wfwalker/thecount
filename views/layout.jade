@@ -57,6 +57,11 @@ html
                   a(href='/frequency/permission') permission
                 li
                   a(href='/frequency/activity') activity
+          form(class='navbar-form navbar-left',role='search')
+            .form-group
+              input(id='searchText',type='text',class='form-control',placeholder='Search')
+            button(type='submit',class='btn btn-primary searchButton') Submit
+
 
     script(src="//cdn.jsdelivr.net/jquery/1.10.2/jquery-1.10.2.js")
     script(src="//cdn.jsdelivr.net/bootstrap/3.1.1/js/bootstrap.min.js")

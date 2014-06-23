@@ -20,14 +20,14 @@ function installSuccess(e) {
 	var appRecord = this.result;
 	appRecordsByManifest[appRecord.manifestURL] = appRecord;
 
-	$('button').click(launchButtonEventHandler);
+	$('.installButton').click(launchButtonEventHandler);
 	console.log('enabled launch handler');
-	$('button').html('Launch');
+	$('.installButton').html('Launch');
 
 	console.log(appRecord);
 	appRecord.ondownloaderror = function(e) {
 		installLog('download error: ' + appRecord.downloadError.name);
-		$('button').addClass('btn-danger');
+		$('.installButton').addClass('btn-danger');
 	}
 	appRecord.ondownloadsuccess = function(e) {
 		installLog('download succeeded');
@@ -37,7 +37,7 @@ function installSuccess(e) {
 // install() or installPackage() failed
 function installFail(e) {
 	installLog('install failed: ' + this.error.name);
-	$('button').addClass('btn-danger');
+	$('.installButton').addClass('btn-danger');
 }
 
 // when clicking on launch button
@@ -88,23 +88,20 @@ function installButtonEventHandler(e) {
 function wireUpInstallButtons(installedManifestURLs) {
 	console.log('wiring up install buttons');
 	console.log(installedManifestURLs);
-	var buttons = document.getElementsByTagName("button");
 
-	for (var index = 0; index < buttons.length; index++) {
-		var button = buttons[index];
-
-		if (button.getAttribute('data-manifest-url') && installedManifestURLs.indexOf(button.getAttribute('data-manifest-url')) >= 0) {
+	$('.installButton').each(function(index) {
+		if ($(this).attr('data-manifest-url') && installedManifestURLs.indexOf($(this).attr('data-manifest-url')) >= 0) {
 			console.log("hosted app already installed");
-			button.addEventListener('click', launchButtonEventHandler);
-			button.innerHTML = 'Launch';
-		} else if (button.getAttribute('data-package-manifest-url') && installedManifestURLs.indexOf(button.getAttribute('data-package-manifest-url')) >= 0) {
+			$(this).click(launchButtonEventHandler);
+			$(this).attr('value', 'Launch');
+		} else if ($(this).attr('data-package-manifest-url') && installedManifestURLs.indexOf($(this).attr('data-package-manifest-url')) >= 0) {
 			console.log("packaged app already installed");
-			button.addEventListener('click', launchButtonEventHandler);
-			button.innerHTML = 'Launch';
+			$(this).click(launchButtonEventHandler);
+			$(this).attr('value', 'Launch');
 		} else {
-			button.addEventListener('click', installButtonEventHandler);
+			$(this).click(installButtonEventHandler);
 		}
-	}	
+	});
 }
 
 $(document).ready(function() {
@@ -127,4 +124,9 @@ $(document).ready(function() {
 		wireUpInstallButtons(installedManifestURLs);
 	};
 
+	$('.searchButton').click(function(e) {
+		e.preventDefault();
+		console.log('MOOOOO ' + $('#searchText').val());
+		location.href='/listing/search/' + $('#searchText').val();
+	});
 });
