@@ -10,21 +10,21 @@ block content
         else
           span #{appData.name[Object.keys(appData.name)[0]]}
     .col-md-2
-      h2 #{appData.author}
+      h3 #{appData.author}
 
   if appData.is_packaged
-    button(data-package-manifest-url='#{appData.manifest_url}', class='btn btn-default') Install Packaged
+    button(data-package-manifest-url='#{appData.manifest_url}', class='btn btn-primary') Install Packaged
     span#progress
     span
-      a(href='#{appData.miniManifest.package_path}', class='btn btn-default')
+      a(href='#{appData.miniManifest.package_path}', class='btn btn-primary')
         span.glyphicon.glyphicon-file
         span download package (#{numeral(appData.miniManifest.size).format('0,0')} bytes)
   else
-    button(data-manifest-url='#{appData.manifest_url}', class='btn btn-default') Install Hosted
+    button(data-manifest-url='#{appData.manifest_url}', class='btn btn-primary') Install Hosted
     span#progress
 
   span
-    a(target='_blank',href='http://marketplace.firefox.com/app/#{appData.slug}',class='btn btn-default')
+    a(target='_blank',href='http://marketplace.firefox.com/app/#{appData.slug}',class='btn btn-primary')
       span.glyphicon.glyphicon-share-alt
       span marketplace
 
@@ -68,11 +68,6 @@ block content
   p
     span.glyphicon.glyphicon-time
     reviewed #{appData.reviewed}
-
-  if appData.is_packaged
-    p
-      span.glyphicon.glyphicon-file
-      a(href='#{appData.miniManifest.package_path}') download package (#{numeral(appData.miniManifest.size).format('0,0')} bytes)
 
   if appData.manifest
     h3 app manifest
