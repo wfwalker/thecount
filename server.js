@@ -88,6 +88,26 @@ app.param('author', function(req, resp, next, id) {
     next();
 });
 
+// deal with a search parameter in a REST route by retrieving all the apps matching the given string
+
+app.param('search', function(req, resp, next, id) {
+    var search = req.param('search')
+    console.log('search ' + search);
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        if (JSON.stringify(app).indexOf(search) >= 0) {
+            apps.push(app);
+        }
+    }
+
+    req.search = search;
+    req.apps = apps;
+    next();
+});
+
+
 // deal with an min_ratings parameter by retrieving all the apps that have at least that many user ratings
 
 app.param('min_ratings', function(req, resp, next, id) {
@@ -220,6 +240,15 @@ app.get('/listing/author/:author', function(req, resp, next) {
         { apps: req.apps, graphsMenu: graphs, title: 'Published by ' + req.author }
     );
 });
+
+// route requests to retrieve apps by author
+
+app.get('/listing/search/:search', function(req, resp, next) {
+    resp.render('applisting',
+        { apps: req.apps, graphsMenu: graphs, title: 'Contains ' + req.search }
+    );
+});
+
 
 // route requests to retrieve fullscreen portrait-primary apps
 
