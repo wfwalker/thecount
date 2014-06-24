@@ -126,7 +126,7 @@ $(document).ready(function() {
 
 	$('.searchButton').click(function(e) {
 		e.preventDefault();
-		console.log('MOOOOO ' + $('#searchText').val());
+		console.log('searching ' + $('#searchText').val());
 		location.href='/listing/search/' + $('#searchText').val();
 	});
 });
