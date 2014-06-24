@@ -271,6 +271,25 @@ app.get('/listing/fullscreen-primary-portrait', function(req, resp, next) {
     );
 });
 
+// route requests to retrieve apps with errors
+
+app.get('/listing/errors', function(req, resp, next) {
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        if ((!app.manifest) || (app.manifest && app.manifest.error) || (app.appcache_manifest && app.appcache_manifest.error)) {
+            apps.push(app);
+        }
+    }
+
+    req.apps = apps;
+
+    resp.render('applisting',
+        { apps: req.apps, graphsMenu: graphs, title: 'Errors retrieving data' }
+    );
+});
+
 
 // route requests to retrieve apps by number of user ratings
 
