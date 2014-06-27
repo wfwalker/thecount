@@ -12,6 +12,8 @@ block content
 				td Name
 				td Type
 				td Size
+				td Average
+				td Count
 
 		each app in apps
 			tr
@@ -36,5 +38,21 @@ block content
 						span.glyphicon.glyphicon-plane
 
 				td(align='right')
-					if app.is_packaged
+					if app.is_packaged && app.miniManifest && app.miniManifest.size
 						span #{numeral(app.miniManifest.size).format('0,0')}
+
+				td(align='right')
+					if app.ratings
+						if app.ratings.average > 4
+							span *****
+						else if app.ratings.average > 3
+							span ****
+						else if app.ratings.average > 2
+							span ***
+						else if app.ratings.average > 1
+							span **
+						else
+							span *
+
+				td(align='right')
+						span #{numeral(app.ratings.count).format('0,0')}
