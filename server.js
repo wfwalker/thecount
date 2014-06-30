@@ -213,6 +213,7 @@ var graphs = [
     { kind: 'distribution', routeFragment: 'rating_count', title: 'num ratings', getter: statistics.getRatingCount },
     { kind: 'distribution', routeFragment: 'rating', title: 'avg rating', getter: statistics.getAverageRating },
     { kind: 'distribution', routeFragment: 'package_size', title: 'package size', getter: statistics.getPackageSize },
+    { kind: 'distribution', routeFragment: 'days_old', title: 'days old', getter: statistics.getDaysOld },
     { kind: 'frequency', routeFragment: 'icon_sizes', title: 'icon sizes', getter: statistics.getIconSizes },
     { kind: 'frequency', routeFragment: 'library', title: 'library', getter: statistics.getLibraryNames },
     { kind: 'frequency', routeFragment: 'category', title: 'category', getter: statistics.getCategoryStrings },
