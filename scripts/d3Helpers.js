@@ -57,6 +57,7 @@ function createHistogram(values) {
     var x = d3.scale.linear()
         .domain(d3.extent(values))
         .range([0, width]);
+    console.log(d3.extent(values));
 
     // Generate a histogram using twenty uniformly-spaced bins.
     var data = d3.layout.histogram()
@@ -85,13 +86,13 @@ function createHistogram(values) {
 
     bar.append("rect")
         .attr("x", 1)
-        .attr("width", x(data[0].x + data[0].dx) - 1)
+        .attr("width", x(data[0].x + data[0].dx) - x(data[0].x) - 1)
         .attr("height", function(d) { return height - y(d.y); });
 
     bar.append("text")
         .attr("dy", ".75em")
         .attr("y", 6)
-        .attr("x", x(data[0].x + data[0].dx) / 2)
+        .attr("x", (x(data[0].x + data[0].dx) - x(data[0].x)) / 2)
         .attr("text-anchor", "middle")
         .text(function(d) { return formatCount(d.y); });
 
