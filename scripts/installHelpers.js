@@ -105,24 +105,28 @@ function wireUpInstallButtons(installedManifestURLs) {
 }
 
 $(document).ready(function() {
-	var installListRequest = window.navigator.mozApps.getInstalled();
-	var installedManifestURLs = []
+	var installedManifestURLs = [];
 
-	installListRequest.onerror = function(e) {
-		alert("Error calling getInstalled: " + installListRequest.error.name);
+	if (window.navigator.mozApps && window.navigator.mozApps.getInstalled) {
+		var installListRequest = window.navigator.mozApps.getInstalled();
+		installListRequest.onerror = function(e) {
+			alert("Error calling getInstalled: " + installListRequest.error.name);
 
-		wireUpInstallButtons([]);
-	};
+			wireUpInstallButtons([]);
+		};
 
-	installListRequest.onsuccess = function(e) {
-		for (var installListIndex = 0; installListIndex < installListRequest.result.length; installListIndex++) {
-			var manifestURL = installListRequest.result[installListIndex].manifestURL;
-			installedManifestURLs.push(manifestURL);
-			appRecordsByManifest[manifestURL] = installListRequest.result[installListIndex];
-		}
+		installListRequest.onsuccess = function(e) {
+			for (var installListIndex = 0; installListIndex < installListRequest.result.length; installListIndex++) {
+				var manifestURL = installListRequest.result[installListIndex].manifestURL;
+				installedManifestURLs.push(manifestURL);
+				appRecordsByManifest[manifestURL] = installListRequest.result[installListIndex];
+			}
 
-		wireUpInstallButtons(installedManifestURLs);
-	};
+			wireUpInstallButtons(installedManifestURLs);
+		};
+	} else {
+		$('.installButton').attr("disabled", "disabled");
+	}
 
 	$('.searchButton').click(function(e) {
 		e.preventDefault();
