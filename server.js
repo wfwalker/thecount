@@ -291,6 +291,25 @@ app.get('/listing/errors', function(req, resp, next) {
     );
 });
 
+// route requests to retrieve apps with appcache
+
+app.get('/listing/appcache', function(req, resp, next) {
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        if (app.manifest && app.manifest.appcache_path) {
+            apps.push(app);
+        }
+    }
+
+    req.apps = apps;
+
+    resp.render('applisting',
+        { apps: req.apps, graphsMenu: graphs, title: 'using Appcache' }
+    );
+});
+
 
 // route requests to retrieve apps by number of user ratings
 
