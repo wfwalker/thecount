@@ -46,7 +46,9 @@ block content
 
 				td(align='right')
 					if app.is_packaged && app.miniManifest && app.miniManifest.size
-						span #{numeral(app.miniManifest.size).format('0,0')}
+						span #{numeral(app.miniManifest.size).format('0,0')}	
+					if app.appcache_entry_sizes
+						span #{numeral(app.appcache_size).format('0,0')}	
 
 				td(align='right')
 					if app.ratings

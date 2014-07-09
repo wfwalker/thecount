@@ -37,6 +37,17 @@ console.log("running " + mHost + " " + myPort);
 
 // PARSE CATALOG metadata
 
+function sumAppcacheEntrySizes(app) {
+    var total = 0;
+
+    for (var key in app.appcache_entry_sizes) {
+        var value = app.appcache_entry_sizes[key];
+        total = total + parseInt(value);
+    }
+
+    return total;
+}
+
 var marketplaceCatalog = {};
 
 try {
@@ -46,6 +57,15 @@ try {
     var marketplaceCatalog = require('./apps.json');
     console.log('loaded ' + Object.keys(marketplaceCatalog).length + ' apps');
     console.log('parsed catalog'); 
+
+    for (index in marketplaceCatalog) {
+        var marketplaceApp = marketplaceCatalog[index];
+        if (marketplaceApp.manifest && marketplaceApp.manifest.appcache_path) {
+            marketplaceApp.appcache_size = sumAppcacheEntrySizes(marketplaceApp);
+        }
+    }
+
+    console.log('added appcache size');
 }
 catch (e) {
     console.log('error parsing catalog');
