@@ -18,9 +18,8 @@ block content
 				td
 				td Name
 				td Type
-				td Size
-				td Average
-				td Count
+				td Appcache/Package Size
+				td User Ratings
 
 		each app in apps
 			tr
@@ -51,17 +50,18 @@ block content
 						span #{numeral(app.appcache_size).format('0,0')}	
 
 				td(align='right')
-					if app.ratings
+					if app.ratings && app.ratings.count > 0
+						if app.ratings.average >= 5
+							span.glyphicon.glyphicon-star
 						if app.ratings.average > 4
-							span *****
-						else if app.ratings.average > 3
-							span ****
-						else if app.ratings.average > 2
-							span ***
-						else if app.ratings.average > 1
-							span **
-						else
-							span *
+							span.glyphicon.glyphicon-star
+						if app.ratings.average > 3
+							span.glyphicon.glyphicon-star
+						if app.ratings.average > 2
+							span.glyphicon.glyphicon-star
+						if app.ratings.average > 1
+							span.glyphicon.glyphicon-star
 
 				td(align='right')
+					if app.ratings && app.ratings.count > 0
 						span #{numeral(app.ratings.count).format('0,0')}
