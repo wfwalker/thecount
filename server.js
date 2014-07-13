@@ -379,6 +379,12 @@ app.get('/home', function(req, resp, next) {
     );
 });
 
+app.get('/', function(req, resp, next) {
+    resp.render('home',
+        { graphsMenu: graphs, title: 'TheCount' }
+    );
+});
+
 // helper functions to add GET route for the given entry in the data structure
 
 function privateAddDistributionRoute(aGraph) {
