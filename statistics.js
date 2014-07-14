@@ -1,5 +1,5 @@
 
-// DISTRIBUTION HEPLER CODE
+// retrieve one integer value for each app in the catalog using the provided getter
 
 function getValues(inApps, getIntValuePerAppFn) {
     var values = [];
@@ -16,44 +16,7 @@ function getValues(inApps, getIntValuePerAppFn) {
     return values
 }
 
-function getDistribution(inApps, getIntValuePerAppFn) {
-    var counts = {};
-    var appsFound = 0;
-    var maxValue = -999;
-    var minValue = 999;
-
-    for (index in inApps) {
-        var app = inApps[index];
-        var intValue = getIntValuePerAppFn(app);
-
-        if (intValue != null) {
-            appsFound++;
-
-            if (counts[intValue]) {
-                counts[intValue]++;
-            } else {
-                counts[intValue] = 1;
-            }
-
-            minValue = Math.min(minValue, intValue);
-            maxValue = Math.max(maxValue, intValue);            
-        }
-    }
-
-    console.log(counts);
-
-    var chartData = [];
-
-    for (var index = minValue; index <= maxValue; index++) {
-        if (counts[index]) {
-            chartData.push({ 'label' : index, 'val': counts[index] });
-        } else {
-            chartData.push({ 'label' : index, 'val': 0 });
-        }
-    }
-
-    return chartData;
-}
+// returns the average rating for apps with more than five ratings, null otherwise
 
 function getAverageRating(inApp) {
     if (inApp.ratings && inApp.ratings.count > 5) {
@@ -63,8 +26,8 @@ function getAverageRating(inApp) {
     }
 }
 
-// NOTE: don't show the tiny handful of apps with more than 50 ratings since 
-// showing them makes the graph useless
+// returns the number of user ratings for apps with 50 or fewer ratings; null otherwise
+
 function getRatingCount(inApp) {
     if (! inApp.ratings || inApp.ratings.count > 50){ 
         return null;
@@ -72,6 +35,8 @@ function getRatingCount(inApp) {
         return inApp.ratings.count;
     }
 }
+
+// returns the package size, in millions of bytes, for packaged apps; null otherwise
 
 function getPackageSize(inApp) {
     if (inApp.miniManifest && inApp.miniManifest.size) {
@@ -85,6 +50,8 @@ function getPackageSize(inApp) {
     return null;
 }
 
+// returns how many days since the app was reviewed
+
 function getDaysOld(inApp) {
     var reviewedDate = Date.parse(inApp.reviewed);
     var now = Date.now();
@@ -92,6 +59,10 @@ function getDaysOld(inApp) {
 }
 
 // FREQUENCY HELPER CODE
+
+// computes the frequency of occurrence of strings associated with each app
+// using the given getter function. Used for properties where each app may have 
+// any number of string values.
 
 function getFrequency(inApps, getArrayOfStringsPerAppFn, inLimit) {
     console.log('getFrequency');
@@ -137,6 +108,9 @@ function getFrequency(inApps, getArrayOfStringsPerAppFn, inLimit) {
     return chartData;
 }
 
+// returns the author of an app
+// TODO: use distribution? Definitely only one value
+
 function getAuthor(inApp) {
     if (inApp.author && inApp.author != '') {
         return [inApp.author];
@@ -145,6 +119,9 @@ function getAuthor(inApp) {
     }
 }
 
+// returns the installs_allowed_from string for the given app
+// TODO: parse the list? list already parsed?
+
 function getInstallsAllowedFrom(inApp) {
     if (inApp.manifest && inApp.manifest.installs_allowed_from) {
         return inApp.manifest.installs_allowed_from;
@@ -152,6 +129,8 @@ function getInstallsAllowedFrom(inApp) {
         return ['none'];
     }
 }
+
+// returns the list of orientation values for the given app
 
 function getOrientation(inApp) {
     var orientations = [];
@@ -167,6 +146,8 @@ function getOrientation(inApp) {
     return orientations;
 }
 
+// returns the list of permission strings for the given app
+
 function getPermissionKeys(inApp) {
     if (inApp.manifest && inApp.manifest.permissions && (Object.keys(inApp.manifest.permissions).length > 0)) {
         return Object.keys(inApp.manifest.permissions);
@@ -175,6 +156,8 @@ function getPermissionKeys(inApp) {
     }
 }
 
+// returns the list of icon sizes for the given app
+
 function getIconSizes(inApp) {
     if (inApp.manifest && inApp.manifest.icons) {
         return Object.keys(inApp.manifest.icons);
@@ -182,6 +165,9 @@ function getIconSizes(inApp) {
         return [];
     }
 }
+
+// returns the list of supported locales for the given app
+// the list is the union of supported_locales, default locale, and locales listed in the manifest
 
 function getSupportedLocales(inApp) {
     var unionOfLocales = [];
@@ -205,6 +191,8 @@ function getSupportedLocales(inApp) {
     return uniqueLocales;
 }
 
+// returns the list of supported regions for the given app
+
 function getSupportedRegions(inApp) {
     var regions = [];
 
@@ -217,6 +205,9 @@ function getSupportedRegions(inApp) {
 
     return regions;
 }
+
+// returns a list of category strings for the given app,
+// including payment types, security model types, device compatibility, and ESRB ratings
 
 function getCategoryStrings(inApp) {
     var categories = []
@@ -244,6 +235,8 @@ function getCategoryStrings(inApp) {
     return categories;
 }
 
+// returns the list of activites supported by the given app
+
 function getActivityKeys(inApp) {
     if (inApp.manifest && inApp.manifest.activities && (Object.keys(inApp.manifest.activities).length > 0)) {
         return Object.keys(inApp.manifest.activities);
@@ -251,6 +244,8 @@ function getActivityKeys(inApp) {
         return [];
     }
 }
+
+// create a list of mappings from filenames to known libraries
 
 var knownLibraries = {};
 knownLibraries['bootstrap.js'] = 'Bootstrap';
@@ -343,6 +338,9 @@ knownLibraries['l10n.js'] = 'Web L10n';
 knownLibraries['underscore.js'] = 'Underscore';
 knownLibraries['underscore-min.js'] = 'Underscore';
 
+// returns a list of unique JS filenames for the given app, omitting commonly used filenames.
+// TODO: what about CSS?
+
 function getFilenames(inApp) {
     var unionOfFilenames = [];
     var stopNames = ['', 'ads.js', 'init.js', 'app.js', 'index.js', 'main.js', 'script.js', 'manifest.webapp', 'zigbert.rsa', 'zigbert.sf', 'manifest.mf', 'ids.json', 'index.html'];
@@ -368,6 +366,8 @@ function getFilenames(inApp) {
     return filteredFilenames;
 }
 
+// returns a list of known libraries for the given app, based on mapping its filenames
+
 function getLibraryNames(inApp) {
     var filteredFilenames = getFilenames(inApp);
 
@@ -388,8 +388,9 @@ function getLibraryNames(inApp) {
     return uniqueLibraries;
 }
 
+// We export these functions for use by the server (see server.js)
+
 module.exports.getLibraryNames = getLibraryNames;
-module.exports.getDistribution = getDistribution;
 module.exports.getValues = getValues;
 
 module.exports.getRatingCount = getRatingCount;
