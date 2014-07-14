@@ -128,9 +128,15 @@ $(document).ready(function() {
 		$('.installButton').attr("disabled", "disabled");
 	}
 
+	// set up search button behavior
+
 	$('.searchButton').click(function(e) {
 		e.preventDefault();
 		console.log('searching ' + $('#searchText').val());
 		location.href='/listing/search/' + $('#searchText').val();
 	});
+
+	// set up table sorting behavior
+
+	$('.tablesorter-table').tablesorter();
 });
