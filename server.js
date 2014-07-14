@@ -227,24 +227,7 @@ app.param('days_old', function(req, resp, next, id) {
     next();
 });
 
-// This data structure defines all the routes for analytics in TheCount, their paths, their getter functions
-
-var graphs = [
-    { kind: 'distribution', routeFragment: 'rating_count', title: 'num ratings', getter: statistics.getRatingCount },
-    { kind: 'distribution', routeFragment: 'rating', title: 'avg rating', getter: statistics.getAverageRating },
-    { kind: 'distribution', routeFragment: 'package_size', title: 'package size', getter: statistics.getPackageSize },
-    { kind: 'distribution', routeFragment: 'days_old', title: 'days old', getter: statistics.getDaysOld },
-    { kind: 'frequency', routeFragment: 'icon_sizes', title: 'icon sizes', getter: statistics.getIconSizes },
-    { kind: 'frequency', routeFragment: 'library', title: 'library', getter: statistics.getLibraryNames },
-    { kind: 'frequency', routeFragment: 'category', title: 'category', getter: statistics.getCategoryStrings },
-    { kind: 'frequency', routeFragment: 'author', title: 'author', getter: statistics.getAuthor },
-    { kind: 'frequency', routeFragment: 'locale', title: 'locale', getter: statistics.getSupportedLocales },
-    { kind: 'frequency', routeFragment: 'region', title: 'region', getter: statistics.getSupportedRegions },
-    { kind: 'frequency', routeFragment: 'permission', title: 'permission', getter: statistics.getPermissionKeys },
-    { kind: 'frequency', routeFragment: 'activity', title: 'activity', getter: statistics.getActivityKeys },
-    { kind: 'frequency', routeFragment: 'orientation', title: 'orientation', getter: statistics.getOrientation },
-    { kind: 'pie', routeFragment: 'installs_allowed_from', title: 'installs allowed from', getter: statistics.getInstallsAllowedFrom }
-]
+// ROUTING
 
 // route requests to retrieve a single app by ID
 
@@ -371,7 +354,7 @@ app.get('/listing/days_old/:days_old', function(req, resp, next) {
     );
 });
 
-// route requests to get the homepage (TODO: make this work for '/')
+// route requests to get the homepage
 
 app.get('/home', function(req, resp, next) {
     resp.render('home',
@@ -384,6 +367,25 @@ app.get('/', function(req, resp, next) {
         { graphsMenu: graphs, title: 'TheCount' }
     );
 });
+
+// This data structure defines all the routes for analytics in TheCount, their paths, their getter functions
+
+var graphs = [
+    { kind: 'distribution', routeFragment: 'rating_count', title: 'num ratings', getter: statistics.getRatingCount },
+    { kind: 'distribution', routeFragment: 'rating', title: 'avg rating', getter: statistics.getAverageRating },
+    { kind: 'distribution', routeFragment: 'package_size', title: 'package size', getter: statistics.getPackageSize },
+    { kind: 'distribution', routeFragment: 'days_old', title: 'days old', getter: statistics.getDaysOld },
+    { kind: 'frequency', routeFragment: 'icon_sizes', title: 'icon sizes', getter: statistics.getIconSizes },
+    { kind: 'frequency', routeFragment: 'library', title: 'library', getter: statistics.getLibraryNames },
+    { kind: 'frequency', routeFragment: 'category', title: 'category', getter: statistics.getCategoryStrings },
+    { kind: 'frequency', routeFragment: 'author', title: 'author', getter: statistics.getAuthor },
+    { kind: 'frequency', routeFragment: 'locale', title: 'locale', getter: statistics.getSupportedLocales },
+    { kind: 'frequency', routeFragment: 'region', title: 'region', getter: statistics.getSupportedRegions },
+    { kind: 'frequency', routeFragment: 'permission', title: 'permission', getter: statistics.getPermissionKeys },
+    { kind: 'frequency', routeFragment: 'activity', title: 'activity', getter: statistics.getActivityKeys },
+    { kind: 'frequency', routeFragment: 'orientation', title: 'orientation', getter: statistics.getOrientation },
+    { kind: 'pie', routeFragment: 'installs_allowed_from', title: 'installs allowed from', getter: statistics.getInstallsAllowedFrom }
+]
 
 // helper functions to add GET route for the given entry in the data structure
 
