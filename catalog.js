@@ -15,6 +15,7 @@ var util = require('util');
 var theScope = {};
 theScope.apps = {};
 theScope.pendingRequests = 0;
+theScope.isRunning = false;
 theScope.timeout = 240000;
 
 // creates a Q promise that 
@@ -267,6 +268,7 @@ function searchAppData(inSearchURL) {
 
         if (data.meta.next) {
             console.log(data.meta.offset + '/' + data.meta.total_count + ' pending ' + theScope.pendingRequests + ' size ' + Object.keys(theScope.apps).length);
+            theScope.totalCount = data.meta.total_count;
             subpromises.push(searchAppData('https://marketplace.firefox.com' + data.meta.next));
         }
 
@@ -387,11 +389,15 @@ function loadDB(inJSONFilename) {
 }
 
 function createMarketplaceCatalogDB(inOutputFile) {
+    theScope.isRunning = true;
+    theScope.startTime = Date.now();
+
     return findAppData().then(function() {
         console.log('DONE ALL ' + Object.keys(theScope.apps).length + ', still pending ' + theScope.pendingRequests); 
     }).catch(function (error) {
         console.log('createMarketplaceCatalogDB err ' + error);
     }).finally(function() {
+        theScope.isRunning = false;
         fs.writeFile(inOutputFile, JSON.stringify(theScope.apps, null, 4), function(err) {
             if (err) {
               console.log('error writing JSON: ' + err);
@@ -402,7 +408,23 @@ function createMarketplaceCatalogDB(inOutputFile) {
     });
 }
 
+function progressReport() {
+    return {
+        apps: Object.keys(theScope.apps).length, 
+        pendingRequests: theScope.pendingRequests,
+        totalCount: theScope.totalCount,
+        elapsedSeconds: (Date.now() - theScope.startTime) / 1000,
+        isRunning: theScope.isRunning };
+}
+
+function isRunning() {
+    return theScope.isRunning;
+}
+
+
 module.exports.createMarketplaceCatalogDB = createMarketplaceCatalogDB;
-module.exports.loadDB = loadDB;
-module.exports.whoUsesFile = whoUsesFile;
-module.exports.verifyLocales = verifyLocales;
+module.exports.progressReport = progressReport;
+module.exports.isRunning = isRunning;
+// module.exports.loadDB = loadDB;
+// module.exports.whoUsesFile = whoUsesFile;
+// module.exports.verifyLocales = verifyLocales;

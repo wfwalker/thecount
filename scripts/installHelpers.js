@@ -104,7 +104,11 @@ function wireUpInstallButtons(installedManifestURLs) {
 	});
 }
 
+// Stuff to do when the page loads
+
 $(document).ready(function() {
+	// Either retrieve the manifest URL's of all installed apps or disable all install buttons
+
 	var installedManifestURLs = [];
 
 	if (window.navigator.mozApps && window.navigator.mozApps.getInstalled) {
@@ -154,4 +158,14 @@ $(document).ready(function() {
 			columns : [ "primary", "secondary", "tertiary" ]
 	    }
 	});
+
+	// If there's a rebuild progress meter, start polling for rebuild progress
+	if ($('.rebuildmonitor').length >= 1) {
+		console.log('found rebuildmonitor');
+		setInterval(function() {
+			$.get('/rebuildprogress', function(data) {
+				$('.rebuildmonitor').html(data);
+			});
+		}, 10000);
+	}
 });

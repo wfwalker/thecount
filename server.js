@@ -12,6 +12,7 @@ var http = require('http');
 var https = require('https');
 var jade = require('jade');
 var statistics = require('./statistics.js');
+var catalog = require('./catalog.js');
 
 var app = express();
 
@@ -426,5 +427,29 @@ for(var graphIndex = 0; graphIndex < graphs.length; graphIndex++) {
         privateAddFrequencyRoute(aGraph);
     }
 }
+
+// route requests to generate the database
+
+app.get('/rebuild', function(req, resp, next) {
+    console.log('/rebuild');
+
+    if (! catalog.isRunning()) {
+        console.log('starting rebuilder');
+        catalog.createMarketplaceCatalogDB('bogus');
+    } else {
+        console.log('already running, NOT starting rebuilder');
+    }
+
+    resp.render('rebuild',
+        { graphsMenu: graphs, title: 'Rebuild Database' }
+    );
+});
+
+app.get('/rebuildprogress', function(req, resp, next) {
+    var progressReport = catalog.progressReport();
+    resp.send(JSON.stringify(progressReport));
+});
+
+
 
 
