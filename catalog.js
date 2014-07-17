@@ -388,6 +388,8 @@ function loadDB(inJSONFilename) {
     }
 }
 
+// retrieve all the data in the Firefox Marketplace catalog using the Marketplace API
+
 function createMarketplaceCatalogDB(inOutputFile) {
     theScope.isRunning = true;
     theScope.startTime = Date.now();
@@ -408,6 +410,8 @@ function createMarketplaceCatalogDB(inOutputFile) {
     });
 }
 
+// returns a JSON blob describing the progress of the catalog scraper.
+
 function progressReport() {
     return {
         apps: Object.keys(theScope.apps).length, 
@@ -416,6 +420,8 @@ function progressReport() {
         elapsedSeconds: (Date.now() - theScope.startTime) / 1000,
         isRunning: theScope.isRunning };
 }
+
+// returns true if the catalog scraper is running, false otherwise.
 
 function isRunning() {
     return theScope.isRunning;

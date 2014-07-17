@@ -164,7 +164,7 @@ $(document).ready(function() {
 		console.log('found rebuildmonitor');
 		setInterval(function() {
 			$.get('/rebuildprogress', function(data) {
-				$('.rebuildmonitor').html(data);
+				$('.rebuildmonitor').html(JSON.stringify(data));
 			});
 		}, 10000);
 	}

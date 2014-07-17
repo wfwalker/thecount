@@ -447,7 +447,7 @@ app.get('/rebuild', function(req, resp, next) {
 
 app.get('/rebuildprogress', function(req, resp, next) {
     var progressReport = catalog.progressReport();
-    resp.send(JSON.stringify(progressReport));
+    resp.send(progressReport);
 });
 
 
