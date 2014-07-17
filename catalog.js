@@ -418,6 +418,7 @@ function progressReport() {
         pendingRequests: theScope.pendingRequests,
         totalCount: theScope.totalCount,
         elapsedSeconds: (Date.now() - theScope.startTime) / 1000,
+        percentage: 100 * (Object.keys(theScope.apps).length / theScope.totalCount),
         isRunning: theScope.isRunning };
 }
 
