@@ -413,12 +413,25 @@ function createMarketplaceCatalogDB(inOutputFile) {
 // returns a JSON blob describing the progress of the catalog scraper.
 
 function progressReport() {
+
+    var manifestCount = 0;
+
+    for (index in theScope.apps) {
+        var app = theScope.apps[index];
+
+        if (app.manifest) {
+            manifestCount = manifestCount + 1;
+        }
+    }
+
     return {
         apps: Object.keys(theScope.apps).length, 
         pendingRequests: theScope.pendingRequests,
+        manifestCount: manifestCount,
         totalCount: theScope.totalCount,
         elapsedSeconds: (Date.now() - theScope.startTime) / 1000,
-        percentage: 100 * (Object.keys(theScope.apps).length / theScope.totalCount),
+        appPercentage: 100 * (Object.keys(theScope.apps).length / theScope.totalCount),
+        manifestPercentage: 100 * manifestCount / theScope.totalCount,
         isRunning: theScope.isRunning };
 }
 

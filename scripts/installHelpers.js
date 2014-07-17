@@ -165,8 +165,11 @@ $(document).ready(function() {
 		setInterval(function() {
 			$.get('/rebuildprogress', function(data) {
 				$('.rebuildmonitor').html(JSON.stringify(data));
-				$('#rebuildprogress').attr('style', 'width: '+ Math.round(data.percentage) + '%')
+				$('#rebuildprogress').attr('style', 'width: '+ Math.round(data.appPercentage) + '%')
+				$('#manifestprogress').attr('style', 'width: '+ Math.round(data.manifestPercentage) + '%')
+				$('#rebuildseconds').html(data.elapsedSeconds + ' seconds')
+				$('#rebuildpending').html(data.pendingRequests + ' pending requests')
 			});
-		}, 10000);
+		}, 5000);
 	}
 });
