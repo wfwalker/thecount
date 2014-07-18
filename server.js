@@ -209,6 +209,25 @@ app.param('library', function(req, resp, next, id) {
     next();
 });
 
+// deal with a file parameter by retrieving all the apps that contain the given filename
+
+app.param('filename', function(req, resp, next, id) {
+    var filename = req.param('filename')
+    console.log('filename ' + filename);
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        if (statistics.getFilenames(app).indexOf(filename) >= 0) {
+            apps.push(app);
+        }
+    }
+
+    req.filename = filename;
+    req.apps = apps;
+    next();
+});
+
 // deal with a days_old parameter by retrieving all the apps that were published within that many days
 
 app.param('days_old', function(req, resp, next, id) {
@@ -347,6 +366,14 @@ app.get('/listing/library/:library', function(req, resp, next) {
     );
 });
 
+// route requests to retrieve apps by which filename they use
+
+app.get('/listing/filename/:filename', function(req, resp, next) {
+    resp.render('applisting',
+        { apps: req.apps, graphsMenu: graphs, title: 'Uses ' + req.filename }
+    );
+});
+
 // route requests to retrieve apps by how old they are
 
 app.get('/listing/days_old/:days_old', function(req, resp, next) {
@@ -378,6 +405,7 @@ var graphs = [
     { kind: 'distribution', routeFragment: 'days_old', title: 'days old', getter: statistics.getDaysOld },
     { kind: 'frequency', routeFragment: 'icon_sizes', title: 'icon sizes', getter: statistics.getIconSizes },
     { kind: 'frequency', routeFragment: 'library', title: 'library', getter: statistics.getLibraryNames },
+    { kind: 'frequency', routeFragment: 'file', title: 'file', getter: statistics.getFilenames },
     { kind: 'frequency', routeFragment: 'category', title: 'category', getter: statistics.getCategoryStrings },
     { kind: 'frequency', routeFragment: 'author', title: 'author', getter: statistics.getAuthor },
     { kind: 'frequency', routeFragment: 'locale', title: 'locale', getter: statistics.getSupportedLocales },

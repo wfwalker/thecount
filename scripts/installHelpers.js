@@ -145,7 +145,7 @@ $(document).ready(function() {
 	$('.tablesorter-table').tablesorter({
 	    theme : 'blue',
 	 
-	    headers: { 0: { sorter: false }, 1: { sorter: true }, 2: { sorter: false } },
+	    headers: { 0: { sorter: false }, 1: { sorter: true }, 4: { sorter: false } },
 	 
 	    // header layout template; {icon} needed for some themes
 	    headerTemplate : '{content}{icon}',

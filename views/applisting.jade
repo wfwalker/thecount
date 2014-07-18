@@ -17,6 +17,8 @@ block content
 			tr
 				td
 				td Name
+				td Author
+				td Days Old
 				td Type
 				td Appcache/Package Size
 				td User Ratings
@@ -34,6 +36,10 @@ block content
 							span #{app.name['en-US']}
 						else
 							span #{app.name[Object.keys(app.name)[0]]}		
+
+				td #{app.author}
+
+				td #{Math.round((Date.now() - Date.parse(app.reviewed)) / (24*60*60*1000))}
 
 				td
 					if app.is_packaged
