@@ -1,7 +1,10 @@
 doctype html
 html
   head
-    title #{title} - TheCountStore
+    title #{title} - TheCountStore #{refresh}
+
+    if refreshURL
+      meta(http-equiv="refresh",content="3;url=#{refreshURL}")
 
     meta(name='viewport', content='width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;')
 

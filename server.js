@@ -440,16 +440,14 @@ app.get('/rebuild', function(req, resp, next) {
         console.log('already running, NOT starting rebuilder');
     }
 
+    resp.redirect('/rebuildreport');
+});
+
+app.get('/rebuildreport', function(req, resp, next) {
+    console.log('/rebuildreport');
+
     resp.render('rebuild',
-        { graphsMenu: graphs, title: 'Rebuild Database' }
+        { graphsMenu: graphs, title: 'Rebuild Database', progressReport: catalog.progressReport(), refreshURL: '/rebuildreport' }
     );
 });
-
-app.get('/rebuildprogress', function(req, resp, next) {
-    var progressReport = catalog.progressReport();
-    resp.send(progressReport);
-});
-
-
-
 

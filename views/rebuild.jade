@@ -1,0 +1,23 @@
+extend layout
+
+block content
+	h2 #{title}
+
+	if (progressReport.isRunning)
+		h4 apps (#{progressReport.apps} of #{progressReport.totalCount})
+
+		.progress
+			#rebuildprogress.progress-bar(role='progressbar',style='width: #{progressReport.appPercentage}%') #{Math.round(progressReport.appPercentage)}%
+
+		h4 manifests (#{progressReport.manifestCount} of #{progressReport.totalCount})
+
+		.progress
+			#manifestprogress.progress-bar(role='progressbar',style='width: #{progressReport.manifestPercentage}%') #{Math.round(progressReport.manifestPercentage)}%
+		
+		h4 #{Math.round(progressReport.elapsedSeconds)} secs
+
+		h4 #{progressReport.pendingRequests} pending requests
+	else
+		h4 not running
+
+		a(href='/rebuild').btn.btn-default start rebuilding database
