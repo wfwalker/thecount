@@ -3,6 +3,12 @@ extend layout
 block content
 	h2 Home
 
+	h3 Global stats
+
+	div #{numeral(globalStatistics.appCount).format('0,0')} Apps
+	div #{numeral(globalStatistics.authorCount).format('0,0')} Authors
+	div #{numeral(globalStatistics.ratingCount).format('0,0')} User Ratings
+
 	h3 Interesting catalog queries
 
 	div

@@ -388,6 +388,29 @@ function getLibraryNames(inApp) {
     return uniqueLibraries;
 }
 
+function computeGlobalStatistics(marketplaceCatalog) {
+    var authors = [];
+    var ratingCount = 0;
+
+    for (index in marketplaceCatalog) {
+        var marketplaceApp = marketplaceCatalog[index];
+
+        if (authors.indexOf(marketplaceApp.author) < 0) {
+            authors.push(marketplaceApp.author);
+        }
+
+        if (marketplaceApp.ratings && marketplaceApp.ratings.count) {
+            ratingCount += marketplaceApp.ratings.count;
+        }
+    }
+
+    return {
+        appCount: Object.keys(marketplaceCatalog).length,
+        authorCount: authors.length,
+        ratingCount: ratingCount
+    };
+}
+
 // We export these functions for use by the server (see server.js)
 
 module.exports.getLibraryNames = getLibraryNames;
@@ -409,4 +432,6 @@ module.exports.getSupportedRegions = getSupportedRegions;
 module.exports.getCategoryStrings = getCategoryStrings;
 module.exports.getActivityKeys = getActivityKeys;
 module.exports.getFilenames = getFilenames;
+
+module.exports.computeGlobalStatistics = computeGlobalStatistics;
 

@@ -50,6 +50,7 @@ function sumAppcacheEntrySizes(app) {
 }
 
 var marketplaceCatalog = {};
+var globalStatistics = {};
 
 try {
     console.log('About to Parse Catalog');
@@ -59,6 +60,8 @@ try {
     console.log('loaded ' + Object.keys(marketplaceCatalog).length + ' apps');
     console.log('parsed catalog'); 
 
+    // compute extra per-app data. for example, the sum of the size of all the appcache entries for each app
+
     for (index in marketplaceCatalog) {
         var marketplaceApp = marketplaceCatalog[index];
         if (marketplaceApp.manifest && marketplaceApp.manifest.appcache_path) {
@@ -67,6 +70,10 @@ try {
     }
 
     console.log('added appcache size');
+
+    globalStatistics = statistics.computeGlobalStatistics(marketplaceCatalog);
+
+    console.log(globalStatistics);
 }
 catch (e) {
     console.log('error parsing catalog');
@@ -386,13 +393,13 @@ app.get('/listing/days_old/:days_old', function(req, resp, next) {
 
 app.get('/home', function(req, resp, next) {
     resp.render('home',
-        { graphsMenu: graphs, title: 'TheCount' }
+        { graphsMenu: graphs, title: 'TheCount', globalStatistics: globalStatistics }
     );
 });
 
 app.get('/', function(req, resp, next) {
     resp.render('home',
-        { graphsMenu: graphs, title: 'TheCount' }
+        { graphsMenu: graphs, title: 'TheCount', globalStatistics: globalStatistics }
     );
 });
 
