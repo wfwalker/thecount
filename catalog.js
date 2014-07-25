@@ -314,18 +314,6 @@ function firstAppName(app) {
     return app.name[appNameKeys[0]].replace(/,/g, '');
 }
 
-function whoUsesFile(inFilename) {
-    console.log('who uses "' + inFilename + "'");
-    for (index in theScope.apps) {
-        var app = theScope.apps[index];
-
-        var filenames = getFilenames(app);
-        if (filenames.indexOf(inFilename) >= 0) {
-            console.log(firstAppName(app) + ' by ' + app.author);
-        }
-    }
-}
-
 function whoUsesPermission(inPermission) {
     console.log('who uses "' + inPermission + "'");
     for (index in theScope.apps) {
@@ -373,21 +361,6 @@ function verifyLocales() {
     }    
 }
 
-// Creating and Loading the local database
-
-function loadDB(inJSONFilename) {
-    var raw = fs.readFileSync(inJSONFilename);
-
-    try {
-        theScope.apps = JSON.parse(raw); 
-        console.log('loaded ' + Object.keys(theScope.apps).length + ' objects');
-    }
-    catch (e) {
-        console.log('cannot parse ' + inJSONFilename + ', ' + e);
-        theScope.apps = [];
-    }
-}
-
 // retrieve all the data in the Firefox Marketplace catalog using the Marketplace API
 
 function createMarketplaceCatalogDB(inOutputFile) {
@@ -413,14 +386,18 @@ function createMarketplaceCatalogDB(inOutputFile) {
 // returns a JSON blob describing the progress of the catalog scraper.
 
 function progressReport() {
-
     var manifestCount = 0;
+    var errorApps = [];
 
     for (index in theScope.apps) {
         var app = theScope.apps[index];
 
         if (app.manifest) {
             manifestCount = manifestCount + 1;
+        }
+
+        if ((app.manifest && app.manifest.error) || (app.appcache_manifest && app.appcache_manifest.error)) {
+            errorApps.push(app);
         }
     }
 
@@ -432,6 +409,7 @@ function progressReport() {
         elapsedSeconds: (Date.now() - theScope.startTime) / 1000,
         appPercentage: 100 * (Object.keys(theScope.apps).length / theScope.totalCount),
         manifestPercentage: 100 * manifestCount / theScope.totalCount,
+        errorApps: errorApps,
         isRunning: theScope.isRunning };
 }
 
@@ -445,6 +423,4 @@ function isRunning() {
 module.exports.createMarketplaceCatalogDB = createMarketplaceCatalogDB;
 module.exports.progressReport = progressReport;
 module.exports.isRunning = isRunning;
-// module.exports.loadDB = loadDB;
-// module.exports.whoUsesFile = whoUsesFile;
 // module.exports.verifyLocales = verifyLocales;

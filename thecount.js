@@ -13,23 +13,3 @@ if (argv['build']) {
     catalog.createMarketplaceCatalogDB('apps.json');
 }
 
-// if (argv['file']) {
-//     loadDB('apps.json');
-//     whoUsesFile(argv['file']);
-// }
-
-// if (argv['permission']) {
-//     loadDB('apps.json');
-//     whoUsesPermission(argv['permission']);
-// }
-
-// if (argv['appcache']) {
-//     loadDB('apps.json');
-//     whoHasAppcache();
-// }
-
-// if (argv['verify']) {
-//     loadDB('apps.json');
-
-//     verifyLocales();
-// }
