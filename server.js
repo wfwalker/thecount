@@ -414,6 +414,8 @@ var graphs = [
     { kind: 'frequency', routeFragment: 'library', title: 'library', getter: statistics.getLibraryNames },
     { kind: 'frequency', routeFragment: 'file', title: 'file', getter: statistics.getFilenames },
     { kind: 'frequency', routeFragment: 'category', title: 'category', getter: statistics.getCategoryStrings },
+    { kind: 'frequency', routeFragment: 'platform', title: 'platform', getter: statistics.getPlatformCategories },
+    { kind: 'pie', routeFragment: 'payment', title: 'payment', getter: statistics.getPaymentCategories },
     { kind: 'frequency', routeFragment: 'author', title: 'author', getter: statistics.getAuthor },
     { kind: 'frequency', routeFragment: 'locale', title: 'locale', getter: statistics.getSupportedLocales },
     { kind: 'frequency', routeFragment: 'region', title: 'region', getter: statistics.getSupportedRegions },

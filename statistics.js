@@ -214,18 +214,33 @@ function getCategoryStrings(inApp) {
 
     if (inApp.categories) { categories.push.apply(categories, inApp.categories); }
 
-    if (inApp.ratings && inApp.ratings.count > 5) { categories.push('five user ratings'); }
-    if (inApp.content_ratings && inApp.content_ratings.rating) { categories.push('esrb'); } else { categories.push('NO esrb'); }
-    if (inApp.app_type == 'hosted') { categories.push('hosted'); }
-    if (inApp.app_type == 'privileged') { categories.push('privileged'); }
-    if (inApp.app_type == 'packaged') { categories.push('packaged'); }
-    if (inApp.manifest && inApp.manifest.appcache_path) { categories.push('appcache'); }
-    if (inApp.manifest && inApp.manifest.fullscreen) { categories.push('fullscreen'); }
+    return categories;
+}
+
+// returns a list of payment categories for the given app,
+
+function getPaymentCategories(inApp) {
+    var categories = []
 
     if (inApp.premium_type == 'free') { categories.push('free'); }
     if (inApp.premium_type == 'premium') { categories.push('premium'); }
     if (inApp.premium_type == 'free-inapp') { categories.push('free w/inapp'); }
     if (inApp.premium_type == 'premium-inapp') { categories.push('premium w/inapp'); }
+
+    return categories;
+}
+
+// returns a list of platform category strings for the given app,
+
+function getPlatformCategories(inApp) {
+    var categories = []
+
+    if (inApp.app_type == 'hosted') { categories.push('hosted'); }
+    if (inApp.app_type == 'privileged') { categories.push('privileged'); }
+    if (inApp.app_type == 'packaged') { categories.push('packaged'); }
+
+    if (inApp.manifest && inApp.manifest.appcache_path) { categories.push('appcache'); }
+    if (inApp.manifest && inApp.manifest.fullscreen) { categories.push('fullscreen'); }
 
     if (inApp.device_types.indexOf('desktop') > -1) { categories.push('desktop'); }
     if (inApp.device_types.indexOf('firefoxos') > -1) { categories.push('firefox os'); }
@@ -234,6 +249,7 @@ function getCategoryStrings(inApp) {
     
     return categories;
 }
+
 
 // returns the list of activites supported by the given app
 
@@ -430,6 +446,8 @@ module.exports.getIconSizes = getIconSizes;
 module.exports.getSupportedLocales = getSupportedLocales;
 module.exports.getSupportedRegions = getSupportedRegions;
 module.exports.getCategoryStrings = getCategoryStrings;
+module.exports.getPlatformCategories = getPlatformCategories;
+module.exports.getPaymentCategories = getPaymentCategories;
 module.exports.getActivityKeys = getActivityKeys;
 module.exports.getFilenames = getFilenames;
 
