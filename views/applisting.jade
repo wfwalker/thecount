@@ -55,6 +55,14 @@ block content
 						span #{numeral(app.miniManifest.size).format('0,0')}	
 					if app.appcache_entry_sizes
 						span #{numeral(app.appcache_size).format('0,0')}	
+					if app.manifest && app.manifest.error
+						div
+							a(href=app.manifest_url) Manifest:&nbsp;
+							span #{app.manifest.error}	
+					if app.appcache_manifest && app.appcache_manifest.error
+						div
+							a(href=app.manifest_url) Appcache Manifest:&nbsp;
+							span #{app.appcache_manifest.error}	
 
 				td(align='right')
 					if app.ratings && app.ratings.count > 0
