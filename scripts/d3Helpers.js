@@ -6,27 +6,6 @@ function get(prop) {
   };
 }
 
-function createDistributionGraph(inDivClass, chartData) {
-	console.log('start createDistributionGraph');
-	console.log(chartData);
-
-    x = d3.scale.linear()
-        .domain([0, d3.max(chartData, get('val'))])
-        .range([0, 80]);
-
-    d3.select('.' + inDivClass)
-        .selectAll("div")
-            .data(chartData)
-        .enter().append("div")
-            .attr('class', get('label'))
-            .style("width", function(d) { 
-                return x(d.val) + "%"; })
-        .text(get('val'))
-        .append('span')
-            .attr('class', 'label')
-            .text(get('label'));
-}
-
 function createFrequencyGraph(inDivClass, chartData) {
     x = d3.scale.linear()
         .domain([0, d3.max(chartData, get('val'))])
@@ -43,7 +22,6 @@ function createFrequencyGraph(inDivClass, chartData) {
         .append('span')
             .attr('class', 'label')
             .text(get('label'));
-
 }
 
 function createHistogram(values) {
@@ -54,10 +32,14 @@ function createHistogram(values) {
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
+    var extent = d3.extent(values);
+    extent[0] = 0;
+
     var x = d3.scale.linear()
-        .domain(d3.extent(values))
+        .domain(extent)
         .range([0, width]);
-    console.log(d3.extent(values));
+
+    console.log(extent);
 
     // Generate a histogram using twenty uniformly-spaced bins.
     var data = d3.layout.histogram()
