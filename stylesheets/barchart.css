@@ -11,9 +11,11 @@
 
 .barchart .label {
   text-overflow: ellipsis;
-  color: black;
   position: absolute;
-  left: -1em;
+}
+
+.bar .outside-label {
+  fill: steelblue;
 }
 
 .barchart .packaged { background-color: green; }

@@ -6,22 +6,37 @@ function get(prop) {
   };
 }
 
-function createFrequencyGraph(inDivClass, chartData) {
-    x = d3.scale.linear()
-        .domain([0, d3.max(chartData, get('val'))])
-        .range([0, 80]);
+function createFrequencyGraph(inDivClass, data) {
+    var width = 900,
+        outsideLabelThreshold = 200,
+        barHeight = 25;
 
-    d3.select('.' + inDivClass)
-        .selectAll("div")
-            .data(chartData)
-        .enter().append("div")
-            .attr('class', get('label'))
-            .style("width", function(d) { 
-                return x(d.val) + "%"; })
-        .text(get('val'))
-        .append('span')
-            .attr('class', 'label')
-            .text(get('label'));
+    var x = d3.scale.linear()
+        .domain([0, d3.max(data, function(d) { return d.val; })])
+        .range([0, width]);
+
+    var chart = d3.select("." + inDivClass).append("svg")
+        .attr("width", width)
+        .attr("height", barHeight * data.length);
+
+    var bar = chart.selectAll("g")
+        .data(data)
+      .enter().append("g")
+        .attr("class", "bar")
+        .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
+
+    bar.append("rect")
+        .attr("width", function(d) { return x(d.val); })
+        .attr("height", barHeight - 1);
+
+    bar.append("text")
+        .attr("x", function(d) { return x(d.val) - 3; })
+        .attr("y", barHeight / 2)
+        .attr("dx", function(d) { return x(d.val) < outsideLabelThreshold ? "0.7em" : "-0.3em"; })
+        .attr("dy", "0.3em")
+        .attr("text-anchor", function(d) { return x(d.val) < outsideLabelThreshold ? "start" : "end"; })
+        .attr("class", function(d) { return x(d.val) < outsideLabelThreshold ? "label outside-label" : "label"; })
+        .text(function(d) { return d.label; });
 }
 
 function createHistogram(values) {
