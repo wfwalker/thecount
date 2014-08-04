@@ -9,7 +9,8 @@ function get(prop) {
 function createFrequencyGraph(inDivClass, data) {
     var width = 900,
         outsideLabelThreshold = 200,
-        barHeight = 25;
+        barHeight = 25, 
+        formatCount = d3.format(",.0f");
 
     var x = d3.scale.linear()
         .domain([0, d3.max(data, function(d) { return d.val; })])
@@ -36,7 +37,7 @@ function createFrequencyGraph(inDivClass, data) {
         .attr("dy", "0.3em")
         .attr("text-anchor", function(d) { return x(d.val) < outsideLabelThreshold ? "start" : "end"; })
         .attr("class", function(d) { return x(d.val) < outsideLabelThreshold ? "label outside-label" : "label"; })
-        .text(function(d) { return d.label; });
+        .text(function(d) { return d.label + " (" + formatCount(d.val) + ")"  });
 }
 
 function createHistogram(values) {
@@ -91,6 +92,7 @@ function createHistogram(values) {
         .attr("y", 6)
         .attr("x", (x(data[0].x + data[0].dx) - x(data[0].x)) / 2)
         .attr("text-anchor", "middle")
+        .attr("class", "label")
         .text(function(d) { return formatCount(d.y); });
 
     svg.append("g")
@@ -144,6 +146,7 @@ function createPieChart(data) {
       .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
+      .attr("class", "label")
       .text(function(d) { return d.data.label; });
 }
 
