@@ -437,8 +437,15 @@ function privateAddDistributionRoute(aGraph) {
 
 function privateAddFrequencyRoute(aGraph) {
     app.get('/frequency/' + aGraph.routeFragment, function(req, resp, next) {
+        var startDate, endDate = null;
+        if (req.query) {
+            startDate = req.query.start_date;
+            endDate = req.query.end_date;
+            limit = req.query.limit;
+        }
+        frequency = statistics.getFrequency(marketplaceCatalog, aGraph.getter, startDate, endDate, limit);
         resp.render('frequency',
-            { graphsMenu: graphs, title: aGraph.title, chartData: statistics.getFrequency(marketplaceCatalog, aGraph.getter, 20) }
+            { graphsMenu: graphs, title: aGraph.title, chartData: frequency.chartData, total: frequency.total}
         );
     });
 }

@@ -72,15 +72,22 @@ function getDaysSinceCreated(inApp) {
 // using the given getter function. Used for properties where each app may have 
 // any number of string values.
 
-function getFrequency(inApps, getArrayOfStringsPerAppFn, inLimit) {
+function getFrequency(inApps, getArrayOfStringsPerAppFn, startDate, endDate, inLimit) {
     console.log('getFrequency');
+    startDate = Date.parse(startDate);
+    endDate = Date.parse(endDate);
 
     var counts = {};
     var appsFound = 0;
 
     for (index in inApps) {
         var app = inApps[index];
+        var createdDate = Date.parse(app.created);
         var strings = getArrayOfStringsPerAppFn(app);
+        if ( startDate && createdDate < startDate )
+          continue;
+        if ( endDate && createdDate >= endDate )
+          continue;
 
         if (strings.length > 0) {
             appsFound++;
@@ -113,7 +120,7 @@ function getFrequency(inApps, getArrayOfStringsPerAppFn, inLimit) {
     });
 
     chartData = chartData.slice(0, inLimit);
-    return chartData;
+    return {total: appsFound, chartData: chartData};
 }
 
 // returns the author of an app
