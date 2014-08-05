@@ -52,8 +52,16 @@ function getPackageSize(inApp) {
 
 // returns how many days since the app was reviewed
 
-function getDaysOld(inApp) {
+function getDaysSinceReviewed(inApp) {
     var reviewedDate = Date.parse(inApp.reviewed);
+    var now = Date.now();
+    return (now - reviewedDate) / (24 * 60 * 60 * 1000.0);
+}
+
+// returns how many days since the app was created
+
+function getDaysSinceCreated(inApp) {
+    var reviewedDate = Date.parse(inApp.created);
     var now = Date.now();
     return (now - reviewedDate) / (24 * 60 * 60 * 1000.0);
 }
@@ -435,7 +443,8 @@ module.exports.getValues = getValues;
 module.exports.getRatingCount = getRatingCount;
 module.exports.getAverageRating = getAverageRating;
 module.exports.getPackageSize = getPackageSize;
-module.exports.getDaysOld = getDaysOld;
+module.exports.getDaysSinceCreated = getDaysSinceCreated;
+module.exports.getDaysSinceReviewed = getDaysSinceReviewed;
 
 module.exports.getFrequency = getFrequency;
 module.exports.getAuthor = getAuthor;

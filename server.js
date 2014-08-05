@@ -244,7 +244,7 @@ app.param('days_old', function(req, resp, next, id) {
 
     for (index in marketplaceCatalog) {
         var app = marketplaceCatalog[index];
-        if (statistics.getDaysOld(app) < days_old) {
+        if (statistics.getDaysSinceReviewed(app) < days_old) {
             apps.push(app);
         }
     }
@@ -409,7 +409,8 @@ var graphs = [
     { kind: 'distribution', routeFragment: 'rating_count', title: 'num ratings', getter: statistics.getRatingCount },
     { kind: 'distribution', routeFragment: 'rating', title: 'avg rating', getter: statistics.getAverageRating },
     { kind: 'distribution', routeFragment: 'package_size', title: 'package size in MB', getter: statistics.getPackageSize },
-    { kind: 'distribution', routeFragment: 'days_old', title: 'days since review', getter: statistics.getDaysOld },
+    { kind: 'distribution', routeFragment: 'days_since_reviewed', title: 'days since reviewed', getter: statistics.getDaysSinceReviewed },
+    { kind: 'distribution', routeFragment: 'days_since_created', title: 'days since created', getter: statistics.getDaysSinceCreated },
     { kind: 'frequency', routeFragment: 'icon_sizes', title: 'icon sizes', getter: statistics.getIconSizes },
     { kind: 'frequency', routeFragment: 'library', title: 'library', getter: statistics.getLibraryNames },
     { kind: 'frequency', routeFragment: 'file', title: 'file', getter: statistics.getFilenames },
