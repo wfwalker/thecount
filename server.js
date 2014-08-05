@@ -49,13 +49,31 @@ function sumAppcacheEntrySizes(app) {
     return total;
 }
 
+function getAppsByAuthor(marketplaceCatalog) {
+    var appsByAuthor = {};
+
+    for (index in marketplaceCatalog) {
+        var marketplaceApp = marketplaceCatalog[index];
+        if (appsByAuthor[marketplaceApp.author]) {
+            appsByAuthor[marketplaceApp.author].push(marketplaceApp);
+        } else {
+            appsByAuthor[marketplaceApp.author] = [marketplaceApp];
+        }
+    }
+
+    return appsByAuthor;
+}
+
+// GLOBALS
+
 var marketplaceCatalog = {};
 var globalStatistics = {};
+var appsByAuthor = {};
 
 try {
     console.log('About to Parse Catalog');
 
-    // parse the giant apps.json created by thecount.js command-line tool
+    // parse the giant apps.json created by thecount.js command-line tool or by /rebuild
     var marketplaceCatalog = require('./apps.json');
     console.log('loaded ' + Object.keys(marketplaceCatalog).length + ' apps');
     console.log('parsed catalog'); 
@@ -72,8 +90,10 @@ try {
     console.log('added appcache size');
 
     globalStatistics = statistics.computeGlobalStatistics(marketplaceCatalog);
-
     console.log(globalStatistics);
+
+    appsByAuthor = getAppsByAuthor(marketplaceCatalog);
+    console.log('added apps by author ' + Object.keys(appsByAuthor).length);
 }
 catch (e) {
     console.log('error parsing catalog');
@@ -272,7 +292,7 @@ app.get('/listing/author/:author', function(req, resp, next) {
     );
 });
 
-// route requests to retrieve apps by author
+// route requests to search across the entire JSON for each app
 
 app.get('/listing/search/:search', function(req, resp, next) {
     resp.render('applisting',
@@ -280,27 +300,6 @@ app.get('/listing/search/:search', function(req, resp, next) {
     );
 });
 
-
-// route requests to retrieve fullscreen portrait-primary apps
-
-app.get('/listing/fullscreen-primary-portrait', function(req, resp, next) {
-    var apps = [];
-
-    for (index in marketplaceCatalog) {
-        var app = marketplaceCatalog[index];
-        if (app.manifest && app.manifest.fullscreen && app.manifest.orientation) {
-            if ((app.manifest.orientation == 'portrait-primary') || (app.manifest.orientation.indexOf('portrait-primary') >= 0)) {
-                apps.push(app);
-            }
-        }
-    }
-
-    req.apps = apps;
-
-    resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'Fullscreen and portrait-primary' }
-    );
-});
 
 // route requests to retrieve apps with errors
 
@@ -480,6 +479,45 @@ app.get('/rebuild', function(req, resp, next) {
 
     resp.redirect('/rebuildreport');
 });
+
+app.get('/authors/num_apps', function(req, resp, next) {
+    console.log('/authors/days_since_created');
+
+    var numberOfApps = [];
+
+    for (var authorIndex in appsByAuthor) {
+        var apps = appsByAuthor[authorIndex];
+        console.log(apps.length + " " + authorIndex);
+        numberOfApps.push(apps.length);
+    }
+
+    resp.render('distribution',
+        { graphsMenu: graphs, title: 'how many apps per author', values: numberOfApps }
+    );
+
+});
+
+app.get('/authors/months_since_submission', function(req, resp, next) {
+    console.log('/authors/months_since_submission');
+
+    var monthsSinceSubmission = [];
+
+    for (var authorIndex in appsByAuthor) {
+        var apps = appsByAuthor[authorIndex];
+
+        // arbitrarily pick the first one
+        var marketplaceApp = apps[0];
+        var createdDate = Date.parse(marketplaceApp.created);
+        var now = Date.now();
+        // note: not really months, actually just buckets of 30 days
+        monthsSinceSubmission.push((now - createdDate) / (30 * 24 * 60 * 60 * 1000));
+    }
+
+    resp.render('distribution',
+        { graphsMenu: graphs, title: 'active authors by month', values: monthsSinceSubmission }
+    );
+});
+
 
 app.get('/rebuildreport', function(req, resp, next) {
     console.log('/rebuildreport');
