@@ -5,7 +5,7 @@ TheCount is a web server based on data gathered from the Firefox Marketplace usi
 
 ## Data Gathering
 
-There's a standalone command-line tool called 'thecount.js' that uses the Marketplace API to download all the metadata about all the apps in the Marketplace catalog. This tool also retrieves all the appcache manifests for all of those apps, and downloads all the ZIP packages for all the packaged apps. All this metadata is collected into a single JS object and then written as JSON (approximately 50MB).
+There's a standalone command-line tool called `thecount.js` that uses the Marketplace API to download all the metadata about all the apps in the Marketplace catalog. This tool also retrieves all the appcache manifests for all of those apps, and downloads all the ZIP packages for all the packaged apps. All this metadata is collected into a single JS object and then written as JSON (approximately 50MB).
 
 ## Analytics
 
@@ -17,6 +17,15 @@ TheCount also offers a minimal app disovery and installation experienced based o
 
 ## How To Use
 
-To collect metadata, do "node theserver.js --build"
+1. Install dependencies: `npm install`
+2. Collect metadata: `node thecount.js --build`
+3. Run the server: `node server.js`
 
-To run the server, do "node server.js"
+### Deploy your own
+
+1. Set up your account on [Mozilla
+   PaaS](https://mana.mozilla.org/wiki/pages/viewpage.action?pageId=30081453)
+2. `cp stackato.yml-dist stackato.yml`
+3. Update `stackato.yml` with your own app name. (e.g., "thecount-username")
+4. [`stackato
+   push`](https://mana.mozilla.org/wiki/pages/viewpage.action?pageId=30081453#MozillaPaaS%28Stackato%29-TestingpushingandmakingserviceswiththeClient)
