@@ -465,8 +465,9 @@ var graphs = [
 
 function privateAddDistributionRoute(aGraph) {
     app.get('/distribution/' + aGraph.routeFragment, function(req, resp, next) {
+        values = statistics.getValues(req.apps, aGraph.getter);
         resp.render('distribution',
-            { graphsMenu: graphs, title: aGraph.title, values: statistics.getValues(req.apps, aGraph.getter) }
+            { graphsMenu: graphs, title: aGraph.title, values: values.values, total: values.total }
         );
     });
 }
@@ -475,15 +476,16 @@ function privateAddFrequencyRoute(aGraph) {
     app.get('/frequency/' + aGraph.routeFragment, function(req, resp, next) {
         frequency = statistics.getFrequency(req.apps, aGraph.getter);
         resp.render('frequency',
-            { graphsMenu: graphs, title: aGraph.title, chartData: frequency.chartData, total: frequency.total}
+            { graphsMenu: graphs, title: aGraph.title, chartData: frequency.chartData, total: frequency.total }
         );
     });
 }
 
 function privateAddPieRoute(aGraph) {
     app.get('/pie/' + aGraph.routeFragment, function(req, resp, next) {
+        frequency = statistics.getFrequency(req.apps, aGraph.getter);
         resp.render('pie',
-            { graphsMenu: graphs, title: aGraph.title, chartData: statistics.getFrequency(req.apps, aGraph.getter) }
+            { graphsMenu: graphs, title: aGraph.title, chartData: frequency.chartData, total: frequency.total }
         );
     });
 }
