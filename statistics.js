@@ -82,12 +82,7 @@ function getFrequency(inApps, getArrayOfStringsPerAppFn, startDate, endDate, inL
 
     for (index in inApps) {
         var app = inApps[index];
-        var createdDate = Date.parse(app.created);
         var strings = getArrayOfStringsPerAppFn(app);
-        if ( startDate && createdDate < startDate )
-          continue;
-        if ( endDate && createdDate >= endDate )
-          continue;
 
         if (strings.length > 0) {
             appsFound++;
