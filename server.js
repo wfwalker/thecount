@@ -106,6 +106,42 @@ app.set('view engine', 'jade');
 // Set the directory that contains the Jade views
 app.set('views', __dirname + '/views');
 
+// Middleware to filter the catalogue by url params
+// Someone was already abusing globals when I got here
+
+app.use(function(req, resp, next){
+    console.log('filter middleware');
+    req.apps = marketplaceCatalog;
+    var since = req.query.since;
+    var until = req.query.until;
+    var limit = req.query.limit;
+    console.log('since: ' + since + ' until: ' + until + ' limit: ' + limit);
+    if (since || until || limit) {
+        console.log("found filter url params");
+        var count = 0;
+        filteredCatalog = {};
+        startDate = since ? Date.parse(since) : null;
+        endDate = until ? Date.parse(until) : null;
+        for (index in marketplaceCatalog) {
+            var app = marketplaceCatalog[index];
+            var createdDate = Date.parse(app.created);
+
+            if ( startDate && createdDate < startDate )
+                continue;
+            if ( endDate && createdDate >= endDate )
+                continue;
+            if ( count >= limit)
+                continue;
+            filteredCatalog[index] = app;
+            count++;
+        }
+        console.log("catalog count: " + Object.keys(filteredCatalog).length);
+        req.apps = filteredCatalog;
+    }
+    next();
+});
+
+
 // ROUTING PARAMETERS
 
 // deal with an app_id parameter in a REST route by retrieving an app by its numeric ID
@@ -429,24 +465,27 @@ var graphs = [
 
 function privateAddDistributionRoute(aGraph) {
     app.get('/distribution/' + aGraph.routeFragment, function(req, resp, next) {
+        values = statistics.getValues(req.apps, aGraph.getter);
         resp.render('distribution',
-            { graphsMenu: graphs, title: aGraph.title, values: statistics.getValues(marketplaceCatalog, aGraph.getter) }
+            { graphsMenu: graphs, title: aGraph.title, values: values.values, total: values.total }
         );
     });
 }
 
 function privateAddFrequencyRoute(aGraph) {
     app.get('/frequency/' + aGraph.routeFragment, function(req, resp, next) {
+        frequency = statistics.getFrequency(req.apps, aGraph.getter);
         resp.render('frequency',
-            { graphsMenu: graphs, title: aGraph.title, chartData: statistics.getFrequency(marketplaceCatalog, aGraph.getter, 20) }
+            { graphsMenu: graphs, title: aGraph.title, chartData: frequency.chartData, total: frequency.total }
         );
     });
 }
 
 function privateAddPieRoute(aGraph) {
     app.get('/pie/' + aGraph.routeFragment, function(req, resp, next) {
+        frequency = statistics.getFrequency(req.apps, aGraph.getter);
         resp.render('pie',
-            { graphsMenu: graphs, title: aGraph.title, chartData: statistics.getFrequency(marketplaceCatalog, aGraph.getter, 20) }
+            { graphsMenu: graphs, title: aGraph.title, chartData: frequency.chartData, total: frequency.total }
         );
     });
 }

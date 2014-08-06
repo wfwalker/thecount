@@ -3,17 +3,19 @@
 
 function getValues(inApps, getIntValuePerAppFn) {
     var values = [];
+    var appsFound = 0;
 
     for (index in inApps) {
         var app = inApps[index];
         var intValue = getIntValuePerAppFn(app);
 
         if (intValue != null) {
+            appsFound++;
             values.push(intValue);
         }
     }
 
-    return values
+    return {total: appsFound, values: values}
 }
 
 // returns the average rating for apps with more than five ratings, null otherwise
@@ -72,7 +74,7 @@ function getDaysSinceCreated(inApp) {
 // using the given getter function. Used for properties where each app may have 
 // any number of string values.
 
-function getFrequency(inApps, getArrayOfStringsPerAppFn, inLimit) {
+function getFrequency(inApps, getArrayOfStringsPerAppFn) {
     console.log('getFrequency');
 
     var counts = {};
@@ -112,8 +114,7 @@ function getFrequency(inApps, getArrayOfStringsPerAppFn, inLimit) {
         return b.val - a.val;
     });
 
-    chartData = chartData.slice(0, inLimit);
-    return chartData;
+    return {total: appsFound, chartData: chartData};
 }
 
 // returns the author of an app
