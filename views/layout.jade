@@ -12,6 +12,7 @@ html
     link(rel="stylesheet",href="/stylesheets/bootstrap.css")
     link(rel="stylesheet",href="/stylesheets/barchart.css")
     link(rel="stylesheet",href="/stylesheets/tablesorter.blue.css")
+    link(rel="stylesheet",href="/stylesheets/datepicker.css")
 
   body
     div(class='navbar navbar-inverse navbar-fixed-top')
@@ -71,19 +72,23 @@ html
                   a(href='/frequency/permission') permission
                 li
                   a(href='/frequency/activity') activity
-          form(class='navbar-form navbar-left',role='search')
+          form(class='navbar-form navbar-left')
             .form-group
               input(id='searchText',name='searchText',type='text',class='form-control',placeholder='Search')
-            button(type='submit',class='btn btn-primary searchButton') Submit
+              input(id='since',name='since',type='text',class='form-control datepicker', placeholder='since', data-date-format="yyyy-mm-dd", autocomplete='off')
+              input(id='until',name='until',type='text',class='form-control datepicker', placeholder='until', data-date-format="yyyy-mm-dd", autocomplete='off')
+            button(type='submit',class='btn btn-primary') Submit
 
 
     script(src="//cdn.jsdelivr.net/jquery/1.10.2/jquery-1.10.2.js")
     script(src="//cdn.jsdelivr.net/tablesorter/2.17.4/js/jquery.tablesorter.js")
     script(src="//cdn.jsdelivr.net/tablesorter/2.17.4/js/jquery.tablesorter.widgets.min.js")
     script(src="//cdn.jsdelivr.net/bootstrap/3.1.1/js/bootstrap.min.js")
+    script(src="/scripts/bootstrap-datepicker.js")
     script(src="//cdn.jsdelivr.net/d3js/3.4.6/d3.min.js")
     script(src="/scripts/installHelpers.js")    
     script(src="/scripts/d3Helpers.js")    
+    script(src="/scripts/app.js")
 
     .container
       div(style='margin-top: 60px')
