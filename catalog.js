@@ -162,7 +162,11 @@ function getAppcacheManifest(inApp) {
 
 function getLaunchPage(inApp) {
     var manifestURL = url.parse(inApp.manifest_url);
-    var launchPathURL = url.resolve(manifestURL, inApp.manifest.launch_path);
+    var launchPathURL = manifestURL; 
+
+    if (inApp.manifest.launch_path) {
+        launchPathURL = url.resolve(manifestURL, inApp.manifest.launch_path);
+    }
 
     return getPromiseForRequest(launchPathURL).catch(function (error) {
         console.log('getLaunchPage ' + launchPathURL + ' CATCH ' + error);
@@ -218,6 +222,7 @@ function addPromiseForManifest(subpromises, app) {
         // add a subpromise for the app manifest
         subpromises.push(getManifest(app).then(function (data) {
             theScope.apps[app.id].manifest = data;
+            theScope.apps[app.id].included_scripts = [];
 
             // for apps with a package, add a promise to retrieve the package and the manifest inside it
             if (data.package_path) {
@@ -243,9 +248,15 @@ function addPromiseForManifest(subpromises, app) {
                 subpromises.push(getLaunchPage(theScope.apps[app.id]).catch(function () {
                     console.log('catch getLaunchPage inside addPromiseForManifest');
                 }).then(function (launchPageData) {
+                    theScope.apps[app.id].included_scripts = [];
                     $ = cheerio.load(launchPageData);
-                    console.log("I GOT ME A LAUNCH PAGE " + launchPageData.length);
-                    console.log($('script').attr('src'));
+
+                    $('html').find('script').each(function (index, scriptTag) {
+                        if (scriptTag.attribs.src) {
+                            theScope.apps[app.id].included_scripts.push(scriptTag.attribs.src);
+                            // console.log(app.id + ' ' + scriptTag.attribs.src);
+                        }
+                    });
                 }));
             }
 
@@ -394,6 +405,7 @@ function createMarketplaceCatalogDB(inOutputFile) {
         console.log('DONE ALL ' + Object.keys(theScope.apps).length + ', still pending ' + theScope.pendingRequests); 
     }).catch(function (error) {
         console.log('createMarketplaceCatalogDB err ' + error);
+        console.log(error.stack);
     }).finally(function() {
         theScope.isRunning = false;
         fs.writeFile(inOutputFile, JSON.stringify(theScope.apps, null, 4), function(err) {
