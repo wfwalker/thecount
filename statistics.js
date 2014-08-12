@@ -282,6 +282,7 @@ knownLibraries['backbone-min.js'] = 'Backbone';
 knownLibraries['jquery.js'] = 'jQuery';
 knownLibraries['jquery-1.8.2.js'] = 'jQuery';
 knownLibraries['jquery-1.9.1.js'] = 'jQuery';
+knownLibraries['jquery-1.11.1.js'] = 'jQuery';
 knownLibraries['jquery-2.0.2.js'] = 'jQuery';
 knownLibraries['jquery-2.0.3.js'] = 'jQuery';
 
@@ -291,6 +292,8 @@ knownLibraries['jquery-1.3.1.min.js'] = 'jQuery';
 knownLibraries['jquery-1.7.1-min.js'] = 'jQuery';
 knownLibraries['jquery-1.7.1.min.js'] = 'jQuery';
 knownLibraries['jquery-1.10.1.min.js'] = 'jQuery';
+
+knownLibraries['localforage.js'] = 'LocalForage';
 
 knownLibraries['jquery.min.js'] = 'jQuery';
 knownLibraries['jquery-2.0.0.min.js'] = 'jQuery';
