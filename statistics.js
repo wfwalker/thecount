@@ -274,7 +274,9 @@ function getActivityKeys(inApp) {
 
 var knownLibraries = {};
 knownLibraries['bootstrap.js'] = 'Bootstrap';
+knownLibraries['bootstrap-responsive.css'] = 'Bootstrap';
 knownLibraries['bootstrap.min.js'] = 'Bootstrap';
+knownLibraries['bootstrap.min.css'] = 'Bootstrap';
 
 knownLibraries['backbone.js'] = 'Backbone';
 knownLibraries['backbone-min.js'] = 'Backbone';
@@ -309,20 +311,35 @@ knownLibraries['jquery-1.4.2.min.js'] = 'jQuery';
 knownLibraries['game.js'] = 'GameJS';
 knownLibraries['game.min.js'] = 'GameJS';
 
-knownLibraries['jquery.mobile-1.3.0.min.js'] = 'jQuery Mobile';
-knownLibraries['jquery.mobile-1.3.2.min.js'] = 'jQuery Mobile';
-knownLibraries['jquery.mobile-1.3.1.min.js'] = 'jQuery Mobile';
-knownLibraries['jquery.mobile-1.2.0.js'] = 'jQuery Mobile';
-knownLibraries['jquery.mobile-1.2.0.min.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile-1.0.min.js'] = 'jQuery';
+knownLibraries['jquery.mobile-1.1.0.min.css'] = 'jQuery';
 knownLibraries['jquery.mobile-1.1.0.min.js'] = 'jQuery Mobile';
-knownLibraries['jquery.mobile.min.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile-1.2.0.css'] = 'jQuery';
+knownLibraries['jquery.mobile-1.2.0.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile-1.2.0.min.css'] = 'jQuery';
+knownLibraries['jquery.mobile-1.2.0.min.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile-1.3.0.min.css'] = 'jQuery';
+knownLibraries['jquery.mobile-1.3.0.min.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile-1.3.1.min.css'] = 'jQuery';
+knownLibraries['jquery.mobile-1.3.1.min.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile-1.3.2.js'] = 'jQuery';
+knownLibraries['jquery.mobile-1.3.2.min.css'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile-1.3.2.min.css'] = 'jQuery';
+knownLibraries['jquery.mobile-1.3.2.min.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile-1.4.0.min.css'] = 'jQuery';
 knownLibraries['jquery.mobile-1.4.0.min.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile-1.4.2.css'] = 'jQuery';
+knownLibraries['jquery.mobile-1.4.2.js'] = 'jQuery';
+knownLibraries['jquery.mobile-1.4.2.min.css'] = 'jQuery';
 knownLibraries['jquery.mobile-1.4.2.min.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile-1.6.4.min.js'] = 'jQuery Mobile';
 knownLibraries['jquery.mobile.js'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile.min.js'] = 'jQuery Mobile';
 
 knownLibraries['jquery-ui.min.js'] = 'jQuery UI';
 
 knownLibraries['tgs-adapters-0.3.min.js'] = 'TreSensa';
+knownLibraries['tgs-0.3.css'] = 'TreSensa';
 knownLibraries['tgs-0.3.min.js'] = 'TreSensa';
 knownLibraries['tge-1.0.min.js'] = 'TreSensa';
 knownLibraries['tgl-1.0.min.js'] = 'TreSensa';
@@ -352,8 +369,12 @@ knownLibraries['zepto.js'] = 'Zepto.js';
 knownLibraries['zepto.min.js'] = 'Zepto.js';
 knownLibraries['c2runtime.js'] = 'Construct 2';
 knownLibraries['c2webappstart.js'] = 'Construct 2';
+
 knownLibraries['angular.js'] = 'Angular';
+knownLibraries['angular-touch.js'] = 'Angular';
 knownLibraries['angular.min.js'] = 'Angular';
+knownLibraries['angular-touch.min.js'] = 'Angular';
+
 knownLibraries['cordova.js'] = 'Cordova';
 knownLibraries['cordova_plugins.js'] = 'Cordova';
 knownLibraries['cordova.min.js'] = 'Cordova';
@@ -363,6 +384,11 @@ knownLibraries['phonegap.min.js'] = 'Cordova';
 knownLibraries['iscroll.js'] = 'Cubiq iSCroll.js';
 knownLibraries['iscroll-lite.min.js'] = 'Cubiq iSCroll.js';
 knownLibraries['add2home.js'] = 'Cubiq Add to home screen';
+
+knownLibraries['modernizr.js'] = 'Modernizr';
+knownLibraries['modernizr-2.6.2.min.js'] = 'Modernizr';
+knownLibraries['modernizr-2.5.3.min.js'] = 'Modernizr';
+knownLibraries['modernizr-1.js'] = 'Modernizr';
 
 knownLibraries['inneractive.js'] = 'InnerActive Ads';
 knownLibraries['receiptverifier.js'] = 'mozPay receipt verifier';
@@ -380,7 +406,7 @@ knownLibraries['underscore-min.js'] = 'Underscore';
 
 function getFilenames(inApp) {
     var unionOfFilenames = [];
-    var stopNames = ['', 'ads.js', 'init.js', 'app.js', 'index.js', 'main.js', 'script.js', 'manifest.webapp', 'zigbert.rsa', 'zigbert.sf', 'manifest.mf', 'ids.json', 'index.html'];
+    var stopNames = ['', 'ads.js', 'init.js', 'app.js', 'index.js', 'main.js', 'script.js', 'manifest.webapp', 'zigbert.rsa', 'zigbert.sf', 'manifest.mf', 'ids.json', 'index.html', 'style.css', 'app.css', 'headers.css', 'buttons.css', 'main.css', 'stylesheet.css' ];
 
     if (inApp.package_entries) {
         unionOfFilenames.push.apply(unionOfFilenames, inApp.package_entries);
@@ -458,6 +484,7 @@ function computeGlobalStatistics(marketplaceCatalog) {
 // We export these functions for use by the server (see server.js)
 
 module.exports.getLibraryNames = getLibraryNames;
+module.exports.knownLibraries = knownLibraries;
 module.exports.getValues = getValues;
 
 module.exports.getRatingCount = getRatingCount;

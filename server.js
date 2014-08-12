@@ -376,6 +376,28 @@ app.get('/listing/appcache', function(req, resp, next) {
 });
 
 
+// route for popular filenames not associated with libraries
+
+app.get('/filenames/unknown', function(req, resp, next) {
+    allFilenames = statistics.getFrequency(req.apps, statistics.getFilenames);
+    theFilenames = [];
+
+    for (var index in allFilenames.chartData) {
+        var aFilename = allFilenames.chartData[index];
+
+        if (aFilename.val > 10 && (! statistics.knownLibraries[aFilename.label])) {
+            theFilenames.push(aFilename);
+        }
+    }
+
+    console.log(theFilenames);
+
+    resp.render('frequency',
+        { graphsMenu: graphs, title: 'unknown filenames', chartData: theFilenames, total: allFilenames.total }
+    );
+});
+
+
 // route requests to retrieve apps by number of user ratings
 
 app.get('/listing/min_ratings/:min_ratings', function(req, resp, next) {

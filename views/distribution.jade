@@ -3,7 +3,7 @@ extend layout
 block content
   h2 #{title}
 
-  h3 Total Apps #{total}
+  h3 Distribution of #{title} among #{numeral(total).format('0,0')} apps
 
   div(class='barchart distribution')
   div(class='histogram')
