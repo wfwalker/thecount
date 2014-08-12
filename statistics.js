@@ -335,6 +335,15 @@ knownLibraries['Vars.js'] = 'Mippin';
 
 knownLibraries['tappable.js'] = 'Tappable';
 
+
+knownLibraries['brick-1.0.1.js'] = 'Brick';
+knownLibraries['brick-1.0.1.min.js'] = 'Brick';
+knownLibraries['brick-1.0.1.css'] = 'Brick';
+knownLibraries['brick.js'] = 'Brick';
+knownLibraries['brick.min.js'] = 'Brick';
+
+knownLibraries['ember-1.6.1.min.js'] = 'Ember';
+
 knownLibraries['require.js'] = 'Require.js';
 knownLibraries['zepto.js'] = 'Zepto.js';
 knownLibraries['zepto.min.js'] = 'Zepto.js';
@@ -380,12 +389,19 @@ function getFilenames(inApp) {
         }
     } 
 
+    if (inApp.included_scripts) {
+        for (var entryIndex in inApp.included_scripts) {
+            var fullPath = inApp.included_scripts[entryIndex];
+            unionOfFilenames.push(fullPath.substring(fullPath.lastIndexOf('/') + 1));
+        }
+    } 
+
     var uniqueFilenames = unionOfFilenames.filter(function(elem, pos, self) {
         return self.indexOf(elem) == pos;
     });
 
     var filteredFilenames = uniqueFilenames.filter(function(elem, pos, self) {
-        return elem.indexOf('.js') > 0 && stopNames.indexOf(elem) == -1;
+        return (elem.indexOf('.js') > 0 || elem.indexOf('.css') > 0)&& stopNames.indexOf(elem) == -1;
     });
 
     return filteredFilenames;
