@@ -281,19 +281,22 @@ knownLibraries['bootstrap.min.css'] = 'Bootstrap';
 knownLibraries['backbone.js'] = 'Backbone';
 knownLibraries['backbone-min.js'] = 'Backbone';
 
-knownLibraries['jquery.js'] = 'jQuery';
-knownLibraries['jquery-1.8.2.js'] = 'jQuery';
-knownLibraries['jquery-1.9.1.js'] = 'jQuery';
-knownLibraries['jquery-1.11.1.js'] = 'jQuery';
-knownLibraries['jquery-2.0.2.js'] = 'jQuery';
-knownLibraries['jquery-2.0.3.js'] = 'jQuery';
-
+knownLibraries['jquery-1.10.1.min.js'] = 'jQuery';
+knownLibraries['jquery-1.10.2.js'] = 'jQuery';
 knownLibraries['jquery-1.10.2.min.js'] = 'jQuery';
-knownLibraries['jquery-1.9.1.min.js'] = 'jQuery';
+knownLibraries['jquery-1.11.1.js'] = 'jQuery';
+knownLibraries['jquery-1.11.1.min.js'] = 'jQuery';
 knownLibraries['jquery-1.3.1.min.js'] = 'jQuery';
+knownLibraries['jquery-1.6.4.min.js'] = 'jQuery';
 knownLibraries['jquery-1.7.1-min.js'] = 'jQuery';
 knownLibraries['jquery-1.7.1.min.js'] = 'jQuery';
-knownLibraries['jquery-1.10.1.min.js'] = 'jQuery';
+knownLibraries['jquery-1.8.2.js'] = 'jQuery';
+knownLibraries['jquery-1.9.1.js'] = 'jQuery';
+knownLibraries['jquery-1.9.1.min.js'] = 'jQuery';
+knownLibraries['jquery-2.0.2.js'] = 'jQuery';
+knownLibraries['jquery-2.0.3.js'] = 'jQuery';
+knownLibraries['jquery-2.1.1.min.js'] = 'jQuery';
+knownLibraries['jquery.js'] = 'jQuery';
 
 knownLibraries['localforage.js'] = 'LocalForage';
 
@@ -336,6 +339,15 @@ knownLibraries['jquery.mobile-1.6.4.min.js'] = 'jQuery Mobile';
 knownLibraries['jquery.mobile.js'] = 'jQuery Mobile';
 knownLibraries['jquery.mobile.min.js'] = 'jQuery Mobile';
 
+knownLibraries['jquery.mobile.icons.min.css'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile.min.css'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile.structure-1.0.min.css'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile.structure-1.3.2.min.css'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile.structure-1.4.2.min.css'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile.structure.min.css'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile.theme-1.0.min.css'] = 'jQuery Mobile';
+knownLibraries['jquery.mobile.theme-1.3.2.min.css'] = 'jQuery Mobile';
+
 knownLibraries['jquery-ui.min.js'] = 'jQuery UI';
 
 knownLibraries['tgs-adapters-0.3.min.js'] = 'TreSensa';
@@ -347,6 +359,7 @@ knownLibraries['tgl.boot.min.js'] = 'TreSensa';
 knownLibraries['GameConfig.js'] = 'TreSensa';
 knownLibraries['viewporter.min.js'] = 'TreSensa';
 
+knownLibraries['mippin.css'] = 'Mippin';
 knownLibraries['Model.js'] = 'Mippin';
 knownLibraries['View.js'] = 'Mippin';
 knownLibraries['Controller.js'] = 'Mippin';
@@ -354,7 +367,6 @@ knownLibraries['AppUX.js'] = 'Mippin';
 knownLibraries['Vars.js'] = 'Mippin';
 
 knownLibraries['tappable.js'] = 'Tappable';
-
 
 knownLibraries['brick-1.0.1.js'] = 'Brick';
 knownLibraries['brick-1.0.1.min.js'] = 'Brick';
@@ -374,6 +386,18 @@ knownLibraries['angular.js'] = 'Angular';
 knownLibraries['angular-touch.js'] = 'Angular';
 knownLibraries['angular.min.js'] = 'Angular';
 knownLibraries['angular-touch.min.js'] = 'Angular';
+knownLibraries['angular-route.min.js'] = 'Angular';
+
+knownLibraries['angular-animate.js'] = 'Angular';
+knownLibraries['angular-animate.min.js'] = 'Angular';
+knownLibraries['angular-csp.css'] = 'Angular';
+knownLibraries['angular-resource.js'] = 'Angular';
+knownLibraries['angular-resource.min.js'] = 'Angular';
+knownLibraries['angular-route.js'] = 'Angular';
+knownLibraries['angular-sanitize.js'] = 'Angular';
+knownLibraries['angular-sanitize.min.js'] = 'Angular';
+knownLibraries['angular-ui-router.js'] = 'Angular';
+knownLibraries['angular-ui-router.min.js'] = 'Angular';
 
 knownLibraries['cordova.js'] = 'Cordova';
 knownLibraries['cordova_plugins.js'] = 'Cordova';
@@ -384,11 +408,19 @@ knownLibraries['phonegap.min.js'] = 'Cordova';
 knownLibraries['iscroll.js'] = 'Cubiq iSCroll.js';
 knownLibraries['iscroll-lite.min.js'] = 'Cubiq iSCroll.js';
 knownLibraries['add2home.js'] = 'Cubiq Add to home screen';
+knownLibraries['add2home.css'] = 'Cubiq Add to home screen';
 
 knownLibraries['modernizr.js'] = 'Modernizr';
 knownLibraries['modernizr-2.6.2.min.js'] = 'Modernizr';
 knownLibraries['modernizr-2.5.3.min.js'] = 'Modernizr';
 knownLibraries['modernizr-1.js'] = 'Modernizr';
+
+knownLibraries['progress_activity.css'] = 'Firefox OS Building Blocks';
+knownLibraries['lists.css'] = 'Firefox OS Building Blocks';
+knownLibraries['input_areas.css'] = 'Firefox OS Building Blocks';
+knownLibraries['drawer.css'] = 'Firefox OS Building Blocks';
+
+knownLibraries['adsbygoogle.js'] = 'Google AdSense';
 
 knownLibraries['inneractive.js'] = 'InnerActive Ads';
 knownLibraries['receiptverifier.js'] = 'mozPay receipt verifier';
