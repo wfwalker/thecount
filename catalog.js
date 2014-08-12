@@ -9,6 +9,7 @@ var url = require('url');
 var parseAppcacheManifest = require("parse-appcache-manifest");
 var admZip = require('adm-zip');
 var util = require('util');
+var cheerio = require('cheerio');
 
 // global scope
 
@@ -159,6 +160,20 @@ function getAppcacheManifest(inApp) {
 // returns a Q promise for retrieving an app's appcache manifest
 // catches errors and returns them as JSON
 
+function getLaunchPage(inApp) {
+    var manifestURL = url.parse(inApp.manifest_url);
+    var launchPathURL = url.resolve(manifestURL, inApp.manifest.launch_path);
+
+    return getPromiseForRequest(launchPathURL).catch(function (error) {
+        console.log('getLaunchPage ' + launchPathURL + ' CATCH ' + error);
+        // TODO: this doesn't seem to work
+        return {'error' : error.toString() };
+    });
+}
+
+// returns a Q promise for retrieving an app's appcache manifest
+// catches errors and returns them as JSON
+
 function getAppPackageAndExtractManifest(inApp) {
     var filename = '/tmp/' + inApp.id + '.zip';
     var manifestURL = url.parse(inApp.manifest_url);
@@ -223,6 +238,14 @@ function addPromiseForManifest(subpromises, app) {
                         var filename = zipEntry.entryName.substring(zipEntry.entryName.lastIndexOf('/') + 1);
                         theScope.apps[app.id].package_entries.push(filename);
                     });
+                }));
+            } else {
+                subpromises.push(getLaunchPage(theScope.apps[app.id]).catch(function () {
+                    console.log('catch getLaunchPage inside addPromiseForManifest');
+                }).then(function (launchPageData) {
+                    $ = cheerio.load(launchPageData);
+                    console.log("I GOT ME A LAUNCH PAGE " + launchPageData.length);
+                    console.log($('script').attr('src'));
                 }));
             }
 
