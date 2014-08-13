@@ -72,12 +72,17 @@ html
                   a(href='/frequency/permission') permission
                 li
                   a(href='/frequency/activity') activity
-          form(class='navbar-form navbar-left')
-            .form-group
+
+          form.navbar-form.navbar-left
+            .form-group.input-group-sm
               input(id='searchText',name='searchText',type='text',class='form-control',placeholder='Search')
+            button.btn.btn-primary.btn-sm.searchButton Search
+
+          form.navbar-form.navbar-left
+            .form-group.input-group-sm
               input(id='since',name='since',type='text',class='form-control datepicker', placeholder='since', data-date-format="yyyy-mm-dd", autocomplete='off')
               input(id='until',name='until',type='text',class='form-control datepicker', placeholder='until', data-date-format="yyyy-mm-dd", autocomplete='off')
-            button(type='submit',class='btn btn-primary') Submit
+            button(type='submit',class='btn btn-primary btn-sm') Filter
 
 
     script(src="//cdn.jsdelivr.net/jquery/1.10.2/jquery-1.10.2.js")
