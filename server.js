@@ -310,6 +310,25 @@ app.param('days_old', function(req, resp, next, id) {
     next();
 });
 
+// deal with a locale parameter by retrieving all the apps that support the given locale
+
+app.param('locale', function(req, resp, next, id) {
+    var locale = req.param('locale')
+    console.log('locale ' + locale);
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        if (statistics.getSupportedLocales(app).indexOf(locale) >= 0) {
+            apps.push(app);
+        }
+    }
+
+    req.locale = locale;
+    req.apps = apps;
+    next();
+});
+
 // ROUTING
 
 // route requests to retrieve a single app by ID
@@ -325,6 +344,14 @@ app.get('/app/:app_id', function(req, resp, next) {
 app.get('/listing/author/:author', function(req, resp, next) {
     resp.render('applisting',
         { apps: req.apps, graphsMenu: graphs, title: 'Published by ' + req.author }
+    );
+});
+
+// route requests to retrieve apps by author
+
+app.get('/listing/locale/:locale', function(req, resp, next) {
+    resp.render('applisting',
+        { apps: req.apps, graphsMenu: graphs, title: 'Available in ' + req.locale }
     );
 });
 
