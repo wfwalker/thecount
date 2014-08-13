@@ -58,13 +58,36 @@ block content
 
   div
     each type in appData.device_types
-      span #{type}, 
+      span.label.label-primary #{type}
+      span &nbsp;
 
-  div
     each category in appData.categories
-      span #{category}, 
+      span.label.label-default #{category}
+      span &nbsp;
 
-  p ratings #{appData.ratings.count} average #{appData.ratings.average}
+  h4
+    if appData.ratings.average >= 5
+      span.glyphicon.glyphicon-star
+    else
+      span.glyphicon.glyphicon-star-empty
+    if appData.ratings.average > 4
+      span.glyphicon.glyphicon-star
+    else
+      span.glyphicon.glyphicon-star-empty
+    if appData.ratings.average > 3
+      span.glyphicon.glyphicon-star
+    else
+      span.glyphicon.glyphicon-star-empty
+    if appData.ratings.average > 2
+      span.glyphicon.glyphicon-star
+    else
+      span.glyphicon.glyphicon-star-empty
+    if appData.ratings.average > 1
+      span.glyphicon.glyphicon-star
+    else
+      span.glyphicon.glyphicon-star-empty
+
+    span (#{appData.ratings.count})
 
   p
     span.glyphicon.glyphicon-time
