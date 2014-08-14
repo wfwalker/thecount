@@ -124,6 +124,7 @@ $(document).ready(function() {
 				var manifestURL = installListRequest.result[installListIndex].manifestURL;
 				installedManifestURLs.push(manifestURL);
 				appRecordsByManifest[manifestURL] = installListRequest.result[installListIndex];
+				$('#installed-app-list').append(installListRequest.result[installListIndex].manifest.name + '<br>');
 			}
 
 			wireUpInstallButtons(installedManifestURLs);
