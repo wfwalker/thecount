@@ -525,16 +525,16 @@ var graphs = [
     { kind: 'distribution', routeFragment: 'days_since_reviewed', title: 'days since reviewed', getter: statistics.getDaysSinceReviewed },
     { kind: 'distribution', routeFragment: 'days_since_created', title: 'days since created', getter: statistics.getDaysSinceCreated },
     { kind: 'frequency', routeFragment: 'icon_sizes', title: 'icon sizes', getter: statistics.getIconSizes },
-    { kind: 'frequency', routeFragment: 'library', title: 'library', getter: statistics.getLibraryNames },
-    { kind: 'frequency', routeFragment: 'file', title: 'file', getter: statistics.getFilenames },
+    { kind: 'frequency', routeFragment: 'library', title: 'library', getter: statistics.getLibraryNames, listingKind: 'library' },
+    { kind: 'frequency', routeFragment: 'file', title: 'file', getter: statistics.getFilenames, listingKind: 'filename' },
     { kind: 'frequency', routeFragment: 'category', title: 'category', getter: statistics.getCategoryStrings },
     { kind: 'frequency', routeFragment: 'platform', title: 'platform', getter: statistics.getPlatformCategories },
     { kind: 'pie', routeFragment: 'payment', title: 'payment', getter: statistics.getPaymentCategories },
-    { kind: 'frequency', routeFragment: 'author', title: 'author', getter: statistics.getAuthor },
-    { kind: 'frequency', routeFragment: 'locale', title: 'locale', getter: statistics.getSupportedLocales },
+    { kind: 'frequency', routeFragment: 'author', title: 'author', getter: statistics.getAuthor, listingKind: 'author' },
+    { kind: 'frequency', routeFragment: 'locale', title: 'locale', getter: statistics.getSupportedLocales, listingKind: 'locale' },
     { kind: 'frequency', routeFragment: 'region', title: 'region', getter: statistics.getSupportedRegions },
-    { kind: 'frequency', routeFragment: 'permission', title: 'permission', getter: statistics.getPermissionKeys },
-    { kind: 'frequency', routeFragment: 'activity', title: 'activity', getter: statistics.getActivityKeys },
+    { kind: 'frequency', routeFragment: 'permission', title: 'permission', getter: statistics.getPermissionKeys, listingKind: 'permission' },
+    { kind: 'frequency', routeFragment: 'activity', title: 'activity', getter: statistics.getActivityKeys, listingKind: 'activity' },
     { kind: 'frequency', routeFragment: 'orientation', title: 'orientation', getter: statistics.getOrientation },
     { kind: 'pie', routeFragment: 'installs_allowed_from', title: 'installs allowed from', getter: statistics.getInstallsAllowedFrom }
 ]
@@ -554,7 +554,7 @@ function privateAddFrequencyRoute(aGraph) {
     app.get('/frequency/' + aGraph.routeFragment, function(req, resp, next) {
         frequency = statistics.getFrequency(req.apps, aGraph.getter);
         resp.render('frequency',
-            { graphsMenu: graphs, title: aGraph.title, chartData: frequency.chartData, total: frequency.total }
+            { graphsMenu: graphs, title: aGraph.title, chartData: frequency.chartData, listingKind: aGraph.listingKind, total: frequency.total }
         );
     });
 }

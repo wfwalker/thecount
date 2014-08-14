@@ -6,7 +6,7 @@ function get(prop) {
   };
 }
 
-function createFrequencyGraph(inDivClass, data) {
+function createFrequencyGraph(inDivClass, inListingKind, data) {
     var width = 900,
         outsideLabelThreshold = 200,
         barHeight = 25, 
@@ -30,7 +30,9 @@ function createFrequencyGraph(inDivClass, data) {
         .attr("width", function(d) { return x(d.val); })
         .attr("height", barHeight - 1);
 
-    bar.append("text")
+    bar.append('svg:a')
+        .attr('xlink:href', function(d) { return '/listing/' + inListingKind + '/' + d.label })
+    .append("text")
         .attr("x", function(d) { return x(d.val) - 3; })
         .attr("y", barHeight / 2)
         .attr("dx", function(d) { return x(d.val) < outsideLabelThreshold ? "0.7em" : "-0.3em"; })
