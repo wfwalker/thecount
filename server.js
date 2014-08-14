@@ -291,6 +291,26 @@ app.param('filename', function(req, resp, next, id) {
     next();
 });
 
+// deal with a permission parameter by retrieving all the apps that contain the given filename
+
+app.param('permission', function(req, resp, next, id) {
+    var permission = req.param('permission')
+    console.log('permission ' + permission);
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        if (statistics.getPermissionKeys(app).indexOf(permission) >= 0) {
+            apps.push(app);
+        }
+    }
+
+    req.permission = permission;
+    req.apps = apps;
+    next();
+});
+
+
 // deal with a days_old parameter by retrieving all the apps that were published within that many days
 
 app.param('days_old', function(req, resp, next, id) {
@@ -346,6 +366,15 @@ app.get('/listing/author/:author', function(req, resp, next) {
         { apps: req.apps, graphsMenu: graphs, title: 'Published by ' + req.author }
     );
 });
+
+// route requests to retrieve apps by permission
+
+app.get('/listing/permission/:permission', function(req, resp, next) {
+    resp.render('applisting',
+        { apps: req.apps, graphsMenu: graphs, title: 'Using ' + req.permission }
+    );
+});
+
 
 // route requests to retrieve apps by author
 
