@@ -411,6 +411,7 @@ knownLibraries['add2home.js'] = 'Cubiq Add to home screen';
 knownLibraries['add2home.css'] = 'Cubiq Add to home screen';
 
 knownLibraries['modernizr.js'] = 'Modernizr';
+knownLibraries['modernizr.custom.js'] = 'Modernizr';
 knownLibraries['modernizr-2.6.2.min.js'] = 'Modernizr';
 knownLibraries['modernizr-2.5.3.min.js'] = 'Modernizr';
 knownLibraries['modernizr-1.js'] = 'Modernizr';
@@ -432,6 +433,10 @@ knownLibraries['l10n.js'] = 'Web L10n';
 
 knownLibraries['underscore.js'] = 'Underscore';
 knownLibraries['underscore-min.js'] = 'Underscore';
+
+knownLibraries['jasmine.js'] = 'Jasmine';
+knownLibraries['jasmine-html.js'] = 'Jasmine';
+knownLibraries['jasmine.css'] = 'Jasmine';
 
 // returns a list of unique JS filenames for the given app, omitting commonly used filenames.
 // TODO: what about CSS?
