@@ -2,6 +2,7 @@ thecount
 ========
 
 TheCount is a web server based on data gathered from the Firefox Marketplace using its Marketplace API.
+This version uses a JS MVC framework.
 
 ## Data Gathering
 
