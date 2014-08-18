@@ -26,6 +26,7 @@ app.use("/fonts", express.static('fonts'));
 app.use("/images", express.static('images'));
 app.use("/scripts", express.static('scripts'));
 app.use("/stylesheets", express.static('stylesheets'));
+app.use("/assets", express.static('assets'));
 
 // LAUNCH SERVER
 
@@ -150,6 +151,7 @@ app.param('app_id', function(req, resp, next, id) {
 	var appID = parseInt(req.param('app_id'));
 	console.log('app_id ' + appID);
 	req.appData = marketplaceCatalog[appID];
+    console.log('param :app_id ' + req.appData);    
 	next();
 });
 
@@ -353,9 +355,24 @@ app.param('locale', function(req, resp, next, id) {
 
 // route requests to retrieve a single app by ID
 
-app.get('/app/:app_id', function(req, resp, next) {
-    resp.json(req.appData);
+app.get('/apps/:app_id', function(req, resp, next) {
+    console.log('route /apps/:app_id ' + req.appData);
+    resp.json({app: req.appData});
 });
+
+app.get('/apps', function(req, resp, next) {
+    console.log('all apps');
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        apps.push(app);
+    }
+
+    req.apps = apps;
+    resp.json({app: req.apps});
+});
+
 
 // route requests to retrieve apps by author
 
@@ -472,11 +489,7 @@ app.get('/listing/days_old/:days_old', function(req, resp, next) {
 
 // route requests to get the homepage
 
-app.get('/home', function(req, resp, next) {
-    resp.json(globalStatistics);
-});
-
-app.get('/', function(req, resp, next) {
+app.get('/globalstatistics', function(req, resp, next) {
     resp.json(globalStatistics);
 });
 

@@ -143,21 +143,21 @@ $(document).ready(function() {
 
 	// set up table sorting behavior
 
-	$('.tablesorter-table').tablesorter({
-	    theme : 'blue',
+	// $('.tablesorter-table').tablesorter({
+	//     theme : 'blue',
 	 
-	    headers: { 0: { sorter: false }, 1: { sorter: true }, 4: { sorter: false } },
+	//     headers: { 0: { sorter: false }, 1: { sorter: true }, 4: { sorter: false } },
 	 
-	    // header layout template; {icon} needed for some themes
-	    headerTemplate : '{content}{icon}',
+	//     // header layout template; {icon} needed for some themes
+	//     headerTemplate : '{content}{icon}',
 	 
-	    // initialize column styling of the table
-	    widgets : ["columns"],
-	    widgetOptions : {
-			// change the default column class names
-			// primary is the first column sorted, secondary is the second, etc
-			columns : [ "primary", "secondary", "tertiary" ]
-	    }
-	});
+	//     // initialize column styling of the table
+	//     widgets : ["columns"],
+	//     widgetOptions : {
+	// 		// change the default column class names
+	// 		// primary is the first column sorted, secondary is the second, etc
+	// 		columns : [ "primary", "secondary", "tertiary" ]
+	//     }
+	// });
 
 });

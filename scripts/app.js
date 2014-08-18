@@ -29,3 +29,36 @@ $(document).ready(function() {
         $el.val(QueryString[$el[0].name]);
     });
 });
+
+// EMBER STUFF
+
+window.TheCount = Ember.Application.create({
+  LOG_TRANSITIONS: true
+});
+
+// should be in js/models/app.js
+TheCount.App = DS.Model.extend({
+  app_type: DS.attr('string'),
+  author: DS.attr('string')
+});
+
+// should be in js/router.js -- THIS WORKS
+TheCount.Router.map(function() {
+  this.resource('apps');
+  this.resource('app', { path: '/app/:app_id'});
+});
+
+TheCount.AppsRoute = Ember.Route.extend({
+  model: function() {
+    return this.store.find('app');
+  }
+});
+
+TheCount.AppRoute = Ember.Route.extend({
+  model: function(params) {
+    return this.store.find('app', params.app_id);
+  }
+});
+
+
+
