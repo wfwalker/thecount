@@ -1,0 +1,35 @@
+<html>
+
+<head>
+	<title>thecount</title>
+</head>
+
+<body>
+	<h1>hello, world 2</h1>
+
+	<script type="text/x-handlebars" data-template-name="apps">
+		<div>i am the listing template</div>
+
+		{{#each}}
+			<div>{{id}} - {{app_type}}, {{author}} zzz </div>
+			<div>{{#linkTo 'app' this}}{{ author }}{{/linkTo}}</div>
+		{{/each}}
+	</script>
+
+	<script type="text/x-handlebars" data-template-name="app">
+		<div>i am the single template {{author}}</div>
+	</script>
+
+
+	<script src="/scripts/jquery-1.10.2.js"> </script>
+	<script src="/scripts/handlebars-1.3.0.js"> </script>
+	<script src="/scripts/ember-1.4.0.js"> </script>
+	<script src="/scripts/ember-data.js"> </script>
+	<script src="/scripts/bootstrap-datepicker.js"> </script>
+	<script src="/scripts/d3.v3.min.js"> </script>
+	<script src="/scripts/installHelpers.js"> </script>
+	<script src="/scripts/d3Helpers.js"> </script>
+	<script src="/scripts/app.js"> </script>
+
+</body>
+</html>
