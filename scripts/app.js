@@ -38,8 +38,15 @@ window.TheCount = Ember.Application.create({
 
 // should be in js/models/app.js
 TheCount.App = DS.Model.extend({
+  icons: DS.attr(),
   app_type: DS.attr('string'),
-  author: DS.attr('string')
+  author: DS.attr('string'),
+  is_packaged: DS.attr('boolean'),
+  is_offline: DS.attr('boolean'),
+  name: DS.attr(),
+  device_types: DS.attr(),
+  description: DS.attr(),
+  appcache_manifest: DS.attr()
 });
 
 // should be in js/router.js -- THIS WORKS
@@ -50,7 +57,7 @@ TheCount.Router.map(function() {
 
 TheCount.AppsRoute = Ember.Route.extend({
   model: function() {
-    return this.store.find('app');
+    return Ember.$.getJSON('/listing/author/Mippin');
   }
 });
 
