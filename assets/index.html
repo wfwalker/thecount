@@ -15,7 +15,7 @@
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<div class="navbar-header">
-				<a href="/home" class="navbar-brand">TheCount</a>
+				<a href="/assets/index.html#/apps" class="navbar-brand">TheCount</a>
 			</div>
 
 			<div class="collapse navbar-collapse">
@@ -79,23 +79,43 @@
 	<div style="margin-top: 60px"></div>
 
 	<script type="text/x-handlebars" data-template-name="apps">
-		<div>i am the listing template</div>
-
-		{{#each}}
-			<div>{{id}} - {{app_type}}, {{author}} zzz </div>
-			<div>{{#linkTo 'app' this}}{{ author }}{{/linkTo}}</div>
-		{{/each}}
+		<div class='container'>
+			<div class='row'>
+				<div class='col-md-12'>
+					<table class='table'>
+						<tr>
+							<th>Name</th>
+							<th>Type</th>
+							<th>Author</th>
+						</tr>
+					{{#each}}
+						<tr>
+							<td>{{#linkTo 'app' this}}{{name.en-US}}{{/linkTo}}</td>
+							<td>{{app_type}}</td>
+							<td>{{author}}</td>
+						</tr>
+					{{/each}}
+					</table>
+				</div>
+			</div>
+		</div>		
 	</script>
 
 	<script type="text/x-handlebars" data-template-name="app">
-		<img {{bind-attr src=icons.[128]}} />
-		<div>author {{author}}</div>
-		<div>name {{name.en-US}}</div>
-		<div>offline {{is_offline}}</div>
-		<div>device_types {{device_types}}</div>
-		<div>packaged {{is_packaged}}</div>
-		<div>description {{description.en-US}}</div>
-		<div>appcache_manifest <pre>{{appcache_manifest}}</pre></div>
+		<div class='container'>
+			<div class='row'>
+				<div class='col-md-12'>
+					<img {{bind-attr src=icons.[128]}} >
+					<div>author {{author}}</div>
+					<div>name {{name.en-US}}</div>
+					<div>offline {{is_offline}}</div>
+					<div>device_types {{device_types}}</div>
+					<div>packaged {{is_packaged}}</div>
+					<div>description {{description.en-US}}</div>
+					<div>appcache_manifest <pre>{{appcache_manifest}}</pre></div>
+				</div>
+			</div>
+		</div>
 	</script>
 
 	<script src="/scripts/jquery-1.10.2.js"> </script>
