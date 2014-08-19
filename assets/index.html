@@ -1,11 +1,82 @@
 <html>
 
 <head>
-	<title>thecount</title>
+  <title>TheCount - TheCountStore</title>
+  <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="shortcut icon" href="/images/thecount.png" type="image/png">
+  <link rel="stylesheet" href="/stylesheets/bootstrap.css" type="text/css">
+  <link rel="stylesheet" href="/stylesheets/barchart.css" type="text/css">
+  <link rel="stylesheet" href="/stylesheets/tablesorter.blue.css" type="text/css">
+  <link rel="stylesheet" href="/stylesheets/datepicker.css" type="text/css">
 </head>
 
 <body>
-	<h1>hello, world 2</h1>
+
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a href="/home" class="navbar-brand">TheCount</a>
+			</div>
+
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="dropdown">
+						<a href="#" data-toggle="dropdown" class="dropdown-toggle">ratings</a>
+
+						<ul class="dropdown-menu">
+							<li><a href="/distribution/rating_count">rating count</a></li>
+
+							<li><a href="/distribution/rating">average rating</a></li>
+						</ul>
+					</li>
+
+					<li class="dropdown">
+						<a href="#" data-toggle="dropdown" class="dropdown-toggle">discovery</a>
+
+						<ul class="dropdown-menu">
+							<li><a href="/frequency/category">category</a></li>
+							<li><a href="/frequency/author">author</a></li>
+							<li><a href="/distribution/days_since_created">days since created</a></li>
+							<li><a href="/distribution/days_since_reviewed">days since reviewed</a></li>
+							<li><a href="/frequency/locale">locale</a></li>
+							<li><a href="/frequency/region">region</a></li>
+							<li><a href="/pie/installs_allowed_from">installs_allowed_from</a></li>
+						</ul>
+					</li>
+
+					<li class="dropdown">
+						<a href="#" data-toggle="dropdown" class="dropdown-toggle">tech</a>
+
+						<ul class="dropdown-menu">
+							<li><a href="/frequency/platform">platform</a></li>
+							<li><a href="/pie/payment">payment</a></li>
+							<li><a href="/frequency/library">library</a></li>
+							<li><a href="/frequency/file">file</a></li>
+							<li><a href="/distribution/package_size">package size</a></li>
+							<li><a href="/frequency/icon_sizes">icon sizes</a></li>
+							<li><a href="/frequency/permission">permission</a></li>
+							<li><a href="/frequency/activity">activity</a></li>
+						</ul>
+					</li>
+				</ul>
+
+				<form class="navbar-form navbar-left">
+					<div class="form-group input-group-sm">
+						<input id="searchText" name="searchText" type="text" placeholder="Search" class="form-control">
+					</div><button class="btn btn-primary btn-sm searchButton">Search</button>
+				</form>
+
+				<form class="navbar-form navbar-left">
+					<div class="form-group input-group-sm">
+						<input id="since" name="since" type="text" placeholder="since" data-date-format="yyyy-mm-dd" autocomplete="off" class="form-control datepicker"><input id="until" name="until" type="text" placeholder="until" data-date-format="yyyy-mm-dd" autocomplete="off" class=
+						"form-control datepicker">
+					</div><button type="submit" class="btn btn-primary btn-sm">Filter</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div style="margin-top: 60px"></div>
 
 	<script type="text/x-handlebars" data-template-name="apps">
 		<div>i am the listing template</div>
@@ -17,9 +88,15 @@
 	</script>
 
 	<script type="text/x-handlebars" data-template-name="app">
-		<div>i am the single template {{author}}</div>
+		<img {{bind-attr src=icons.[128]}} />
+		<div>author {{author}}</div>
+		<div>name {{name.en-US}}</div>
+		<div>offline {{is_offline}}</div>
+		<div>device_types {{device_types}}</div>
+		<div>packaged {{is_packaged}}</div>
+		<div>description {{description.en-US}}</div>
+		<div>appcache_manifest <pre>{{appcache_manifest}}</pre></div>
 	</script>
-
 
 	<script src="/scripts/jquery-1.10.2.js"> </script>
 	<script src="/scripts/handlebars-1.3.0.js"> </script>
