@@ -115,6 +115,16 @@
 					<div>appcache_manifest <pre>{{appcache_manifest}}</pre></div>
 				</div>
 			</div>
+
+			<div class='row'>
+			    {{#each preview in previews}}
+			    	<div class='col-xs-6 col-md-3'>
+			    		<a href='#' class='thumbnail'>
+							<img {{bind-attr src=preview.thumbnail_url}} >
+						</a>	
+			    	</div>
+			    {{/each}}
+			</div>
 		</div>
 	</script>
 

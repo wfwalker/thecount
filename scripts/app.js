@@ -45,6 +45,7 @@ TheCount.App = DS.Model.extend({
   is_offline: DS.attr('boolean'),
   name: DS.attr(),
   device_types: DS.attr(),
+  previews: DS.attr(),
   description: DS.attr(),
   appcache_manifest: DS.attr()
 });
