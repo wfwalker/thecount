@@ -26,7 +26,7 @@ app.use("/fonts", express.static('fonts'));
 app.use("/images", express.static('images'));
 app.use("/scripts", express.static('scripts'));
 app.use("/stylesheets", express.static('stylesheets'));
-app.use("/assets", express.static('assets'));
+app.use("/", express.static('assets'));
 
 // LAUNCH SERVER
 
