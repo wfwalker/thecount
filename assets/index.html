@@ -1,7 +1,7 @@
 <html>
 
 <head>
-  <title>TheCount - TheCountStore</title>
+  <title>TheCount.2</title>
   <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="shortcut icon" href="/images/thecount.png" type="image/png">
   <link rel="stylesheet" href="/stylesheets/bootstrap.css" type="text/css">
@@ -82,17 +82,27 @@
 		<div class='container'>
 			<div class='row'>
 				<div class='col-md-12'>
-					<table class='table'>
+					<table class='table table-condensed tablesorter-table tablesorter-blue tablesorter'>
 						<tr>
+							<th></th>
 							<th>Name</th>
-							<th>Type</th>
 							<th>Author</th>
+							<th>Days Old</th>
+							<th>Type</th>
+							<th>Appcache/Package Size</th>
+							<th>User Ratings</th>
+							<th>Count</th>
 						</tr>
 					{{#each}}
 						<tr>
+							<td><img width='32' height='32' {{bind-attr src=icons.[128]}} ></td>
 							<td>{{#linkTo 'app' this}}{{name.en-US}}{{/linkTo}}</td>
-							<td>{{app_type}}</td>
 							<td>{{author}}</td>
+							<td>{{daysSince reviewed}}</td>
+							<td>{{app_type}}</td>
+							<td>{{app_type}}</td>
+							<td>{{ratings.average}}</td>
+							<td>{{ratings.count}}</td>
 						</tr>
 					{{/each}}
 					</table>
