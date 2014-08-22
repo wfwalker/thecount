@@ -52,6 +52,12 @@ TheCount.App = DS.Model.extend({
   appcache_manifest: DS.attr()
 });
 
+// should be in js/models/app.js
+TheCount.Frequency = DS.Model.extend({
+  total: DS.attr(),
+  chartData: DS.attr()
+});
+
 
 // HELPERS!
 
@@ -63,21 +69,35 @@ Handlebars.registerHelper('daysSince', function(property, options) {
 });
 
 
+// http://slides.com/samselikoff/ember-and-d3-aug-2013#/29
+
+// TheCount.BarGraph = Ember.View.extend({
+//   classNames: ['barchart', 'frequency']
+// });
+
+
 // should be in js/router.js -- THIS WORKS
 TheCount.Router.map(function() {
-  this.resource('apps');
+  this.resource('apps', { path: '/listing/:listing_kind/:listing_param' });
   this.resource('app', { path: '/app/:app_id'});
+  this.resource('frequency', { path: '/frequency/:frequency_kind' });
 });
 
 TheCount.AppsRoute = Ember.Route.extend({
-  model: function() {
-    return Ember.$.getJSON('/listing/author/Mippin');
+  model: function(params) {
+    return Ember.$.getJSON('/listing/' + params.listing_kind + '/' + params.listing_param);
   }
 });
 
 TheCount.AppRoute = Ember.Route.extend({
   model: function(params) {
     return this.store.find('app', params.app_id);
+  }
+});
+
+TheCount.FrequencyRoute = Ember.Route.extend({
+  model: function(params) {
+    return Ember.$.getJSON('/frequency/' + params.frequency_kind);
   }
 });
 
