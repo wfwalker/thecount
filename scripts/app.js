@@ -61,9 +61,11 @@ TheCount.Frequency = DS.Model.extend({
 TheCount.frequencyView = Ember.View.extend({
   classNames: ['frequency', 'barchart'],
   didInsertElement: function() {
-    console.log('did insert element ' + this.get('elementId'));
-    console.log('data ' + this.get('content'));
-    // createFrequencyGraph('frequency', 'category', [{"label":"games","val":1660},{"label":"entertainment","val":1070},{"label":"utilities","val":968},{"label":"education","val":524},{"label":"productivity","val":505},{"label":"lifestyle","val":405},{"label":"news-weather","val":384},{"label":"social","val":282},{"label":"travel","val":252},{"label":"business","val":231},{"label":"reference","val":196},{"label":"music","val":193},{"label":"health-fitness","val":183},{"label":"maps-navigation","val":162},{"label":"sports","val":144},{"label":"photo-video","val":119},{"label":"books","val":108},{"label":"shopping","val":80}]);
+    console.log('didInsertElement');
+    createFrequencyGraph('frequency', 'category', this.get('content'));
+  },
+  update: function() {
+    console.log('update');
     createFrequencyGraph('frequency', 'category', this.get('content'));
   }
 });
@@ -71,12 +73,12 @@ TheCount.frequencyView = Ember.View.extend({
 TheCount.distributionView = Ember.View.extend({
   classNames: ['histogram'],
   didInsertElement: function() {
-    console.log('did insert element ' + this.get('elementId'));
-    console.log('data ' + this.get('content'));
+    createHistogram(this.get('content'));
+  },
+  update: function() {
     createHistogram(this.get('content'));
   }
 });
-
 
 // HELPERS!
 
@@ -110,6 +112,9 @@ TheCount.AppRoute = Ember.Route.extend({
 TheCount.FrequencyRoute = Ember.Route.extend({
   model: function(params) {
     return Ember.$.getJSON('/frequency/' + params.frequency_kind);
+  },
+  afterModel: function(params) {
+    console.log('frequency afterModel ');
   }
 });
 
