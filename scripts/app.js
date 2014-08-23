@@ -58,6 +58,25 @@ TheCount.Frequency = DS.Model.extend({
   chartData: DS.attr()
 });
 
+TheCount.frequencyView = Ember.View.extend({
+  classNames: ['frequency', 'barchart'],
+  didInsertElement: function() {
+    console.log('did insert element ' + this.get('elementId'));
+    console.log('data ' + this.get('content'));
+    // createFrequencyGraph('frequency', 'category', [{"label":"games","val":1660},{"label":"entertainment","val":1070},{"label":"utilities","val":968},{"label":"education","val":524},{"label":"productivity","val":505},{"label":"lifestyle","val":405},{"label":"news-weather","val":384},{"label":"social","val":282},{"label":"travel","val":252},{"label":"business","val":231},{"label":"reference","val":196},{"label":"music","val":193},{"label":"health-fitness","val":183},{"label":"maps-navigation","val":162},{"label":"sports","val":144},{"label":"photo-video","val":119},{"label":"books","val":108},{"label":"shopping","val":80}]);
+    createFrequencyGraph('frequency', 'category', this.get('content'));
+  }
+});
+
+TheCount.distributionView = Ember.View.extend({
+  classNames: ['histogram'],
+  didInsertElement: function() {
+    console.log('did insert element ' + this.get('elementId'));
+    console.log('data ' + this.get('content'));
+    createHistogram(this.get('content'));
+  }
+});
+
 
 // HELPERS!
 
@@ -68,19 +87,12 @@ Handlebars.registerHelper('daysSince', function(property, options) {
   return Math.round((Date.now() - Date.parse(dateString)) / (24*60*60*1000));
 });
 
-
-// http://slides.com/samselikoff/ember-and-d3-aug-2013#/29
-
-// TheCount.BarGraph = Ember.View.extend({
-//   classNames: ['barchart', 'frequency']
-// });
-
-
-// should be in js/router.js -- THIS WORKS
+// should be in js/router.js
 TheCount.Router.map(function() {
   this.resource('apps', { path: '/listing/:listing_kind/:listing_param' });
   this.resource('app', { path: '/app/:app_id'});
   this.resource('frequency', { path: '/frequency/:frequency_kind' });
+  this.resource('distribution', { path: '/distribution/:distribution_kind' });
 });
 
 TheCount.AppsRoute = Ember.Route.extend({
@@ -100,6 +112,13 @@ TheCount.FrequencyRoute = Ember.Route.extend({
     return Ember.$.getJSON('/frequency/' + params.frequency_kind);
   }
 });
+
+TheCount.DistributionRoute = Ember.Route.extend({
+  model: function(params) {
+    return Ember.$.getJSON('/distribution/' + params.distribution_kind);
+  }
+});
+
 
 
 

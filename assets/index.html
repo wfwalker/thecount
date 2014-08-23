@@ -147,9 +147,20 @@
 					<h2>title</h2>
 					<h3>frequency of title among {{total}} apps </h3>
 
-					{{#each item in chartData}}
-						<div>{{item.val}} {{item.label}}</div>
-					{{/each}}
+					{{view TheCount.frequencyView content=chartData}}
+				</div>
+			</div>
+		</div>
+	</script>
+
+	<script type="text/x-handlebars" data-template-name="distribution">
+		<div class='container'>
+			<div class='row'>
+				<div class='col-md-12'>
+					<h2>title</h2>
+					<h3>distribution of title among {{total}} apps </h3>
+
+					{{view TheCount.distributionView content=values}}
 				</div>
 			</div>
 		</div>
