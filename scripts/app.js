@@ -117,6 +117,13 @@ TheCount.DistributionRoute = Ember.Route.extend({
   }
 });
 
+TheCount.ApplicationController = Ember.Controller.extend({
+  search: function() {
+    console.log('ApplicationController search ' + this.get("searchText"));
+    this.transitionToRoute('apps', 'search', this.get("searchText"));
+  }
+});
+
 
 
 

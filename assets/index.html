@@ -61,8 +61,11 @@
 
 					<form class="navbar-form navbar-left">
 						<div class="form-group input-group-sm">
-							<input id="searchText" name="searchText" type="text" placeholder="Search" class="form-control">
-						</div><button class="btn btn-primary btn-sm searchButton">Search</button>
+							{{input valueBinding="searchText" class='formControl' placeholder='search text'}}
+						</div>
+						<button class="btn btn-primary btn-sm searchButton" {{action 'search'}}>
+							Search
+						</button>
 					</form>
 
 					<form class="navbar-form navbar-left">
