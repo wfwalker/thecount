@@ -83,7 +83,7 @@ TheCount.distributionView = Ember.View.extend({
   updateChart: function updateChart() {
     console.log('updateChart distribution');
     createHistogram(this.get('content'));
-  }.observes('content.@each.value')
+  }.observes('content.@each')
 });
 
 // HELPERS!
