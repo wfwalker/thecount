@@ -121,7 +121,17 @@
 					<div>author {{author}}</div>
 					<div>name {{name.en-US}}</div>
 					<div>offline {{is_offline}}</div>
-					<div>device_types {{device_types}}</div>
+					<div>
+						{{#each theType in device_types}}
+							<span class='label label-primary'>{{theType}}</span>
+						{{/each}}
+						{{#each theCategory in categories}}
+							<span class='label label-default'>{{theCategory}}</span>
+						{{/each}}
+						{{#each theTag in tags}}
+							<span class='label label-info'>{{theTag}}</span>
+						{{/each}}
+					</div>
 					<div>packaged {{is_packaged}}</div>
 					<div>description {{description.en-US}}</div>
 					<div>appcache_manifest <pre>{{appcache_manifest}}</pre></div>
