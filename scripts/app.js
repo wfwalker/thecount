@@ -65,10 +65,6 @@ TheCount.frequencyView = Ember.View.extend({
   didInsertElement: function() {
     console.log('didInsertElement frequency');
     createFrequencyGraph('frequency', 'category', this.get('content'));
-  },
-  willClearRender: function() {
-    console.log('willClearRender frequency');
-    createFrequencyGraph('frequency', 'category', this.get('content'));
   }
 });
 
@@ -76,10 +72,6 @@ TheCount.distributionView = Ember.View.extend({
   classNames: ['histogram'],
   didInsertElement: function() {
     console.log('didInsertElement distribution');
-    createHistogram(this.get('content'));
-  },
-  willClearRender: function() {
-    console.log('willClearRender distribution');
     createHistogram(this.get('content'));
   }
 });
@@ -116,22 +108,12 @@ TheCount.AppRoute = Ember.Route.extend({
 TheCount.FrequencyRoute = Ember.Route.extend({
   model: function(params) {
     return Ember.$.getJSON('/frequency/' + params.frequency_kind);
-  },
-  actions: {
-    loading: function(transition, originRoute) {
-      this.render('loading');
-    }
   }
 });
 
 TheCount.DistributionRoute = Ember.Route.extend({
   model: function(params) {
     return Ember.$.getJSON('/distribution/' + params.distribution_kind);
-  },
-  actions: {
-    loading: function(transition, originRoute) {
-      this.render('loading');
-    }
   }
 });
 
