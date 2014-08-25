@@ -360,20 +360,6 @@ app.get('/apps/:app_id', function(req, resp, next) {
     resp.json({app: req.appData});
 });
 
-app.get('/apps', function(req, resp, next) {
-    console.log('all apps');
-    var apps = [];
-
-    for (index in marketplaceCatalog) {
-        var app = marketplaceCatalog[index];
-        apps.push(app);
-    }
-
-    req.apps = apps;
-    resp.json({app: req.apps});
-});
-
-
 // route requests to retrieve apps by author
 
 app.get('/listing/author/:author', function(req, resp, next) {
