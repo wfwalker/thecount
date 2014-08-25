@@ -39,6 +39,8 @@ window.TheCount = Ember.Application.create({
 // should be in js/models/app.js
 TheCount.App = DS.Model.extend({
   icons: DS.attr(),
+  tags: DS.attr(),
+  categories: DS.attr(),
   ratings: DS.attr(),
   app_type: DS.attr('string'),
   reviewed: DS.attr('string'),
@@ -61,11 +63,11 @@ TheCount.Frequency = DS.Model.extend({
 TheCount.frequencyView = Ember.View.extend({
   classNames: ['frequency', 'barchart'],
   didInsertElement: function() {
-    console.log('didInsertElement');
+    console.log('didInsertElement frequency');
     createFrequencyGraph('frequency', 'category', this.get('content'));
   },
-  update: function() {
-    console.log('update');
+  willClearRender: function() {
+    console.log('willClearRender frequency');
     createFrequencyGraph('frequency', 'category', this.get('content'));
   }
 });
@@ -73,9 +75,11 @@ TheCount.frequencyView = Ember.View.extend({
 TheCount.distributionView = Ember.View.extend({
   classNames: ['histogram'],
   didInsertElement: function() {
+    console.log('didInsertElement distribution');
     createHistogram(this.get('content'));
   },
-  update: function() {
+  willClearRender: function() {
+    console.log('willClearRender distribution');
     createHistogram(this.get('content'));
   }
 });
@@ -113,14 +117,21 @@ TheCount.FrequencyRoute = Ember.Route.extend({
   model: function(params) {
     return Ember.$.getJSON('/frequency/' + params.frequency_kind);
   },
-  afterModel: function(params) {
-    console.log('frequency afterModel ');
+  actions: {
+    loading: function(transition, originRoute) {
+      this.render('loading');
+    }
   }
 });
 
 TheCount.DistributionRoute = Ember.Route.extend({
   model: function(params) {
     return Ember.$.getJSON('/distribution/' + params.distribution_kind);
+  },
+  actions: {
+    loading: function(transition, originRoute) {
+      this.render('loading');
+    }
   }
 });
 
