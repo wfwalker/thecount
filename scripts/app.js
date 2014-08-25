@@ -60,12 +60,18 @@ TheCount.Frequency = DS.Model.extend({
   chartData: DS.attr()
 });
 
+// VIEWS ------------------------------------------------------------------------
+
 TheCount.frequencyView = Ember.View.extend({
   classNames: ['frequency', 'barchart'],
   didInsertElement: function() {
     console.log('didInsertElement frequency');
     createFrequencyGraph('frequency', 'category', this.get('content'));
-  }
+  },
+  updateChart: function updateChart() {
+    console.log('updateChart frequency');
+    createFrequencyGraph('frequency', 'category', this.get('content'));
+  }.observes('content.@each.value')
 });
 
 TheCount.distributionView = Ember.View.extend({
@@ -73,7 +79,11 @@ TheCount.distributionView = Ember.View.extend({
   didInsertElement: function() {
     console.log('didInsertElement distribution');
     createHistogram(this.get('content'));
-  }
+  },
+  updateChart: function updateChart() {
+    console.log('updateChart distribution');
+    createHistogram(this.get('content'));
+  }.observes('content.@each.value')
 });
 
 // HELPERS!

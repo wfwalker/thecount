@@ -16,6 +16,9 @@ function createFrequencyGraph(inDivClass, inListingKind, data) {
         .domain([0, d3.max(data, function(d) { return d.val; })])
         .range([0, width]);
 
+    // nuke the old one
+    d3.select("." + inDivClass + " svg").remove();
+
     var chart = d3.select("." + inDivClass).append("svg")
         .attr("width", width)
         .attr("height", barHeight * data.length);
@@ -71,6 +74,9 @@ function createHistogram(values) {
     var xAxis = d3.svg.axis()
         .scale(x)
         .orient("bottom");
+
+    // nuke the old one
+    d3.select(".histogram svg").remove();
 
     var svg = d3.select(".histogram").append("svg")
         .attr("width", width + margin.left + margin.right)
