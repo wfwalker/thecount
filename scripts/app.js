@@ -40,8 +40,13 @@ window.TheCount = Ember.Application.create({
 TheCount.App = DS.Model.extend({
   icons: DS.attr(),
   tags: DS.attr(),
+  manifest: DS.attr(),
+  manifest_url: DS.attr(),
+  miniManifest: DS.attr(),
   categories: DS.attr(),
   ratings: DS.attr(),
+  created: DS.attr(),
+  reviewed: DS.attr(),
   app_type: DS.attr('string'),
   reviewed: DS.attr('string'),
   author: DS.attr('string'),
@@ -88,11 +93,18 @@ TheCount.distributionView = Ember.View.extend({
 
 // HELPERS!
 
-Handlebars.registerHelper('daysSince', function(property, options) {
+Ember.Handlebars.helper('daysSince', function(property, options) {
   // for some reason I had to do this:
   // http://stackoverflow.com/questions/12366848/handlebar-helper-inside-each
-  var dateString = Ember.get(options.data.view.content, property);
+  // var dateString = Ember.get(options.data.view.content, property);
+  var dateString = property;
+  console.log(dateString);
   return Math.round((Date.now() - Date.parse(dateString)) / (24*60*60*1000));
+});
+
+Ember.Handlebars.helper('json', function(property, options) {
+  console.log(property);
+  return JSON.stringify(property, null, 2);
 });
 
 // should be in js/router.js

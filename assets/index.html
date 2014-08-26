@@ -119,25 +119,53 @@
 	<script type="text/x-handlebars" data-template-name="app">
 		<div class='container'>
 			<div class='row'>
+
+		        <div class="col-md-6">
+					<h2>
+						<img width='32' height='32' {{bind-attr src=icons.[128]}} >
+						<span>{{name.en-US}}</span>
+					</h2>
+		        </div>
+
+		        <div style="text-align: right" class="col-md-6">
+		        	<h3>
+			        	{{#if is_packaged}}
+			        		<span class='glyphicon glyphicon-file'></span>
+			        	{{else}}
+			        		<span class='glyphicon glyphicon-cloud'></span>
+			        	{{/if}}
+			        	{{#if is_offline}}
+			        		<span class='glyphicon glyphicon-plane'></span>
+			        	{{/if}}
+		        	</h3>
+		        </div>
+	        </div>
+
+			<div class='row'>
 				<div class='col-md-12'>
-					<img {{bind-attr src=icons.[128]}} >
-					<div>author {{author}}</div>
-					<div>name {{name.en-US}}</div>
-					<div>offline {{is_offline}}</div>
-					<div>
-						{{#each theType in device_types}}
-							<span class='label label-primary'>{{theType}}</span>
-						{{/each}}
-						{{#each theCategory in categories}}
-							<span class='label label-default'>{{theCategory}}</span>
-						{{/each}}
-						{{#each theTag in tags}}
-							<span class='label label-info'>{{theTag}}</span>
-						{{/each}}
-					</div>
-					<div>packaged {{is_packaged}}</div>
-					<div>description {{description.en-US}}</div>
-					<div>appcache_manifest <pre>{{appcache_manifest}}</pre></div>
+					<button {{bind-attr data-manifest-url=manifest_url}} class="btn btn-primary installButton">
+						Install Hosted
+					</button>
+
+					<span id="progress"></span>
+
+					{{#if is_packaged}}
+						<a class='btn btn-primary' {{bind-attr href=miniManifest.package_path}} >
+						    <span class="glyphicon glyphicon-file"></span>
+						    <span>download package NNN bytes</span>
+						</a>
+					{{/if}}
+
+					<span>
+						<a target="_blank" href="http://marketplace.firefox.com/app/littlealchemy" class="btn btn-primary">
+							<span class='glyphicon glyphicon-share-alt'> </span>
+							<span>marketplace</span>
+						</a>
+					</span>	
+
+					<hr />			
+
+					<div>{{{description.en-US}}}</div>
 				</div>
 			</div>
 
@@ -149,6 +177,53 @@
 						</a>	
 			    	</div>
 			    {{/each}}
+			</div>
+
+			<hr />
+
+			<div class='row'>
+				<div class='col-md-12'>
+					<h3>{{author}}</h3>
+
+					<div>
+						{{#each theType in device_types}}
+							<span class='label label-primary'>{{theType}}</span>
+						{{/each}}
+						{{#each theCategory in categories}}
+							<span class='label label-default'>{{theCategory}}</span>
+						{{/each}}
+						{{#each theTag in tags}}
+							<span class='label label-info'>{{theTag}}</span>
+						{{/each}}
+					</div>
+
+					<h4>{{ratings.average}} *s</h4>
+
+					<p>
+						<span class='glyphicon glyphicon-time'> </span>
+						{{created}} {{daysSince created}}
+					</p>
+
+					<p>
+						<span class='glyphicon glyphicon-time'> </span>
+						{{reviewed}} {{daysSince reviewed}}
+					</p>
+
+					{{#if manifest}}
+						<h3>manifest</h3>
+						<pre>{{json manifest}}</pre>
+					{{/if}}
+
+					{{#if miniManifest}}
+						<h3>mini manifest</h3>
+						<pre>{{miniManifest}}</pre>
+					{{/if}}
+
+					{{#if appcache_manifest}}
+						<h3>appcache_manifest</h3>
+						<pre>{{appcache_manifest}}</pre>
+					{{/if}}
+				</div>
 			</div>
 		</div>
 	</script>
