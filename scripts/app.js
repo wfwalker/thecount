@@ -44,6 +44,7 @@ TheCount.App = DS.Model.extend({
   manifest_url: DS.attr(),
   miniManifest: DS.attr(),
   categories: DS.attr(),
+  slug: DS.attr(),
   ratings: DS.attr(),
   created: DS.attr(),
   reviewed: DS.attr(),
@@ -94,17 +95,34 @@ TheCount.distributionView = Ember.View.extend({
 // HELPERS!
 
 Ember.Handlebars.helper('daysSince', function(property, options) {
-  // for some reason I had to do this:
-  // http://stackoverflow.com/questions/12366848/handlebar-helper-inside-each
-  // var dateString = Ember.get(options.data.view.content, property);
-  var dateString = property;
-  console.log(dateString);
-  return Math.round((Date.now() - Date.parse(dateString)) / (24*60*60*1000));
+  return Math.round((Date.now() - Date.parse(property)) / (24*60*60*1000));
 });
 
 Ember.Handlebars.helper('json', function(property, options) {
-  console.log(property);
   return JSON.stringify(property, null, 2);
+});
+
+Ember.Handlebars.helper('stars', function(property, options) {
+  var stars = [];
+
+  for (var index = 5; index > 0; index--) {
+    if (property >= index)
+      stars.push("<span class='glyphicon glyphicon-star'> </span>");
+    else
+      stars.push("<span class='glyphicon glyphicon-star-empty'> </span>");    
+  }
+
+  return new Handlebars.SafeString(stars.join(''));
+});
+
+Ember.Handlebars.helper('appSize', function(app, options) {
+  if (app.is_packaged && app.miniManifest && app.miniManifest.size) {
+    return app.miniManifest.size;
+  }
+  if (app.appcache_entry_sizes) {
+    return app.appcache_size;
+  }
+  return 0;
 });
 
 // should be in js/router.js
