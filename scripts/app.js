@@ -170,7 +170,25 @@ TheCount.ApplicationController = Ember.Controller.extend({
 TheCount.AppController = Ember.ObjectController.extend({
   marketplaceLink: function() {
     return 'http://marketplace.firefox.com/app/' + this.get('model.slug');
-  }.property('model.marketplaceLink')
+  }.property('model.marketplaceLink'),
+  actions: {
+    install: function() {
+      console.log(this.get('model.manifest_url'));
+
+      if (this.get('model.is_packaged')) {
+        var request = navigator.mozApps.installPackage(this.get('model.manifest_url'));
+        request.onsuccess = installSuccess;
+        request.onerror = installFail;
+      } else {
+        var request = navigator.mozApps.install(this.get('model.manifest_url'));
+        request.onsuccess = installSuccess;
+        request.onerror = installFail;
+      }
+    },
+    launch: function() {
+      console.log('actions.launch ' + this.get('model.manifest_url'));
+    }
+  }
 });
 
 

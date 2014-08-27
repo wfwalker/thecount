@@ -154,15 +154,13 @@
 
 			<div class='row'>
 				<div class='col-md-12'>
-					{{#if is_packaged}}
-						<button {{bind-attr data-package-manifest-url=manifest_url}} class="btn btn-primary installButton">
+					<button {{action 'install'}} class="btn btn-primary installButton">
+						{{#if is_packaged}}
 							Install Packaged
-						</button>
-					{{else}}
-						<button {{bind-attr data-manifest-url=manifest_url}} class="btn btn-primary installButton">
+						{{else}}
 							Install Hosted
-						</button>
-					{{/if}}
+						{{/if}}
+					</button>
 
 					<span id="progress"></span>
 
