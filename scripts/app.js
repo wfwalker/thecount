@@ -140,6 +140,9 @@ TheCount.AppsRoute = Ember.Route.extend({
 });
 
 TheCount.AppRoute = Ember.Route.extend({
+  setupController: function(controller, app) {
+    controller.set('model', app);
+  },
   model: function(params) {
     return this.store.find('app', params.app_id);
   }
@@ -161,7 +164,13 @@ TheCount.ApplicationController = Ember.Controller.extend({
   search: function() {
     console.log('ApplicationController search ' + this.get("searchText"));
     this.transitionToRoute('apps', 'search', this.get("searchText"));
-  }
+  },
+});
+
+TheCount.AppController = Ember.ObjectController.extend({
+  marketplaceLink: function() {
+    return 'http://marketplace.firefox.com/app/' + this.get('model.slug');
+  }.property('model.marketplaceLink')
 });
 
 
