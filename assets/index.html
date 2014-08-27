@@ -104,9 +104,20 @@
 							<td>{{#linkTo 'app' this}}{{name.en-US}}{{/linkTo}}</td>
 							<td>{{author}}</td>
 							<td>{{daysSince reviewed}}</td>
-							<td>{{app_type}}</td>
-							<td>{{app_type}}</td>
-							<td>{{ratings.average}}</td>
+							<td>
+					        	{{#if is_packaged}}
+					        		<span class='glyphicon glyphicon-file'></span>
+					        	{{else}}
+					        		<span class='glyphicon glyphicon-cloud'></span>
+					        	{{/if}}
+					        	{{#if is_offline}}
+					        		<span class='glyphicon glyphicon-plane'></span>
+					        	{{/if}}
+							</td>
+							<td>
+								{{appSize this}}
+							</td>
+							<td>{{stars ratings.average}}</td>
 							<td>{{ratings.count}}</td>
 						</tr>
 					{{/each}}
@@ -143,21 +154,27 @@
 
 			<div class='row'>
 				<div class='col-md-12'>
-					<button {{bind-attr data-manifest-url=manifest_url}} class="btn btn-primary installButton">
-						Install Hosted
-					</button>
-
+					{{#if is_packaged}}
+						<button {{bind-attr data-package-manifest-url=manifest_url}} class="btn btn-primary installButton">
+							Install Packaged
+						</button>
+					{{else}}
+						<button {{bind-attr data-manifest-url=manifest_url}} class="btn btn-primary installButton">
+							Install Hosted
+						</button>
+					{{/if}}
+					
 					<span id="progress"></span>
 
 					{{#if is_packaged}}
 						<a class='btn btn-primary' {{bind-attr href=miniManifest.package_path}} >
 						    <span class="glyphicon glyphicon-file"></span>
-						    <span>download package NNN bytes</span>
+						    <span>download package {{miniManifest.size}} bytes</span>
 						</a>
 					{{/if}}
 
 					<span>
-						<a target="_blank" href="http://marketplace.firefox.com/app/littlealchemy" class="btn btn-primary">
+						<a target="_blank" {{bind-attr href=slug}} class="btn btn-primary">
 							<span class='glyphicon glyphicon-share-alt'> </span>
 							<span>marketplace</span>
 						</a>
@@ -197,16 +214,19 @@
 						{{/each}}
 					</div>
 
-					<h4>{{ratings.average}} *s</h4>
+					<h4>
+						{{{stars ratings.average}}}
+						({{ratings.count}})
+					</h4>
 
 					<p>
 						<span class='glyphicon glyphicon-time'> </span>
-						{{created}} {{daysSince created}}
+						Created {{created}} ({{daysSince created}} days ago)
 					</p>
 
 					<p>
 						<span class='glyphicon glyphicon-time'> </span>
-						{{reviewed}} {{daysSince reviewed}}
+						Reviewed {{reviewed}} ({{daysSince reviewed}} days ago)
 					</p>
 
 					{{#if manifest}}
@@ -216,7 +236,7 @@
 
 					{{#if miniManifest}}
 						<h3>mini manifest</h3>
-						<pre>{{miniManifest}}</pre>
+						<pre>{{json miniManifest}}</pre>
 					{{/if}}
 
 					{{#if appcache_manifest}}
