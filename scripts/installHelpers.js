@@ -109,30 +109,6 @@ function wireUpInstallButtons(installedManifestURLs) {
 $(document).ready(function() {
 	// Either retrieve the manifest URL's of all installed apps or disable all install buttons
 
-	// var installedManifestURLs = [];
-
-	// if (window.navigator.mozApps && window.navigator.mozApps.getInstalled) {
-	// 	var installListRequest = window.navigator.mozApps.getInstalled();
-	// 	installListRequest.onerror = function(e) {
-	// 		alert("Error calling getInstalled: " + installListRequest.error.name);
-
-	// 		wireUpInstallButtons([]);
-	// 	};
-
-	// 	installListRequest.onsuccess = function(e) {
-	// 		for (var installListIndex = 0; installListIndex < installListRequest.result.length; installListIndex++) {
-	// 			var manifestURL = installListRequest.result[installListIndex].manifestURL;
-	// 			installedManifestURLs.push(manifestURL);
-	// 			appRecordsByManifest[manifestURL] = installListRequest.result[installListIndex];
-	// 			$('#installed-app-list').append(installListRequest.result[installListIndex].manifest.name + '<br>');
-	// 		}
-
-	// 		wireUpInstallButtons(installedManifestURLs);
-	// 	};
-	// } else {
-	// 	$('.installButton').attr("disabled", "disabled");
-	// }
-
 	// set up table sorting behavior
 
 	// $('.tablesorter-table').tablesorter({
