@@ -154,13 +154,19 @@
 
 			<div class='row'>
 				<div class='col-md-12'>
-					<button {{action 'install'}} class="btn btn-primary installButton">
-						{{#if is_packaged}}
-							Install Packaged
-						{{else}}
-							Install Hosted
-						{{/if}}
-					</button>
+					{{#if alreadyInstalled}}
+						<button {{action 'launch'}} class="btn btn-primary launchButton">
+							Launch
+						</button>
+					{{else}}
+						<button {{action 'install'}} class="btn btn-primary installButton">
+							{{#if is_packaged}}
+								Install Packaged
+							{{else}}
+								Install Hosted
+							{{/if}}
+						</button>
+					{{/if}}
 
 					<span id="progress"></span>
 

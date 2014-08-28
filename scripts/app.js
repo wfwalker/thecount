@@ -142,6 +142,40 @@ TheCount.AppsRoute = Ember.Route.extend({
 TheCount.AppRoute = Ember.Route.extend({
   setupController: function(controller, app) {
     controller.set('model', app);
+
+    // Either retrieve the manifest URL's of all installed apps or disable all install buttons
+    var installedManifestURLs = [];
+    var appRecordsByManifest = {};
+
+    if (window.navigator.mozApps && window.navigator.mozApps.getInstalled) {
+      controller.set('enableInstallButtons', true);
+
+      console.log('getting list of installed apps');
+
+      var installListRequest = window.navigator.mozApps.getInstalled();
+      installListRequest.onerror = function(e) {
+        alert("Error calling getInstalled: " + installListRequest.error.name);
+
+        controller.set('installedManifestURLs', installedManifestURLs);
+        controller.set('appRecordsByManifest', appRecordsByManifest);
+        controller.set('alreadyInstalled', false);
+      };
+
+      installListRequest.onsuccess = function(e) {
+        for (var installListIndex = 0; installListIndex < installListRequest.result.length; installListIndex++) {
+          var manifestURL = installListRequest.result[installListIndex].manifestURL;
+          installedManifestURLs.push(manifestURL);
+          appRecordsByManifest[manifestURL] = installListRequest.result[installListIndex];
+        }
+
+        // TODO this after we try to read it in the helper
+        controller.set('installedManifestURLs', installedManifestURLs);
+        controller.set('appRecordsByManifest', appRecordsByManifest);
+        controller.set('alreadyInstalled', appRecordsByManifest[controller.get('model.manifest_url')]);
+      };
+    } else {
+      controller.set('enableInstallButtons', false);
+    }    
   },
   model: function(params) {
     return this.store.find('app', params.app_id);
@@ -187,6 +221,10 @@ TheCount.AppController = Ember.ObjectController.extend({
     },
     launch: function() {
       console.log('actions.launch ' + this.get('model.manifest_url'));
+      var appRecordsByManifest = this.get('appRecordsByManifest');
+      console.log('about to launch');
+      appRecordsByManifest[this.get('model.manifest_url')].launch(); 
+      console.log('launched');
     }
   }
 });
