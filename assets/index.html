@@ -118,7 +118,7 @@
 								{{appSize this}}
 							</td>
 							<td>{{stars ratings.average}}</td>
-							<td>{{ratings.count}}</td>
+							<td>{{formatNumber ratings.count}}</td>
 						</tr>
 					{{/each}}
 					</table>
@@ -173,7 +173,7 @@
 					{{#if is_packaged}}
 						<a class='btn btn-primary' {{bind-attr href=miniManifest.package_path}} >
 						    <span class="glyphicon glyphicon-file"></span>
-						    <span>download package {{miniManifest.size}} bytes</span>
+						    <span>download package {{formatNumber miniManifest.size}} bytes</span>
 						</a>
 					{{/if}}
 
@@ -220,7 +220,7 @@
 
 					<h4>
 						{{{stars ratings.average}}}
-						({{ratings.count}})
+						({{formatNumber ratings.count}})
 					</h4>
 
 					<p>
@@ -282,7 +282,7 @@
 	<script src="/scripts/handlebars-1.3.0.js"> </script>
 	<script src="/scripts/ember-1.4.0.js"> </script>
 	<script src="/scripts/ember-data.js"> </script>
-	<script src="//cdn.jsdelivr.net/bootstrap/3.1.1/js/bootstrap.min.js">
+	<script src="/scripts/bootstrap.js">
 	<script src="/scripts/bootstrap-datepicker.js"> </script>
 	<script src="/scripts/d3.v3.min.js"> </script>
 	<script src="/scripts/installHelpers.js"> </script>

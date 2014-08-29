@@ -94,8 +94,16 @@ TheCount.distributionView = Ember.View.extend({
 
 // HELPERS!
 
+function addCommasToNumberString(inNumberString) {
+  return ('' + inNumberString).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+}
+
 Ember.Handlebars.helper('daysSince', function(property, options) {
   return Math.round((Date.now() - Date.parse(property)) / (24*60*60*1000));
+});
+
+Ember.Handlebars.helper('formatNumber', function(property, options) {
+  return addCommasToNumberString(property);
 });
 
 Ember.Handlebars.helper('json', function(property, options) {
@@ -109,7 +117,7 @@ Ember.Handlebars.helper('stars', function(property, options) {
     if (property >= index)
       stars.push("<span class='glyphicon glyphicon-star'> </span>");
     else
-      stars.push("<span class='glyphicon glyphicon-star-empty'> </span>");    
+      stars.push("<span class='glyphicon glyphicon-star-empty' style='color: lightgray'> </span>");    
   }
 
   return new Handlebars.SafeString(stars.join(''));
@@ -117,10 +125,10 @@ Ember.Handlebars.helper('stars', function(property, options) {
 
 Ember.Handlebars.helper('appSize', function(app, options) {
   if (app.is_packaged && app.miniManifest && app.miniManifest.size) {
-    return app.miniManifest.size;
+    return addCommasToNumberString(app.miniManifest.size);
   }
   if (app.appcache_entry_sizes) {
-    return app.appcache_size;
+    return addCommasToNumberString(app.appcache_size);  
   }
   return 0;
 });
