@@ -265,6 +265,19 @@
 		</div>
 	</script>
 
+	<script type="text/x-handlebars" data-template-name="pie">
+		<div class='container'>
+			<div class='row'>
+				<div class='col-md-12'>
+					<h2>title</h2>
+					<h3>pie of title among {{total}} apps </h3>
+
+					{{view TheCount.pieView content=chartData}}
+				</div>
+			</div>
+		</div>
+	</script>
+
 	<script type="text/x-handlebars" data-template-name="distribution">
 		<div class='container'>
 			<div class='row'>

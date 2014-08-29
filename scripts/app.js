@@ -92,6 +92,18 @@ TheCount.distributionView = Ember.View.extend({
   }.observes('content.@each')
 });
 
+TheCount.pieView = Ember.View.extend({
+  classNames: ['pie'],
+  didInsertElement: function() {
+    console.log('didInsertElement pie');
+    createPieChart(this.get('content'));
+  },
+  updateChart: function updateChart() {
+    console.log('updateChart pie');
+    createPieChart(this.get('content'));
+  }.observes('content.@each.value')
+});
+
 // HELPERS!
 
 function addCommasToNumberString(inNumberString) {
@@ -139,6 +151,7 @@ TheCount.Router.map(function() {
   this.resource('app', { path: '/app/:app_id'});
   this.resource('frequency', { path: '/frequency/:frequency_kind' });
   this.resource('distribution', { path: '/distribution/:distribution_kind' });
+  this.resource('pie', { path: '/pie/:pie_kind' });
 });
 
 TheCount.AppsRoute = Ember.Route.extend({
@@ -199,6 +212,13 @@ TheCount.FrequencyRoute = Ember.Route.extend({
 TheCount.DistributionRoute = Ember.Route.extend({
   model: function(params) {
     return Ember.$.getJSON('/distribution/' + params.distribution_kind);
+  }
+});
+
+TheCount.PieRoute = Ember.Route.extend({
+  model: function(params) {
+    console.log('pie ' + params.pie_kind);
+    return Ember.$.getJSON('/pie/' + params.pie_kind);
   }
 });
 

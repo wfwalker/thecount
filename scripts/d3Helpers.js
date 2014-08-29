@@ -116,6 +116,9 @@ function createPieChart(data) {
     console.log('create pie');
     console.log(data);
 
+    // nuke the old one
+    d3.select(".pie svg").remove();
+
     var width = 960,
         height = 500,
         radius = Math.min(width, height) / 2;
