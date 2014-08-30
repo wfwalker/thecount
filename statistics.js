@@ -384,6 +384,8 @@ knownLibraries['zepto.min.js'] = 'Zepto.js';
 knownLibraries['c2runtime.js'] = 'Construct 2';
 knownLibraries['c2webappstart.js'] = 'Construct 2';
 
+knownLibraries['firebase.js'] = 'Firebase';
+
 knownLibraries['angular.js'] = 'Angular';
 knownLibraries['angular-touch.js'] = 'Angular';
 knownLibraries['angular.min.js'] = 'Angular';
