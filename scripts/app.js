@@ -1,3 +1,10 @@
+// TODO: don't change install to launch if there is an error
+// TODO: respect date start stop filters in nav bar
+// TODO: titles for distribution, frequency, pie queries
+// TODO: rip out jade templates
+// TODO: move ember code into separate files?
+// TODO: table sorting as ember actions?  
+
 $(document).ready(function() {
     // http://stackoverflow.com/a/979995/571420
     var QueryString = function () {
@@ -64,6 +71,11 @@ TheCount.App = DS.Model.extend({
 TheCount.Frequency = DS.Model.extend({
   total: DS.attr(),
   chartData: DS.attr()
+});
+
+TheCount.Distribution = DS.Model.extend({
+  total: DS.attr(),
+  values: DS.attr()
 });
 
 // VIEWS ------------------------------------------------------------------------
@@ -153,6 +165,8 @@ Ember.Handlebars.helper('appSize', function(app, options) {
   return 0;
 });
 
+// ROUTES -------------------------------------------------
+
 // should be in js/router.js
 TheCount.Router.map(function() {
   this.resource('apps', { path: '/listing/:listing_kind/:listing_param' });
@@ -212,7 +226,12 @@ TheCount.AppRoute = Ember.Route.extend({
 });
 
 TheCount.FrequencyRoute = Ember.Route.extend({
+  setupController: function(controller, data) {
+    controller.set('model', data);  
+    controller.set('frequencyKind', this.get('frequencyKind'));
+  },
   model: function(params) {
+    this.set('frequencyKind', params.frequency_kind);
     return Ember.$.getJSON('/frequency/' + params.frequency_kind);
   }
 });
@@ -225,10 +244,11 @@ TheCount.DistributionRoute = Ember.Route.extend({
 
 TheCount.PieRoute = Ember.Route.extend({
   model: function(params) {
-    console.log('pie ' + params.pie_kind);
     return Ember.$.getJSON('/pie/' + params.pie_kind);
   }
 });
+
+// CONTROLLERS -------------------------------------------------
 
 TheCount.ApplicationController = Ember.Controller.extend({
   search: function() {

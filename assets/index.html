@@ -1,7 +1,6 @@
 <html>
 
 <head>
-  <title>TheCount.2</title>
   <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="shortcut icon" href="/images/thecount.png" type="image/png">
   <link rel="stylesheet" href="/stylesheets/bootstrap.css" type="text/css">
@@ -256,8 +255,8 @@
 		<div class='container'>
 			<div class='row'>
 				<div class='col-md-12'>
-					<h2>title</h2>
-					<h3>frequency of title among {{total}} apps </h3>
+					<h2>{{frequencyKind}}</h2>
+					<h3>frequency of {{frequencyKind}} among {{formatNumber total}} apps </h3>
 
 					{{view TheCount.frequencyView content=chartData}}
 				</div>
@@ -270,7 +269,7 @@
 			<div class='row'>
 				<div class='col-md-12'>
 					<h2>title</h2>
-					<h3>pie of title among {{total}} apps </h3>
+					<h3>pie of title among {{formatNumber total}} apps </h3>
 
 					{{view TheCount.pieView content=chartData}}
 				</div>
@@ -283,7 +282,7 @@
 			<div class='row'>
 				<div class='col-md-12'>
 					<h2>title</h2>
-					<h3>distribution of title among {{total}} apps </h3>
+					<h3>distribution of title among {{formatNumber total}} apps </h3>
 
 					{{view TheCount.distributionView content=values}}
 				</div>
