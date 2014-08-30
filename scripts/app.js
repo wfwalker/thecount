@@ -122,6 +122,14 @@ Ember.Handlebars.helper('json', function(property, options) {
   return JSON.stringify(property, null, 2);
 });
 
+Ember.Handlebars.helper('appName', function(property, options) {
+  if (property['en-US']) {
+    return property['en-US'];
+  } else {
+    return property[Object.keys(property)[0]];
+  }
+});
+
 Ember.Handlebars.helper('stars', function(property, options) {
   var stars = [];
 

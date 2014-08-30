@@ -101,7 +101,7 @@
 					{{#each}}
 						<tr>
 							<td><img width='32' height='32' {{bind-attr src=icons.[128]}} ></td>
-							<td>{{#linkTo 'app' this}}{{name.en-US}}{{/linkTo}}</td>
+							<td>{{#linkTo 'app' this}}{{appName this.name}}{{/linkTo}}</td>
 							<td>{{author}}</td>
 							<td>{{daysSince reviewed}}</td>
 							<td>
@@ -134,7 +134,7 @@
 		        <div class="col-md-6">
 					<h2>
 						<img width='32' height='32' {{bind-attr src=icons.[128]}} >
-						<span>{{name.en-US}}</span>
+						<span>{{appName this.name}}</span>
 					</h2>
 		        </div>
 
