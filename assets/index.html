@@ -86,6 +86,8 @@
 		<div class='container'>
 			<div class='row'>
 				<div class='col-md-12'>
+					<h3>{{formatNumber count}} apps with {{listingKind}} {{listingParam}}</h3>
+
 					<table class='table table-condensed tablesorter-table tablesorter-blue tablesorter'>
 						<tr>
 							<th></th>
@@ -268,8 +270,8 @@
 		<div class='container'>
 			<div class='row'>
 				<div class='col-md-12'>
-					<h2>title</h2>
-					<h3>pie of title among {{formatNumber total}} apps </h3>
+					<h2>{{pieKind}}</h2>
+					<h3>pie of {{pieKind}} among {{formatNumber total}} apps </h3>
 
 					{{view TheCount.pieView content=chartData}}
 				</div>
@@ -281,8 +283,8 @@
 		<div class='container'>
 			<div class='row'>
 				<div class='col-md-12'>
-					<h2>title</h2>
-					<h3>distribution of title among {{formatNumber total}} apps </h3>
+					<h2>{{distributionKind}}</h2>
+					<h3>distribution of {{distributionKind}} among {{formatNumber total}} apps </h3>
 
 					{{view TheCount.distributionView content=values}}
 				</div>

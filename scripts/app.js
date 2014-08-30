@@ -1,6 +1,6 @@
 // TODO: don't change install to launch if there is an error
 // TODO: respect date start stop filters in nav bar
-// TODO: titles for distribution, frequency, pie queries
+// DONE: titles for distribution, frequency, pie queries
 // TODO: rip out jade templates
 // TODO: move ember code into separate files?
 // TODO: table sorting as ember actions?  
@@ -177,7 +177,15 @@ TheCount.Router.map(function() {
 });
 
 TheCount.AppsRoute = Ember.Route.extend({
+  setupController: function(controller, data) {
+    controller.set('model', data);
+    controller.set('count', data.length);  
+    controller.set('listingKind', this.get('listingKind'));
+    controller.set('listingParam', this.get('listingParam'));
+  },
   model: function(params) {
+    this.set('listingKind', params.listing_kind);
+    this.set('listingParam', params.listing_param);
     return Ember.$.getJSON('/listing/' + params.listing_kind + '/' + params.listing_param);
   }
 });
@@ -237,13 +245,23 @@ TheCount.FrequencyRoute = Ember.Route.extend({
 });
 
 TheCount.DistributionRoute = Ember.Route.extend({
+  setupController: function(controller, data) {
+    controller.set('model', data);  
+    controller.set('distributionKind', this.get('distributionKind'));
+  },
   model: function(params) {
+    this.set('distributionKind', params.distribution_kind);
     return Ember.$.getJSON('/distribution/' + params.distribution_kind);
   }
 });
 
 TheCount.PieRoute = Ember.Route.extend({
+  setupController: function(controller, data) {
+    controller.set('model', data);  
+    controller.set('pieKind', this.get('pieKind'));
+  },
   model: function(params) {
+    this.set('pieKind', params.pie_kind);
     return Ember.$.getJSON('/pie/' + params.pie_kind);
   }
 });

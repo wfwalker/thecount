@@ -114,7 +114,6 @@ function createHistogram(values) {
 
 function createPieChart(data) {
     console.log('create pie');
-    console.log(data);
 
     // nuke the old one
     d3.select(".pie svg").remove();
