@@ -182,6 +182,7 @@ TheCount.AppsRoute = Ember.Route.extend({
     controller.set('count', data.length);  
     controller.set('listingKind', this.get('listingKind'));
     controller.set('listingParam', this.get('listingParam'));
+    document.title = 'TheCount | listing';
   },
   model: function(params) {
     this.set('listingKind', params.listing_kind);
@@ -193,6 +194,7 @@ TheCount.AppsRoute = Ember.Route.extend({
 TheCount.AppRoute = Ember.Route.extend({
   setupController: function(controller, app) {
     controller.set('model', app);
+    document.title = 'TheCount';
 
     // Either retrieve the manifest URL's of all installed apps or disable all install buttons
     var installedManifestURLs = [];
@@ -237,6 +239,7 @@ TheCount.FrequencyRoute = Ember.Route.extend({
   setupController: function(controller, data) {
     controller.set('model', data);  
     controller.set('frequencyKind', this.get('frequencyKind'));
+    document.title = 'TheCount | freq | ' + this.get('frequencyKind');
   },
   model: function(params) {
     this.set('frequencyKind', params.frequency_kind);
@@ -248,6 +251,7 @@ TheCount.DistributionRoute = Ember.Route.extend({
   setupController: function(controller, data) {
     controller.set('model', data);  
     controller.set('distributionKind', this.get('distributionKind'));
+    document.title = 'TheCount | dist | ' + this.get('distributionKind');
   },
   model: function(params) {
     this.set('distributionKind', params.distribution_kind);
@@ -259,6 +263,7 @@ TheCount.PieRoute = Ember.Route.extend({
   setupController: function(controller, data) {
     controller.set('model', data);  
     controller.set('pieKind', this.get('pieKind'));
+    document.title = 'TheCount | pie | ' + this.get('pieKind');
   },
   model: function(params) {
     this.set('pieKind', params.pie_kind);
