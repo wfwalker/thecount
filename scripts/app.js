@@ -4,6 +4,7 @@
 // TODO: rip out jade templates
 // TODO: move ember code into separate files?
 // TODO: table sorting as ember actions?  
+// TODO: click on distribution + frequency bars go to listings
 
 $(document).ready(function() {
     // http://stackoverflow.com/a/979995/571420
@@ -84,11 +85,11 @@ TheCount.frequencyView = Ember.View.extend({
   classNames: ['frequency', 'barchart'],
   didInsertElement: function() {
     console.log('didInsertElement frequency');
-    createFrequencyGraph('frequency', 'category', this.get('content'));
+    createFrequencyGraph('frequency', this.get('kind'), this.get('content'));
   },
   updateChart: function updateChart() {
     console.log('updateChart frequency');
-    createFrequencyGraph('frequency', 'category', this.get('content'));
+    createFrequencyGraph('frequency', this.get('kind'), this.get('content'));
   }.observes('content.@each.value')
 });
 
@@ -100,7 +101,7 @@ TheCount.distributionView = Ember.View.extend({
   },
   updateChart: function updateChart() {
     console.log('updateChart distribution');
-    createHistogram(this.get('content'));
+    createHistogram(this.get('content'), this.get('kind'));
   }.observes('content.@each')
 });
 
@@ -112,7 +113,7 @@ TheCount.pieView = Ember.View.extend({
   },
   updateChart: function updateChart() {
     console.log('updateChart pie');
-    createPieChart(this.get('content'));
+    createPieChart(this.get('content'), this.get('kind'));
   }.observes('content.@each.value')
 });
 
@@ -120,6 +121,14 @@ TheCount.pieView = Ember.View.extend({
 
 function addCommasToNumberString(inNumberString) {
   return ('' + inNumberString).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+}
+
+function getDisplayName(nameDictionary) {
+  if (nameDictionary['en-US']) {
+    return nameDictionary['en-US'];
+  } else {
+    return nameDictionary[Object.keys(nameDictionary)[0]];
+  }  
 }
 
 Ember.Handlebars.helper('daysSince', function(property, options) {
@@ -135,11 +144,7 @@ Ember.Handlebars.helper('json', function(property, options) {
 });
 
 Ember.Handlebars.helper('appName', function(property, options) {
-  if (property['en-US']) {
-    return property['en-US'];
-  } else {
-    return property[Object.keys(property)[0]];
-  }
+  return getDisplayName(property);
 });
 
 Ember.Handlebars.helper('stars', function(property, options) {
@@ -182,11 +187,13 @@ TheCount.AppsRoute = Ember.Route.extend({
     controller.set('count', data.length);  
     controller.set('listingKind', this.get('listingKind'));
     controller.set('listingParam', this.get('listingParam'));
+    $('.loading').hide();
     document.title = 'TheCount | listing';
   },
   model: function(params) {
     this.set('listingKind', params.listing_kind);
     this.set('listingParam', params.listing_param);
+    $('.loading').show();
     return Ember.$.getJSON('/listing/' + params.listing_kind + '/' + params.listing_param);
   }
 });
@@ -194,7 +201,8 @@ TheCount.AppsRoute = Ember.Route.extend({
 TheCount.AppRoute = Ember.Route.extend({
   setupController: function(controller, app) {
     controller.set('model', app);
-    document.title = 'TheCount';
+    $('.loading').hide();
+    document.title = 'TheCount | ' + getDisplayName(controller.get('model.name'));
 
     // Either retrieve the manifest URL's of all installed apps or disable all install buttons
     var installedManifestURLs = [];
@@ -239,10 +247,12 @@ TheCount.FrequencyRoute = Ember.Route.extend({
   setupController: function(controller, data) {
     controller.set('model', data);  
     controller.set('frequencyKind', this.get('frequencyKind'));
+    $('.loading').hide();
     document.title = 'TheCount | freq | ' + this.get('frequencyKind');
   },
   model: function(params) {
     this.set('frequencyKind', params.frequency_kind);
+    $('.loading').show();
     return Ember.$.getJSON('/frequency/' + params.frequency_kind);
   }
 });
@@ -251,10 +261,12 @@ TheCount.DistributionRoute = Ember.Route.extend({
   setupController: function(controller, data) {
     controller.set('model', data);  
     controller.set('distributionKind', this.get('distributionKind'));
+    $('.loading').hide();
     document.title = 'TheCount | dist | ' + this.get('distributionKind');
   },
   model: function(params) {
     this.set('distributionKind', params.distribution_kind);
+    $('.loading').show();
     return Ember.$.getJSON('/distribution/' + params.distribution_kind);
   }
 });
@@ -263,10 +275,12 @@ TheCount.PieRoute = Ember.Route.extend({
   setupController: function(controller, data) {
     controller.set('model', data);  
     controller.set('pieKind', this.get('pieKind'));
+    $('.loading').hide();
     document.title = 'TheCount | pie | ' + this.get('pieKind');
   },
   model: function(params) {
     this.set('pieKind', params.pie_kind);
+    $('.loading').show();
     return Ember.$.getJSON('/pie/' + params.pie_kind);
   }
 });

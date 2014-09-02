@@ -7,6 +7,8 @@ function get(prop) {
 }
 
 function createFrequencyGraph(inDivClass, inListingKind, data) {
+    console.log('frequency kind ' + inListingKind);
+
     var width = 900,
         outsideLabelThreshold = 200,
         barHeight = 25, 
@@ -34,7 +36,7 @@ function createFrequencyGraph(inDivClass, inListingKind, data) {
         .attr("height", barHeight - 1);
 
     bar.append('svg:a')
-        .attr('xlink:href', function(d) { return '/listing/' + inListingKind + '/' + d.label })
+        .attr('xlink:href', function(d) { return '/#/listing/' + inListingKind + '/' + d.label })
     .append("text")
         .attr("x", function(d) { return x(d.val) - 3; })
         .attr("y", barHeight / 2)
@@ -45,7 +47,9 @@ function createFrequencyGraph(inDivClass, inListingKind, data) {
         .text(function(d) { return d.label + " (" + formatCount(d.val) + ")"  });
 }
 
-function createHistogram(values) {
+function createHistogram(values, inListingKind) {
+    console.log('histogram kind ' + inListingKind);
+
     // A formatter for counts.
     var formatCount = d3.format(",.0f");
 
