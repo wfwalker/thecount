@@ -1,10 +1,6 @@
 // TODO: don't change install to launch if there is an error
 // TODO: respect date start stop filters in nav bar
-// DONE: titles for distribution, frequency, pie queries
-// TODO: rip out jade templates
-// TODO: move ember code into separate files?
 // TODO: table sorting as ember actions?  
-// TODO: click on distribution + frequency bars go to listings
 
 $(document).ready(function() {
     // http://stackoverflow.com/a/979995/571420
