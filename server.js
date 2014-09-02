@@ -26,6 +26,7 @@ app.use("/fonts", express.static('fonts'));
 app.use("/images", express.static('images'));
 app.use("/scripts", express.static('scripts'));
 app.use("/stylesheets", express.static('stylesheets'));
+app.use("/", express.static('assets'));
 
 // LAUNCH SERVER
 
@@ -150,6 +151,7 @@ app.param('app_id', function(req, resp, next, id) {
 	var appID = parseInt(req.param('app_id'));
 	console.log('app_id ' + appID);
 	req.appData = marketplaceCatalog[appID];
+    console.log('param :app_id ' + req.appData);    
 	next();
 });
 
@@ -353,43 +355,34 @@ app.param('locale', function(req, resp, next, id) {
 
 // route requests to retrieve a single app by ID
 
-app.get('/app/:app_id', function(req, resp, next) {
-    resp.render('appdetail',
-        { graphsMenu: graphs, title : req.appData.author, appData: req.appData }
-    );
+app.get('/apps/:app_id', function(req, resp, next) {
+    console.log('route /apps/:app_id ' + req.appData);
+    resp.json({app: req.appData});
 });
 
 // route requests to retrieve apps by author
 
 app.get('/listing/author/:author', function(req, resp, next) {
-    resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'Published by ' + req.author }
-    );
+    resp.json(req.apps);
 });
 
 // route requests to retrieve apps by permission
 
 app.get('/listing/permission/:permission', function(req, resp, next) {
-    resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'Using ' + req.permission }
-    );
+    resp.json(req.apps);
 });
 
 
 // route requests to retrieve apps by author
 
 app.get('/listing/locale/:locale', function(req, resp, next) {
-    resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'Available in ' + req.locale }
-    );
+    resp.json(req.apps);
 });
 
 // route requests to search across the entire JSON for each app
 
 app.get('/listing/search/:search', function(req, resp, next) {
-    resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'Contains ' + req.search }
-    );
+    resp.json(req.apps);
 });
 
 
@@ -405,11 +398,7 @@ app.get('/listing/errors', function(req, resp, next) {
         }
     }
 
-    req.apps = apps;
-
-    resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'Errors retrieving data' }
-    );
+    resp.json(apps);
 });
 
 // route requests to retrieve apps with appcache
@@ -424,11 +413,7 @@ app.get('/listing/appcache', function(req, resp, next) {
         }
     }
 
-    req.apps = apps;
-
-    resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'using Appcache' }
-    );
+    resp.json(apps);
 });
 
 
@@ -448,72 +433,50 @@ app.get('/filenames/unknown', function(req, resp, next) {
 
     console.log(theFilenames);
 
-    resp.render('frequency',
-        { graphsMenu: graphs, title: 'unknown filenames', chartData: theFilenames, total: allFilenames.total }
-    );
+    resp.json(theFilenames);
 });
 
 
 // route requests to retrieve apps by number of user ratings
 
 app.get('/listing/min_ratings/:min_ratings', function(req, resp, next) {
-    resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: req.min_ratings + ' or more ratings' }
-    );
+    resp.json(req.apps);
 });
 
 // route requests to retrieve apps by number of user ratings
 
 app.get('/listing/max_ratings/:max_ratings', function(req, resp, next) {
-    resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: req.max_ratings + ' or fewer ratings' }
-    );
+    resp.json(req.apps);
 });
 
 // route requests to retrieve apps by supported activity
 
 app.get('/listing/activity/:activity', function(req, resp, next) {
-    resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'Provides activity ' + req.activity }
-    );
+    resp.json(req.apps);
 });
 
 // route requests to retrieve apps by which library they use
 
 app.get('/listing/library/:library', function(req, resp, next) {
-    resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'Uses ' + req.library }
-    );
+    resp.json(req.apps);
 });
 
 // route requests to retrieve apps by which filename they use
 
 app.get('/listing/filename/:filename', function(req, resp, next) {
-    resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'Uses ' + req.filename }
-    );
+    resp.json(req.apps);
 });
 
 // route requests to retrieve apps by how old they are
 
 app.get('/listing/days_old/:days_old', function(req, resp, next) {
-    resp.render('applisting',
-        { apps: req.apps, graphsMenu: graphs, title: 'Reviewed in the last ' + req.days_old + ' days' }
-    );
+    resp.json(req.apps);
 });
 
 // route requests to get the homepage
 
-app.get('/home', function(req, resp, next) {
-    resp.render('home',
-        { graphsMenu: graphs, title: 'TheCount', globalStatistics: globalStatistics }
-    );
-});
-
-app.get('/', function(req, resp, next) {
-    resp.render('home',
-        { graphsMenu: graphs, title: 'TheCount', globalStatistics: globalStatistics }
-    );
+app.get('/globalstatistics', function(req, resp, next) {
+    resp.json(globalStatistics);
 });
 
 // This data structure defines all the routes for analytics in TheCount, their paths, their getter functions
@@ -544,27 +507,26 @@ var graphs = [
 function privateAddDistributionRoute(aGraph) {
     app.get('/distribution/' + aGraph.routeFragment, function(req, resp, next) {
         values = statistics.getValues(req.apps, aGraph.getter);
-        resp.render('distribution',
-            { graphsMenu: graphs, title: aGraph.title, values: values.values, total: values.total }
-        );
+
+        resp.json(values);
     });
 }
 
 function privateAddFrequencyRoute(aGraph) {
     app.get('/frequency/' + aGraph.routeFragment, function(req, resp, next) {
         frequency = statistics.getFrequency(req.apps, aGraph.getter);
-        resp.render('frequency',
-            { graphsMenu: graphs, title: aGraph.title, chartData: frequency.chartData, listingKind: aGraph.listingKind, total: frequency.total }
-        );
+
+        // frequency
+        resp.json(frequency);
     });
 }
 
 function privateAddPieRoute(aGraph) {
     app.get('/pie/' + aGraph.routeFragment, function(req, resp, next) {
         frequency = statistics.getFrequency(req.apps, aGraph.getter);
-        resp.render('pie',
-            { graphsMenu: graphs, title: aGraph.title, chartData: frequency.chartData, total: frequency.total }
-        );
+
+        // pie
+        resp.json(frequency);
     });
 }
 
@@ -608,10 +570,8 @@ app.get('/authors/num_apps', function(req, resp, next) {
         numberOfApps.push(apps.length);
     }
 
-    resp.render('distribution',
-        { graphsMenu: graphs, title: 'how many apps per author', values: numberOfApps }
-    );
-
+    // distribution
+    resp.json(numberOfApps);
 });
 
 app.get('/authors/months_since_submission', function(req, resp, next) {
@@ -630,17 +590,14 @@ app.get('/authors/months_since_submission', function(req, resp, next) {
         monthsSinceSubmission.push((now - createdDate) / (30 * 24 * 60 * 60 * 1000));
     }
 
-    resp.render('distribution',
-        { graphsMenu: graphs, title: 'active authors by month', values: monthsSinceSubmission }
-    );
+    // distribution
+    resp.json(monthsSinceSubmission);
 });
 
 
 app.get('/rebuildreport', function(req, resp, next) {
     console.log('/rebuildreport');
 
-    resp.render('rebuild',
-        { graphsMenu: graphs, title: 'Rebuild Database', progressReport: catalog.progressReport(), refreshURL: '/rebuildreport' }
-    );
+    resp.json(catalog.progressReport());
 });
 

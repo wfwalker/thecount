@@ -109,55 +109,23 @@ function wireUpInstallButtons(installedManifestURLs) {
 $(document).ready(function() {
 	// Either retrieve the manifest URL's of all installed apps or disable all install buttons
 
-	var installedManifestURLs = [];
-
-	if (window.navigator.mozApps && window.navigator.mozApps.getInstalled) {
-		var installListRequest = window.navigator.mozApps.getInstalled();
-		installListRequest.onerror = function(e) {
-			alert("Error calling getInstalled: " + installListRequest.error.name);
-
-			wireUpInstallButtons([]);
-		};
-
-		installListRequest.onsuccess = function(e) {
-			for (var installListIndex = 0; installListIndex < installListRequest.result.length; installListIndex++) {
-				var manifestURL = installListRequest.result[installListIndex].manifestURL;
-				installedManifestURLs.push(manifestURL);
-				appRecordsByManifest[manifestURL] = installListRequest.result[installListIndex];
-				$('#installed-app-list').append(installListRequest.result[installListIndex].manifest.name + '<br>');
-			}
-
-			wireUpInstallButtons(installedManifestURLs);
-		};
-	} else {
-		$('.installButton').attr("disabled", "disabled");
-	}
-
-	// set up search button behavior
-
-	$('.searchButton').click(function(e) {
-		e.preventDefault();
-		console.log('searching ' + $('#searchText').val());
-		location.href='/listing/search/' + $('#searchText').val();
-	});
-
 	// set up table sorting behavior
 
-	$('.tablesorter-table').tablesorter({
-	    theme : 'blue',
+	// $('.tablesorter-table').tablesorter({
+	//     theme : 'blue',
 	 
-	    headers: { 0: { sorter: false }, 1: { sorter: true }, 4: { sorter: false } },
+	//     headers: { 0: { sorter: false }, 1: { sorter: true }, 4: { sorter: false } },
 	 
-	    // header layout template; {icon} needed for some themes
-	    headerTemplate : '{content}{icon}',
+	//     // header layout template; {icon} needed for some themes
+	//     headerTemplate : '{content}{icon}',
 	 
-	    // initialize column styling of the table
-	    widgets : ["columns"],
-	    widgetOptions : {
-			// change the default column class names
-			// primary is the first column sorted, secondary is the second, etc
-			columns : [ "primary", "secondary", "tertiary" ]
-	    }
-	});
+	//     // initialize column styling of the table
+	//     widgets : ["columns"],
+	//     widgetOptions : {
+	// 		// change the default column class names
+	// 		// primary is the first column sorted, secondary is the second, etc
+	// 		columns : [ "primary", "secondary", "tertiary" ]
+	//     }
+	// });
 
 });

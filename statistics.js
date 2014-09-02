@@ -251,6 +251,8 @@ function getPlatformCategories(inApp) {
     if (inApp.manifest && inApp.manifest.appcache_path) { categories.push('appcache'); }
     if (inApp.manifest && inApp.manifest.fullscreen) { categories.push('fullscreen'); }
 
+    if (inApp.tags.indexOf('tarako') > -1) { categories.push('tarako'); }
+    
     if (inApp.device_types.indexOf('desktop') > -1) { categories.push('desktop'); }
     if (inApp.device_types.indexOf('firefoxos') > -1) { categories.push('firefox os'); }
     if (inApp.device_types.indexOf('android-tablet') > -1) { categories.push('android tablet'); categories.push('android'); }
@@ -381,6 +383,8 @@ knownLibraries['zepto.js'] = 'Zepto.js';
 knownLibraries['zepto.min.js'] = 'Zepto.js';
 knownLibraries['c2runtime.js'] = 'Construct 2';
 knownLibraries['c2webappstart.js'] = 'Construct 2';
+
+knownLibraries['firebase.js'] = 'Firebase';
 
 knownLibraries['angular.js'] = 'Angular';
 knownLibraries['angular-touch.js'] = 'Angular';

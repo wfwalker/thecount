@@ -1,3 +1,7 @@
+// TODO: don't change install to launch if there is an error
+// TODO: respect date start stop filters in nav bar
+// TODO: table sorting as ember actions?  
+
 $(document).ready(function() {
     // http://stackoverflow.com/a/979995/571420
     var QueryString = function () {
@@ -28,4 +32,10 @@ $(document).ready(function() {
         $el.datepicker();
         $el.val(QueryString[$el[0].name]);
     });
+});
+
+// EMBER STUFF
+
+window.TheCount = Ember.Application.create({
+  LOG_TRANSITIONS: true
 });

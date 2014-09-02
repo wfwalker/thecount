@@ -1,0 +1,311 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="shortcut icon" href="/images/thecount.png" type="image/png">
+  <link rel="stylesheet" href="/stylesheets/bootstrap.css" type="text/css">
+  <link rel="stylesheet" href="/stylesheets/barchart.css" type="text/css">
+  <link rel="stylesheet" href="/stylesheets/tablesorter.blue.css" type="text/css">
+  <link rel="stylesheet" href="/stylesheets/datepicker.css" type="text/css">
+</head>
+
+<body>
+	<script type="text/x-handlebars">
+		<div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<a href="#/listing/min_ratings/30" class="navbar-brand">TheCount</a>
+				</div>
+
+				<div class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li class="dropdown">
+							<a href="#" data-toggle="dropdown" class="dropdown-toggle">ratings<b class='caret'></b></a>
+
+							<ul class="dropdown-menu">
+								<li><a href="#/distribution/rating_count">rating count</a></li>
+								<li><a href="#/distribution/rating">average rating</a></li>
+							</ul>
+						</li>
+
+						<li class="dropdown">
+							<a href="#" data-toggle="dropdown" class="dropdown-toggle">discovery<b class='caret'></b></a>
+
+							<ul class="dropdown-menu">
+								<li><a href="#/frequency/category">category</a></li>
+								<li><a href="#/frequency/author">author</a></li>
+								<li><a href="#/distribution/days_since_created">days since created</a></li>
+								<li><a href="#/distribution/days_since_reviewed">days since reviewed</a></li>
+								<li><a href="#/frequency/locale">locale</a></li>
+								<li><a href="#/frequency/region">region</a></li>
+								<li><a href="#/pie/installs_allowed_from">installs_allowed_from</a></li>
+							</ul>
+						</li>
+
+						<li class="dropdown">
+							<a href="#" data-toggle="dropdown" class="dropdown-toggle">tech<b class='caret'></b></a>
+
+							<ul class="dropdown-menu">
+								<li><a href="#/frequency/platform">platform</a></li>
+								<li><a href="#/pie/payment">payment</a></li>
+								<li><a href="#/frequency/library">library</a></li>
+								<li><a href="#/distribution/package_size">package size</a></li>
+								<li><a href="#/frequency/icon_sizes">icon sizes</a></li>
+								<li><a href="#/frequency/permission">permission</a></li>
+								<li><a href="#/frequency/activity">activity</a></li>
+							</ul>
+						</li>
+					</ul>
+
+					<form class="navbar-form navbar-left">
+						<div class="form-group input-group-sm">
+							{{input valueBinding="searchText" class='formControl' placeholder='search text'}}
+						</div>
+						<button class="btn btn-primary btn-sm searchButton" {{action 'search'}}>
+							Search
+						</button>
+					</form>
+
+					<form class="navbar-form navbar-left">
+						<div class="form-group input-group-sm">
+							<input id="since" name="since" type="text" placeholder="since" data-date-format="yyyy-mm-dd" autocomplete="off" class="form-control datepicker"><input id="until" name="until" type="text" placeholder="until" data-date-format="yyyy-mm-dd" autocomplete="off" class=
+							"form-control datepicker">
+						</div><button type="submit" class="btn btn-primary btn-sm">Filter</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div style="margin-top: 60px"></div>
+
+		<div class='loading' style='display: none'>LOADING</div>
+
+		{{outlet}}
+	</script>
+
+	<script type="text/x-handlebars" data-template-name="apps">
+		<div class='container'>
+			<div class='row'>
+				<div class='col-md-12'>
+					<h3>{{formatNumber count}} apps with {{listingKind}} {{listingParam}}</h3>
+
+					<table class='table table-condensed tablesorter-table tablesorter-blue tablesorter'>
+						<tr>
+							<th></th>
+							<th>Name</th>
+							<th>Author</th>
+							<th>Days Old</th>
+							<th>Type</th>
+							<th>Appcache/Package Size</th>
+							<th>User Ratings</th>
+							<th>Count</th>
+						</tr>
+					{{#each}}
+						<tr>
+							<td><img width='32' height='32' {{bind-attr src=icons.[128]}} ></td>
+							<td>{{#linkTo 'app' this}}{{appName this.name}}{{/linkTo}}</td>
+							<td>{{author}}</td>
+							<td>{{daysSince reviewed}}</td>
+							<td>
+					        	{{#if is_packaged}}
+					        		<span class='glyphicon glyphicon-file'></span>
+					        	{{else}}
+					        		<span class='glyphicon glyphicon-cloud'></span>
+					        	{{/if}}
+					        	{{#if is_offline}}
+					        		<span class='glyphicon glyphicon-plane'></span>
+					        	{{/if}}
+							</td>
+							<td>
+								{{appSize this}}
+							</td>
+							<td>{{stars ratings.average}}</td>
+							<td>{{formatNumber ratings.count}}</td>
+						</tr>
+					{{/each}}
+					</table>
+				</div>
+			</div>
+		</div>		
+	</script>
+
+	<script type="text/x-handlebars" data-template-name="app">
+		<div class='container'>
+			<div class='row'>
+
+		        <div class="col-md-6">
+					<h2>
+						<img width='32' height='32' {{bind-attr src=icons.[128]}} >
+						<span>{{appName this.name}}</span>
+					</h2>
+		        </div>
+
+		        <div style="text-align: right" class="col-md-6">
+		        	<h3>
+			        	{{#if is_packaged}}
+			        		<span class='glyphicon glyphicon-file'></span>
+			        	{{else}}
+			        		<span class='glyphicon glyphicon-cloud'></span>
+			        	{{/if}}
+			        	{{#if is_offline}}
+			        		<span class='glyphicon glyphicon-plane'></span>
+			        	{{/if}}
+		        	</h3>
+		        </div>
+	        </div>
+
+			<div class='row'>
+				<div class='col-md-12'>
+					{{#if alreadyInstalled}}
+						<button {{action 'launch'}} class="btn btn-primary launchButton">
+							Launch
+						</button>
+					{{else}}
+						<button {{action 'install'}} class="btn btn-primary installButton">
+							{{#if is_packaged}}
+								Install Packaged
+							{{else}}
+								Install Hosted
+							{{/if}}
+						</button>
+					{{/if}}
+
+					<span id="progress"></span>
+
+					{{#if is_packaged}}
+						<a class='btn btn-primary' {{bind-attr href=miniManifest.package_path}} >
+						    <span class="glyphicon glyphicon-file"></span>
+						    <span>download package {{formatNumber miniManifest.size}} bytes</span>
+						</a>
+					{{/if}}
+
+					<span>
+						<a target="_blank" {{bind-attr href=marketplaceLink}} class="btn btn-primary">
+							<span class='glyphicon glyphicon-share-alt'> </span>
+							<span>marketplace</span>
+						</a>
+					</span>	
+
+					<hr />			
+
+					<div>{{{description.en-US}}}</div>
+				</div>
+			</div>
+
+			<div class='row'>
+			    {{#each preview in previews}}
+			    	<div class='col-xs-6 col-md-3'>
+			    		<a href='#' class='thumbnail'>
+							<img {{bind-attr src=preview.thumbnail_url}} >
+						</a>	
+			    	</div>
+			    {{/each}}
+			</div>
+
+			<hr />
+
+			<div class='row'>
+				<div class='col-md-12'>
+					<h3>{{author}}</h3>
+
+					<div>
+						{{#each theType in device_types}}
+							<span class='label label-primary'>{{theType}}</span>
+						{{/each}}
+						{{#each theCategory in categories}}
+							<span class='label label-default'>{{theCategory}}</span>
+						{{/each}}
+						{{#each theTag in tags}}
+							<span class='label label-info'>{{theTag}}</span>
+						{{/each}}
+					</div>
+
+					<h4>
+						{{{stars ratings.average}}}
+						({{formatNumber ratings.count}})
+					</h4>
+
+					<p>
+						<span class='glyphicon glyphicon-time'> </span>
+						Created {{created}} ({{daysSince created}} days ago)
+					</p>
+
+					<p>
+						<span class='glyphicon glyphicon-time'> </span>
+						Reviewed {{reviewed}} ({{daysSince reviewed}} days ago)
+					</p>
+
+					{{#if manifest}}
+						<h3>manifest</h3>
+						<pre>{{json manifest}}</pre>
+					{{/if}}
+
+					{{#if miniManifest}}
+						<h3>mini manifest</h3>
+						<pre>{{json miniManifest}}</pre>
+					{{/if}}
+
+					{{#if appcache_manifest}}
+						<h3>appcache_manifest</h3>
+						<pre>{{appcache_manifest}}</pre>
+					{{/if}}
+				</div>
+			</div>
+		</div>
+	</script>
+
+	<script type="text/x-handlebars" data-template-name="frequency">
+		<div class='container'>
+			<div class='row'>
+				<div class='col-md-12'>
+					<h2>{{frequencyKind}}</h2>
+					<h3>frequency of {{frequencyKind}} among {{formatNumber total}} apps </h3>
+
+					{{view TheCount.frequencyView kind=frequencyKind content=chartData}}
+				</div>
+			</div>
+		</div>
+	</script>
+
+	<script type="text/x-handlebars" data-template-name="pie">
+		<div class='container'>
+			<div class='row'>
+				<div class='col-md-12'>
+					<h2>{{pieKind}}</h2>
+					<h3>pie of {{pieKind}} among {{formatNumber total}} apps </h3>
+
+					{{view TheCount.pieView content=chartData}}
+				</div>
+			</div>
+		</div>
+	</script>
+
+	<script type="text/x-handlebars" data-template-name="distribution">
+		<div class='container'>
+			<div class='row'>
+				<div class='col-md-12'>
+					<h2>{{distributionKind}}</h2>
+					<h3>distribution of {{distributionKind}} among {{formatNumber total}} apps </h3>
+
+					{{view TheCount.distributionView kind=distributionKind content=values}}
+				</div>
+			</div>
+		</div>
+	</script>
+
+	<script src="/scripts/jquery-1.10.2.js"> </script>
+	<script src="/scripts/handlebars-1.3.0.js"> </script>
+	<script src="/scripts/ember-1.4.0.js"> </script>
+	<script src="/scripts/ember-data.js"> </script>
+	<script src="/scripts/bootstrap.js">
+	<script src="/scripts/bootstrap-datepicker.js"> </script>
+	<script src="/scripts/d3.v3.min.js"> </script>
+	<script src="/scripts/installHelpers.js"> </script>
+	<script src="/scripts/d3Helpers.js"> </script>
+	<script src="/scripts/app.js"> </script>
+	<script src="/scripts/router.js"> </script>
+	<script src="/scripts/views.js"> </script>
+	<script src="/scripts/models.js"> </script>
+	<script src="/scripts/controllers.js"> </script>
+</body>
+</html>
