@@ -11,6 +11,9 @@ TheCount.AppController = Ember.ObjectController.extend({
   marketplaceLink: function() {
     return 'http://marketplace.firefox.com/app/' + this.get('model.slug');
   }.property('model.marketplaceLink'),
+  isPaidApp: function() {
+    return this.get('model.premium_type') == 'premium';
+  }.property('model.isPaidApp'),
   actions: {
     install: function() {
       console.log(this.get('model.manifest_url'));
