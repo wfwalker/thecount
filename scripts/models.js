@@ -19,6 +19,7 @@ TheCount.App = DS.Model.extend({
   name: DS.attr(),
   device_types: DS.attr(),
   previews: DS.attr(),
+  premium_type: DS.attr('string'),
   description: DS.attr(),
   appcache_manifest: DS.attr()
 });

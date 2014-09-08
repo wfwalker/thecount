@@ -164,13 +164,19 @@
 							Launch
 						</button>
 					{{else}}
-						<button {{action 'install'}} class="btn btn-primary installButton">
-							{{#if is_packaged}}
-								Install Packaged
-							{{else}}
-								Install Hosted
-							{{/if}}
-						</button>
+						{{#if isPaidApp}}
+							<a target="_blank" {{bind-attr href=marketplaceLink}} class="btn btn-primary">
+								<span>Buy at Firefox Marketplace</span>
+							</a>
+						{{else}}
+							<button {{action 'install'}} class="btn btn-primary installButton">
+								{{#if is_packaged}}
+									Install Packaged
+								{{else}}
+									Install Hosted
+								{{/if}}
+							</button>
+						{{/if}}
 					{{/if}}
 
 					<span id="progress"></span>
