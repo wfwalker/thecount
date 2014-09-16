@@ -133,7 +133,11 @@ function getAuthor(inApp) {
 
 function getInstallsAllowedFrom(inApp) {
     if (inApp.manifest && inApp.manifest.installs_allowed_from) {
-        return inApp.manifest.installs_allowed_from;
+        if (inApp.manifest.installs_allowed_from == '*') {
+            return ['*'];
+        } else {
+            return ['other'];
+        }
     } else {
         return ['none'];
     }
