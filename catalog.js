@@ -313,7 +313,7 @@ function searchAppData(inSearchURL) {
 // returns a Q promise to retrieve the entire firefox marketplace catalog
 
 function findAppData() {
-    return searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?format=JSON&limit=200');
+    return searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?format=JSON&region=None&limit=200');
 }
 
 // QUERIES --------------------------------------------
