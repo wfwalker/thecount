@@ -107,7 +107,6 @@ function wireUpInstallButtons(installedManifestURLs) {
 // Stuff to do when the page loads
 
 $(document).ready(function() {
-	// Either retrieve the manifest URL's of all installed apps or disable all install buttons
 
 	// set up table sorting behavior
 

@@ -22,7 +22,7 @@ TheCount.AppsRoute = Ember.Route.extend({
     this.set('listingKind', params.listing_kind);
     this.set('listingParam', params.listing_param);
     $('.loading').show();
-    return Ember.$.getJSON('/listing/' + params.listing_kind + '/' + params.listing_param);
+    return Ember.$.getJSON('/listing/' + params.listing_kind + '/' + params.listing_param + '?since=' + $('#since').val() + '&until=' + $('#until').val());
   }
 });
 
@@ -81,7 +81,7 @@ TheCount.FrequencyRoute = Ember.Route.extend({
   model: function(params) {
     this.set('frequencyKind', params.frequency_kind);
     $('.loading').show();
-    return Ember.$.getJSON('/frequency/' + params.frequency_kind);
+    return Ember.$.getJSON('/frequency/' + params.frequency_kind + '?since=' + $('#since').val() + '&until=' + $('#until').val());
   }
 });
 
@@ -95,7 +95,7 @@ TheCount.DistributionRoute = Ember.Route.extend({
   model: function(params) {
     this.set('distributionKind', params.distribution_kind);
     $('.loading').show();
-    return Ember.$.getJSON('/distribution/' + params.distribution_kind);
+    return Ember.$.getJSON('/distribution/' + params.distribution_kind + '?since=' + $('#since').val() + '&until=' + $('#until').val());
   }
 });
 
@@ -109,6 +109,6 @@ TheCount.PieRoute = Ember.Route.extend({
   model: function(params) {
     this.set('pieKind', params.pie_kind);
     $('.loading').show();
-    return Ember.$.getJSON('/pie/' + params.pie_kind);
+    return Ember.$.getJSON('/pie/' + params.pie_kind + '?since=' + $('#since').val() + '&until=' + $('#until').val());
   }
 });
