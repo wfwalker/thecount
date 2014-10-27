@@ -294,7 +294,10 @@
 			<div class='row'>
 				<div class='col-md-12'>
 					<h2>{{distributionKind}}</h2>
-					<h3>distribution of {{distributionKind}} among {{formatNumber total}} apps </h3>
+					<h3>
+						distribution of {{distributionKind}} among {{formatNumber total}} apps
+						(average {{formatNumber average}})
+					</h3>
 
 					{{view TheCount.distributionView kind=distributionKind content=values}}
 				</div>

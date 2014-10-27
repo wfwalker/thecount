@@ -4,6 +4,7 @@
 function getValues(inApps, getIntValuePerAppFn) {
     var values = [];
     var appsFound = 0;
+    var sumOfValues = 0;
 
     for (index in inApps) {
         var app = inApps[index];
@@ -12,10 +13,11 @@ function getValues(inApps, getIntValuePerAppFn) {
         if (intValue != null) {
             appsFound++;
             values.push(intValue);
+            sumOfValues = sumOfValues + intValue;
         }
     }
 
-    return {total: appsFound, values: values}
+    return {total: appsFound, values: values, average: Math.round(100 * sumOfValues / appsFound) / 100.0 }
 }
 
 // returns the average rating for apps with more than five ratings, null otherwise
@@ -438,6 +440,8 @@ knownLibraries['PxLoader.min.js'] = 'PixelLab preloader';
 knownLibraries['PxLoaderImage.min.js'] = 'PixelLab preloader';
 
 knownLibraries['l10n.js'] = 'Web L10n';
+
+knownLibraries['include.js'] = 'Persona';
 
 knownLibraries['underscore.js'] = 'Underscore';
 knownLibraries['underscore-min.js'] = 'Underscore';
