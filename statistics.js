@@ -4,7 +4,7 @@
 function getValues(inApps, getIntValuePerAppFn) {
     var values = [];
     var appsFound = 0;
-    var sumOfValues = 0;
+    var sumOfValues = 0.0;
 
     for (index in inApps) {
         var app = inApps[index];
@@ -13,11 +13,11 @@ function getValues(inApps, getIntValuePerAppFn) {
         if (intValue != null) {
             appsFound++;
             values.push(intValue);
-            sumOfValues = sumOfValues + intValue;
+            sumOfValues = sumOfValues + (1.0 * intValue);
         }
     }
 
-    return {total: appsFound, values: values, average: Math.round(100 * sumOfValues / appsFound) / 100.0 }
+    return { total: appsFound, values: values, average: Math.round(100.0 * sumOfValues / (1.0 * appsFound)) / 100.0 }
 }
 
 // returns the average rating for apps with more than five ratings, null otherwise
@@ -44,11 +44,11 @@ function getRatingCount(inApp) {
 
 function getPackageSize(inApp) {
     if (inApp.miniManifest && inApp.miniManifest.size) {
-        return Math.round(inApp.miniManifest.size / 1000000);
+        return inApp.miniManifest.size;
     }
 
     if (inApp.manifest && inApp.manifest.size) {
-        return Math.round(inApp.manifest.size / 1000000);
+        return inApp.manifest.size;
     }
 
     return null;
