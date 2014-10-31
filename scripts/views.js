@@ -66,6 +66,14 @@ Ember.Handlebars.helper('appName', function(property, options) {
   return getDisplayName(property);
 });
 
+Ember.Handlebars.helper('premiumIcon', function(property, options) {
+  if (property != 'free') {
+    return new Handlebars.SafeString("<span class='glyphicon glyphicon-usd'> </span>");
+  } else {
+    return '';
+  }
+});
+
 Ember.Handlebars.helper('stars', function(property, options) {
   var stars = [];
 

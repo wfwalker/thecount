@@ -106,7 +106,7 @@
 							<td>{{#linkTo 'app' this}}{{appName this.name}}{{/linkTo}}</td>
 							<td>{{author}}</td>
 							<td>{{daysSince reviewed}}</td>
-							<td>
+							<td style='white-space: nowrap'>
 					        	{{#if is_packaged}}
 					        		<span class='glyphicon glyphicon-file'></span>
 					        	{{else}}
@@ -115,6 +115,7 @@
 					        	{{#if is_offline}}
 					        		<span class='glyphicon glyphicon-plane'></span>
 					        	{{/if}}
+					        	{{premiumIcon premium_type}}
 							</td>
 							<td>
 								{{appSize this}}
