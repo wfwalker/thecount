@@ -256,6 +256,7 @@ function getPlatformCategories(inApp) {
 
     if (inApp.manifest && inApp.manifest.appcache_path) { categories.push('appcache'); }
     if (inApp.manifest && inApp.manifest.fullscreen) { categories.push('fullscreen'); }
+    if (inApp.meta_viewport) { categories.push('meta_viewport'); }
 
     if (inApp.tags.indexOf('tarako') > -1) { categories.push('tarako'); }
     

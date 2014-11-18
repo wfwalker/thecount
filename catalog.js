@@ -251,6 +251,17 @@ function addPromiseForManifest(subpromises, app) {
                     theScope.apps[app.id].included_scripts = [];
                     $ = cheerio.load(launchPageData);
 
+                    // TODO: find meta viewport tag!
+                    $('html').find('meta').each(function (index, metaTag) {
+                        if (metaTag.attribs.name && metaTag.attribs.name == 'viewport') {
+                            console.log("VIEWPORT");
+                            console.log(metaTag.attribs.content);
+                            theScope.apps[app.id].meta_viewport = metaTag.attribs.content;
+                        } else {
+                            // say nothin'
+                        }
+                    })
+
                     $('html').find('script').each(function (index, scriptTag) {
                         if (scriptTag.attribs.src) {
                             theScope.apps[app.id].included_scripts.push(scriptTag.attribs.src);
