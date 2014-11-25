@@ -9,7 +9,7 @@ TheCount.ApplicationController = Ember.Controller.extend({
 
 TheCount.AppsController = Ember.ArrayController.extend({
   model: [],
-  sortProperties: ['author'],
+  sortProperties: ['name.en-US'],
   sortAscending: true,
   actions: {
     resort: function(fieldName) {
