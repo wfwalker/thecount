@@ -92,13 +92,13 @@
 					<table class='table table-condensed tablesorter-table tablesorter-blue tablesorter'>
 						<tr>
 							<th></th>
-							<th>Name</th>
-							<th>Author</th>
-							<th>Days Old</th>
-							<th>Type</th>
-							<th>Appcache/Package Size</th>
-							<th>User Ratings</th>
-							<th>Count</th>
+							<th {{action "resort" "Name"}}>Name</th>
+							<th {{action "resort" "Author"}}>Author</th>
+							<th {{action "resort" "DaysOld"}}>Days Old</th>
+							<th {{action "resort" "Type"}}>Type</th>
+							<th {{action "resort" "Size"}}>Appcache/Package Size</th>
+							<th {{action "resort" "UserRatings"}}>User Ratings</th>
+							<th {{action "resort" "Count"}}>Count</th>
 						</tr>
 					{{#each}}
 						<tr>

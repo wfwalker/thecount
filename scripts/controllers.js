@@ -4,7 +4,20 @@ TheCount.ApplicationController = Ember.Controller.extend({
   search: function() {
     console.log('ApplicationController search ' + this.get("searchText"));
     this.transitionToRoute('apps', 'search', this.get("searchText"));
-  },
+  }
+});
+
+TheCount.AppsController = Ember.ArrayController.extend({
+  actions: {
+    resort: function(columnName) {
+      // do stuff with your data here
+      console.log("I AM SORTING NNN" + columnName);
+      var listings = this.get('model');
+      console.log(listings);
+      var resorted = listings.sort(function(a, b) { return a.ratings.count - b.ratings.count });
+      this.set('model', resorted);
+    }     
+  }
 });
 
 TheCount.AppController = Ember.ObjectController.extend({
@@ -34,7 +47,7 @@ TheCount.AppController = Ember.ObjectController.extend({
       console.log('about to launch');
       appRecordsByManifest[this.get('model.manifest_url')].launch(); 
       console.log('launched');
-    }
+    },
   }
 });
 
