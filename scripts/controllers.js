@@ -8,14 +8,14 @@ TheCount.ApplicationController = Ember.Controller.extend({
 });
 
 TheCount.AppsController = Ember.ArrayController.extend({
+  model: [],
+  sortProperties: ['author'],
+  sortAscending: true,
   actions: {
-    resort: function(columnName) {
+    resort: function(fieldName) {
       // do stuff with your data here
-      console.log("I AM SORTING NNN" + columnName);
-      var listings = this.get('model');
-      console.log(listings);
-      var resorted = listings.sort(function(a, b) { return a.ratings.count - b.ratings.count });
-      this.set('model', resorted);
+      console.log("I AM SORTING " + fieldName);
+      this.set('sortProperties', [fieldName]);
     }     
   }
 });
