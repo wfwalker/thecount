@@ -250,6 +250,10 @@ function getPaymentCategories(inApp) {
 function getPlatformCategories(inApp) {
     var categories = []
 
+    if (inApp.manifest && inApp.manifest.chrome && inApp.manifest.chrome.navigation) {
+        categories.push('browser chrome'); 
+    }
+
     if (inApp.app_type == 'hosted') { categories.push('hosted'); }
     if (inApp.app_type == 'privileged') { categories.push('privileged'); }
     if (inApp.app_type == 'packaged') { categories.push('packaged'); }
