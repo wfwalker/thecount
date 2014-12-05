@@ -251,7 +251,8 @@ function addPromiseForManifest(subpromises, app) {
                     theScope.apps[app.id].included_scripts = [];
                     $ = cheerio.load(launchPageData);
 
-                    // TODO: find meta viewport tag!
+                    // TODO: don't just look in launch page for hosted apps
+                    // also do it for packaged apps
                     $('html').find('meta').each(function (index, metaTag) {
                         if (metaTag.attribs.name && metaTag.attribs.name == 'viewport') {
                             console.log("VIEWPORT");
