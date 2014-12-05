@@ -251,7 +251,7 @@ function getPlatformCategories(inApp) {
     var categories = []
 
     if (inApp.manifest && inApp.manifest.chrome && inApp.manifest.chrome.navigation) {
-        categories.push('browser chrome'); 
+        categories.push('browser_chrome'); 
     }
 
     if (inApp.app_type == 'hosted') { categories.push('hosted'); }
