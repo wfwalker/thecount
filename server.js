@@ -174,6 +174,27 @@ app.param('author', function(req, resp, next, id) {
     next();
 });
 
+// deal with an category parameter in a REST route by retrieving all the apps whose category list contains the given string
+
+app.param('category', function(req, resp, next, id) {
+    var category = req.param('category')
+    console.log('category ' + category);
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        if (app.categories.indexOf(category) >= 0) {
+            apps.push(app);
+        }
+    }
+
+    req.category = category;
+    req.apps = apps;
+    next();
+});
+
+
+
 // deal with a search parameter in a REST route by retrieving all the apps matching the given string
 
 app.param('search', function(req, resp, next, id) {
@@ -372,6 +393,11 @@ app.get('/listing/permission/:permission', function(req, resp, next) {
     resp.json(req.apps);
 });
 
+// route requests to retrieve apps by category
+
+app.get('/listing/category/:category', function(req, resp, next) {
+    resp.json(req.apps);
+});
 
 // route requests to retrieve apps by author
 
