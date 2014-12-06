@@ -239,8 +239,8 @@ function getPaymentCategories(inApp) {
 
     if (inApp.premium_type == 'free') { categories.push('free'); }
     if (inApp.premium_type == 'premium') { categories.push('premium'); }
-    if (inApp.premium_type == 'free-inapp') { categories.push('free w/inapp'); }
-    if (inApp.premium_type == 'premium-inapp') { categories.push('premium w/inapp'); }
+    if (inApp.premium_type == 'free-inapp') { categories.push('free-inapp'); }
+    if (inApp.premium_type == 'premium-inapp') { categories.push('premium-inapp'); }
 
     return categories;
 }

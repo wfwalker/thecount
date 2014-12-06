@@ -193,6 +193,24 @@ app.param('category', function(req, resp, next, id) {
     next();
 });
 
+// deal with an premium parameter in a REST route by retrieving all the specified kind of premium apps 
+
+app.param('premium_type', function(req, resp, next, id) {
+    var premium_type = req.param('premium_type')
+    console.log('premium_type ' + premium_type);
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        if (app.premium_type && app.premium_type == premium_type) {
+            apps.push(app);
+        }
+    }
+
+    req.premium_type = premium_type;
+    req.apps = apps;
+    next();
+});
 
 
 // deal with a search parameter in a REST route by retrieving all the apps matching the given string
@@ -399,9 +417,15 @@ app.get('/listing/category/:category', function(req, resp, next) {
     resp.json(req.apps);
 });
 
-// route requests to retrieve apps by author
+// route requests to retrieve apps by locale
 
 app.get('/listing/locale/:locale', function(req, resp, next) {
+    resp.json(req.apps);
+});
+
+// route requests to retrieve apps by premium category
+
+app.get('/listing/payment/:premium_type', function(req, resp, next) {
     resp.json(req.apps);
 });
 
