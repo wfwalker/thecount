@@ -27,6 +27,7 @@ TheCount.AppsRoute = Ember.Route.extend({
   actions: {
     error: function(error, transition) {
       console.log('error in apps route');
+      console.log(error.responseText);
       $('.loading').hide();
     }
   }
