@@ -10,14 +10,10 @@ var express = require('express');
 var url = require('url');
 var http = require('http');
 var https = require('https');
-var jade = require('jade');
 var statistics = require('./statistics.js');
 var catalog = require('./catalog.js');
 
 var app = express();
-
-// make numeral available within Jade
-app.locals.numeral = require('numeral');
 
 // CONFIGURE SERVER
 
@@ -100,12 +96,6 @@ catch (e) {
     console.log('error parsing catalog');
     console.log(e);
 }
-
-// Set the view engine to use Jade templates
-app.set('view engine', 'jade');
-
-// Set the directory that contains the Jade views
-app.set('views', __dirname + '/views');
 
 // Middleware to filter the catalogue by url params
 // Someone was already abusing globals when I got here

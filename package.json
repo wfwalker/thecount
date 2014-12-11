@@ -12,7 +12,6 @@
     "express": "*",    
     "request": "*",
     "numeral": "*",
-    "jade": "*", 
     "cheerio": "*"
   },
   "devDependencies": {},
