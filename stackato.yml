@@ -9,4 +9,8 @@ framework:
 processes:
   web: node server.js
 
+hooks:
+  pre-staging:
+    - npm cache clean
+
 ignores: ["node_modules"]  
