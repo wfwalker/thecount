@@ -10,7 +10,7 @@
     "minimist": "~0.0.8",
     "q": "~1.0.0",
     "express": "*",    
-    "request": "*",
+    "request": "~2.29.0",
     "numeral": "*",
     "cheerio": "*"
   },
