@@ -57,17 +57,17 @@
 						</li>
 					</ul>
 
-					<form class="navbar-form navbar-left">
-						<div class="form-group input-group-sm">
-							{{input valueBinding="searchText" size='10' class='formControl' placeholder='search text'}}
+					<form class="navbar-form navbar-left" role="search">
+						<div class="form-group">
+							{{input valueBinding="searchText" size='10' class='form-control' placeholder='search text'}}
 						</div>
-						<button class="btn btn-primary btn-sm searchButton" {{action 'search'}}>
+						<button class="btn btn-primary searchButton" {{action 'search'}}>
 							Search
 						</button>
 					</form>
 
 					<form class="navbar-form navbar-left">
-						<div class="form-group input-group-sm">
+						<div class="form-group">
 							<input id="since" name="since" type="text" size='10' placeholder="since" data-date-format="yyyy-mm-dd" autocomplete="off" class="form-control datepicker">
 							<input id="until" name="until" type="text" size='10' placeholder="until" data-date-format="yyyy-mm-dd" autocomplete="off" class="form-control datepicker">
 							<input id="min_ratings" name="min_ratings" type="text" size='10' placeholder="min_ratings" autocomplete="off" class="form-control">
