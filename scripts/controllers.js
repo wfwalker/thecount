@@ -1,9 +1,11 @@
 // CONTROLLERS -------------------------------------------------
 
 TheCount.ApplicationController = Ember.Controller.extend({
-  search: function() {
-    console.log('ApplicationController search ' + this.get("searchText"));
-    this.transitionToRoute('apps', 'search', this.get("searchText"));
+  actions: {
+    search: function() {
+      console.log('ApplicationController search ' + this.get("searchText"));
+      return this.transitionToRoute('apps', 'search', this.get("searchText"));
+    }    
   }
 });
 

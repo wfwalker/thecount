@@ -10,7 +10,7 @@
 </head>
 
 <body>
-	<script type="text/x-handlebars">
+	<script type="text/x-handlebars" data-template-name="application">
 		<div class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
@@ -68,8 +68,9 @@
 
 					<form class="navbar-form navbar-left">
 						<div class="form-group input-group-sm">
-							<input id="since" name="since" type="text" placeholder="since" data-date-format="yyyy-mm-dd" autocomplete="off" class="form-control datepicker">
-							<input id="until" name="until" type="text" placeholder="until" data-date-format="yyyy-mm-dd" autocomplete="off" class="form-control datepicker">
+							<input id="since" name="since" type="text" size='10' placeholder="since" data-date-format="yyyy-mm-dd" autocomplete="off" class="form-control datepicker">
+							<input id="until" name="until" type="text" size='10' placeholder="until" data-date-format="yyyy-mm-dd" autocomplete="off" class="form-control datepicker">
+							<input id="min_ratings" name="min_ratings" type="text" size='10' placeholder="min_ratings" autocomplete="off" class="form-control">
 						</div>
 					</form>					
 
