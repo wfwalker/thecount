@@ -1,3 +1,8 @@
+function middlewareQueryParams(params) {
+  return
+    '?since=' + $('#since').val() +
+    '&until=' + $('#until').val();
+}
 
 // ROUTES -------------------------------------------------
 
@@ -94,7 +99,7 @@ TheCount.FrequencyRoute = Ember.Route.extend({
   model: function(params) {
     this.set('frequencyKind', params.frequency_kind);
     $('.loading').show();
-    return Ember.$.getJSON('/frequency/' + params.frequency_kind + '?since=' + $('#since').val() + '&until=' + $('#until').val());
+    return Ember.$.getJSON('/frequency/' + params.frequency_kind + '?since=' + $('#since').val() + '&until=' + $('#until').val()+ '&min_ratings=' + $('#min_ratings').val());
   },
   actions: {
     error: function(error, transition) {

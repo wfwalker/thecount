@@ -106,8 +106,11 @@ app.use(function(req, resp, next){
     var since = req.query.since;
     var until = req.query.until;
     var limit = req.query.limit;
-    console.log('since: ' + since + ' until: ' + until + ' limit: ' + limit);
-    if (since || until || limit) {
+    var min_ratings = req.query.min_ratings;
+    
+    console.log('since', since, 'until', until, 'limit', limit, 'min_ratings', min_ratings);
+
+    if (since || until || limit || min_ratings) {
         console.log("found filter url params");
         var count = 0;
         filteredCatalog = {};
@@ -117,6 +120,8 @@ app.use(function(req, resp, next){
             var app = marketplaceCatalog[index];
             var createdDate = Date.parse(app.created);
 
+            if (!app.ratings || !app.ratings.count || (app.ratings.count < min_ratings))
+                continue;
             if ( startDate && createdDate < startDate )
                 continue;
             if ( endDate && createdDate >= endDate )
