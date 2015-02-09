@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-// INITIALIZE
+// INITIALIZE SERVER
 
 var express = require('express');
 var url = require('url');
@@ -14,6 +14,17 @@ var statistics = require('./statistics.js');
 var catalog = require('./catalog.js');
 
 var app = express();
+
+// INITIALIZE LOGGING
+
+var winston = require('winston');
+var logger = new (winston.Logger)({
+    transports: [
+        // TODO: only show debug logs if this is dev server
+        new (winston.transports.Console)({ level: 'info' }),
+        new (winston.transports.File)({ filename: 'thecount.log' })
+    ]
+});
 
 // CONFIGURE SERVER
 
@@ -31,7 +42,7 @@ var mHost = process.env.VCAP_APP_HOST || "127.0.0.1";
 
 app.listen(myPort);
 
-console.log("running " + mHost + " " + myPort);
+logger.info("server running", mHost, myPort);
 
 // PARSE CATALOG metadata
 
@@ -68,12 +79,12 @@ var globalStatistics = {};
 var appsByAuthor = {};
 
 try {
-    console.log('About to Parse Catalog');
+    logger.info('About to Parse Catalog');
 
     // parse the giant apps.json created by thecount.js command-line tool or by /rebuild
     var marketplaceCatalog = require('./apps.json');
-    console.log('loaded ' + Object.keys(marketplaceCatalog).length + ' apps');
-    console.log('parsed catalog'); 
+    logger.info('loaded ' + Object.keys(marketplaceCatalog).length + ' apps');
+    logger.info('parsed catalog'); 
 
     // compute extra per-app data. for example, the sum of the size of all the appcache entries for each app
 
@@ -84,34 +95,34 @@ try {
         }
     }
 
-    console.log('added appcache size');
+    logger.info('added appcache size');
 
     globalStatistics = statistics.computeGlobalStatistics(marketplaceCatalog);
-    console.log(globalStatistics);
+    logger.info('global stats', globalStatistics);
 
     appsByAuthor = getAppsByAuthor(marketplaceCatalog);
-    console.log('added apps by author ' + Object.keys(appsByAuthor).length);
+    logger.info('added apps by author ' + Object.keys(appsByAuthor).length);
 }
 catch (e) {
-    console.log('error parsing catalog');
-    console.log(e);
+    logger.info('error parsing catalog');
+    logger.info(e);
 }
 
 // Middleware to filter the catalogue by url params
 // Someone was already abusing globals when I got here
 
 app.use(function(req, resp, next){
-    console.log('filter middleware');
+    logger.info('filter middleware');
     req.apps = marketplaceCatalog;
     var since = req.query.since;
     var until = req.query.until;
     var limit = req.query.limit;
     var min_ratings = req.query.min_ratings;
     
-    console.log('since', since, 'until', until, 'limit', limit, 'min_ratings', min_ratings);
+    logger.info('since', since, 'until', until, 'limit', limit, 'min_ratings', min_ratings);
 
     if (since || until || limit || min_ratings) {
-        console.log("found filter url params");
+        logger.info("found filter url params");
         var count = 0;
         filteredCatalog = {};
         startDate = since ? Date.parse(since) : null;
@@ -131,7 +142,7 @@ app.use(function(req, resp, next){
             filteredCatalog[index] = app;
             count++;
         }
-        console.log("catalog count: " + Object.keys(filteredCatalog).length);
+        logger.info("catalog count", Object.keys(filteredCatalog).length);
         req.apps = filteredCatalog;
     }
     next();
@@ -144,9 +155,9 @@ app.use(function(req, resp, next){
 
 app.param('app_id', function(req, resp, next, id) {
 	var appID = parseInt(req.param('app_id'));
-	console.log('app_id ' + appID);
+	logger.info('param :app_id', appID);
 	req.appData = marketplaceCatalog[appID];
-    console.log('param :app_id ' + req.appData);    
+    logger.debug('param :app_id ' + req.appData);    
 	next();
 });
 
@@ -154,7 +165,7 @@ app.param('app_id', function(req, resp, next, id) {
 
 app.param('author', function(req, resp, next, id) {
     var author = req.param('author')
-    console.log('author ' + author);
+    logger.info('param :author' + author);
     var apps = [];
 
     for (index in marketplaceCatalog) {
@@ -173,7 +184,7 @@ app.param('author', function(req, resp, next, id) {
 
 app.param('category', function(req, resp, next, id) {
     var category = req.param('category')
-    console.log('category ' + category);
+    logger.info('param :category', category);
     var apps = [];
 
     for (index in marketplaceCatalog) {
@@ -192,7 +203,7 @@ app.param('category', function(req, resp, next, id) {
 
 app.param('premium_type', function(req, resp, next, id) {
     var premium_type = req.param('premium_type')
-    console.log('premium_type ' + premium_type);
+    logger.info('param :premium_type', premium_type);
     var apps = [];
 
     for (index in marketplaceCatalog) {
@@ -212,7 +223,7 @@ app.param('premium_type', function(req, resp, next, id) {
 
 app.param('search', function(req, resp, next, id) {
     var search = req.param('search')
-    console.log('search ' + search);
+    logger.info('param :search', search);
     var apps = [];
 
     for (index in marketplaceCatalog) {
@@ -232,7 +243,7 @@ app.param('search', function(req, resp, next, id) {
 
 app.param('min_ratings', function(req, resp, next, id) {
     var min_ratings = req.param('min_ratings')
-    console.log('min_ratings ' + min_ratings);
+    logger.info('param :min_ratings', min_ratings);
     var apps = [];
 
     for (index in marketplaceCatalog) {
@@ -251,7 +262,7 @@ app.param('min_ratings', function(req, resp, next, id) {
 
 app.param('max_ratings', function(req, resp, next, id) {
     var max_ratings = req.param('max_ratings')
-    console.log('max_ratings ' + max_ratings);
+    logger.info('param :max_ratings', max_ratings);
     var apps = [];
 
     for (index in marketplaceCatalog) {
@@ -270,7 +281,7 @@ app.param('max_ratings', function(req, resp, next, id) {
 
 app.param('activity', function(req, resp, next, id) {
     var activity = req.param('activity')
-    console.log('activity ' + activity);
+    logger.info('param :activity', activity);
     var apps = [];
 
     for (index in marketplaceCatalog) {
@@ -293,7 +304,7 @@ app.param('activity', function(req, resp, next, id) {
 
 app.param('library', function(req, resp, next, id) {
     var library = req.param('library')
-    console.log('library ' + library);
+    logger.info('param :library', library);
     var apps = [];
 
     for (index in marketplaceCatalog) {
@@ -312,7 +323,7 @@ app.param('library', function(req, resp, next, id) {
 
 app.param('filename', function(req, resp, next, id) {
     var filename = req.param('filename')
-    console.log('filename ' + filename);
+    logger.info('param :filename', filename);
     var apps = [];
 
     for (index in marketplaceCatalog) {
@@ -331,7 +342,7 @@ app.param('filename', function(req, resp, next, id) {
 
 app.param('permission', function(req, resp, next, id) {
     var permission = req.param('permission')
-    console.log('permission ' + permission);
+    logger.info('param :permission', permission);
     var apps = [];
 
     for (index in marketplaceCatalog) {
@@ -351,7 +362,7 @@ app.param('permission', function(req, resp, next, id) {
 
 app.param('days_old', function(req, resp, next, id) {
     var days_old = req.param('days_old')
-    console.log('days_old ' + days_old);
+    logger.info('param :days_old', days_old);
     var apps = [];
 
     for (index in marketplaceCatalog) {
@@ -370,7 +381,7 @@ app.param('days_old', function(req, resp, next, id) {
 
 app.param('locale', function(req, resp, next, id) {
     var locale = req.param('locale')
-    console.log('locale ' + locale);
+    logger.info('param :locale', locale);
     var apps = [];
 
     for (index in marketplaceCatalog) {
@@ -390,7 +401,7 @@ app.param('locale', function(req, resp, next, id) {
 // route requests to retrieve a single app by ID
 
 app.get('/apps/:app_id', function(req, resp, next) {
-    console.log('route /apps/:app_id ' + req.appData);
+    logger.info('route /apps/:app_id', req.appData);
     resp.json({app: req.appData});
 });
 
@@ -476,7 +487,7 @@ app.get('/filenames/unknown', function(req, resp, next) {
         }
     }
 
-    console.log(theFilenames);
+    logger.debug(theFilenames);
 
     resp.json(theFilenames);
 });
@@ -592,26 +603,26 @@ for(var graphIndex = 0; graphIndex < graphs.length; graphIndex++) {
 // route requests to generate the database
 
 app.get('/rebuild', function(req, resp, next) {
-    console.log('/rebuild');
+    logger.info('/rebuild');
 
     if (! catalog.isRunning()) {
-        console.log('starting rebuilder');
+        logger.info('starting rebuilder');
         catalog.createMarketplaceCatalogDB('bogus');
     } else {
-        console.log('already running, NOT starting rebuilder');
+        logger.info('rebuild already running, NOT starting rebuilder');
     }
 
     resp.redirect('/rebuildreport');
 });
 
 app.get('/authors/num_apps', function(req, resp, next) {
-    console.log('/authors/days_since_created');
+    logger.info('/authors/days_since_created');
 
     var numberOfApps = [];
 
     for (var authorIndex in appsByAuthor) {
         var apps = appsByAuthor[authorIndex];
-        console.log(apps.length + " " + authorIndex);
+        logger.debug(apps.length + " " + authorIndex);
         numberOfApps.push(apps.length);
     }
 
@@ -620,7 +631,7 @@ app.get('/authors/num_apps', function(req, resp, next) {
 });
 
 app.get('/authors/months_since_submission', function(req, resp, next) {
-    console.log('/authors/months_since_submission');
+    logger.info('/authors/months_since_submission');
 
     var monthsSinceSubmission = [];
 
@@ -641,7 +652,7 @@ app.get('/authors/months_since_submission', function(req, resp, next) {
 
 
 app.get('/rebuildreport', function(req, resp, next) {
-    console.log('/rebuildreport');
+    logger.info('/rebuildreport');
 
     resp.json(catalog.progressReport());
 });
