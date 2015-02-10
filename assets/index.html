@@ -14,7 +14,7 @@
 		<div class="navbar navbar-default navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
-					<a href="#/listing/min_ratings/30" class="navbar-brand">TheCount</a>
+					{{#link-to 'index' class="navbar-brand"}}TheCount{{/link-to}}
 				</div>
 
 				<div class="collapse navbar-collapse">
@@ -32,13 +32,13 @@
 							<a href="#" data-toggle="dropdown" class="dropdown-toggle">discovery<b class='caret'></b></a>
 
 							<ul class="dropdown-menu">
-								<li><a href="#/frequency/category">category</a></li>
-								<li><a href="#/frequency/author">author</a></li>
-								<li><a href="#/distribution/days_since_created">days since created</a></li>
-								<li><a href="#/distribution/days_since_reviewed">days since reviewed</a></li>
-								<li><a href="#/frequency/locale">locale</a></li>
-								<li><a href="#/frequency/region">region</a></li>
-								<li><a href="#/pie/installs_allowed_from">installs_allowed_from</a></li>
+								<li>{{#link-to 'frequency' 'category'}}category{{/link-to}}</li>
+								<li>{{#link-to 'frequency' 'author'}}author{{/link-to}}</li>
+								<li>{{#link-to 'distribution' 'days_since_created'}}days since created{{/link-to}}</li>
+								<li>{{#link-to 'distribution' 'days_since_reviewed'}}days since reviewed{{/link-to}}</li>
+								<li>{{#link-to 'frequency' 'locale'}}locale{{/link-to}}</li>
+								<li>{{#link-to 'frequency' 'region'}}region{{/link-to}}</li>
+								<li>{{#link-to 'pie' 'installs_allowed_from'}}installs_allowed_from{{/link-to}}</li>
 							</ul>
 						</li>
 
@@ -46,13 +46,13 @@
 							<a href="#" data-toggle="dropdown" class="dropdown-toggle">tech<b class='caret'></b></a>
 
 							<ul class="dropdown-menu">
-								<li><a href="#/frequency/platform">platform</a></li>
-								<li><a href="#/frequency/payment">payment</a></li>
-								<li><a href="#/frequency/library">library</a></li>
-								<li><a href="#/distribution/package_size">package size</a></li>
-								<li><a href="#/frequency/icon_sizes">icon sizes</a></li>
-								<li><a href="#/frequency/permission">permission</a></li>
-								<li><a href="#/frequency/activity">activity</a></li>
+								<li>{{#link-to 'frequency' 'platform'}}platform{{/link-to}}</li>
+								<li>{{#link-to 'frequency' 'payment'}}payment{{/link-to}}</li>
+								<li>{{#link-to 'frequency' 'library'}}library{{/link-to}}</li>
+								<li>{{#link-to 'distribution' 'package_size'}}package sizes{{/link-to}}</li>
+								<li>{{#link-to 'frequency' 'icon_sizes'}}icon sizes{{/link-to}}</li>
+								<li>{{#link-to 'frequency' 'permission'}}permission{{/link-to}}</li>
+								<li>{{#link-to 'frequency' 'activity'}}activity{{/link-to}}</li>
 							</ul>
 						</li>
 					</ul>
@@ -108,11 +108,11 @@
 					<p>Here are some jumping off points for exploring TheCount:</p>
 
 					<ul class='list-group'>					
-						<li class='list-group-item'>{{#linkTo 'apps' 'min_ratings' 30}}Apps with at least 30 user ratings{{/linkTo}}</li>
-						<li class='list-group-item'>{{#linkTo 'frequency' 'platform'}}Frequency of platform and packaging categories{{/linkTo}}</li>
-						<li class='list-group-item'>{{#linkTo 'frequency' 'permission'}}Most frequently requested app permissions{{/linkTo}}</li>
-						<li class='list-group-item'>{{#linkTo 'distribution' 'package_size'}}Distribution of packaged app sizes{{/linkTo}}</li>
-						<li class='list-group-item'>{{#linkTo 'frequency' 'library'}}Most commonly used JS and CSS libraries{{/linkTo}}</li>
+						<li class='list-group-item'>{{#link-to 'apps' 'min_ratings' 30}}Apps with at least 30 user ratings{{/link-to}}</li>
+						<li class='list-group-item'>{{#link-to 'frequency' 'platform'}}Frequency of platform and packaging categories{{/link-to}}</li>
+						<li class='list-group-item'>{{#link-to 'frequency' 'permission'}}Most frequently requested app permissions{{/link-to}}</li>
+						<li class='list-group-item'>{{#link-to 'distribution' 'package_size'}}Distribution of packaged app sizes{{/link-to}}</li>
+						<li class='list-group-item'>{{#link-to 'frequency' 'library'}}Most commonly used JS and CSS libraries{{/link-to}}</li>
 					</ul>
 				</div>
 			</div>
@@ -139,7 +139,7 @@
 					{{#each}}
 						<tr>
 							<td><img width='32' height='32' {{bind-attr src=icons.[128]}} ></td>
-							<td>{{#linkTo 'app' this}}{{appName this.name}}{{/linkTo}}</td>
+							<td>{{#link-to 'app' this}}{{appName this.name}}{{/link-to}}</td>
 							<td>{{author}}</td>
 							<td>{{daysSince reviewed}}</td>
 							<td style='white-space: nowrap'>
@@ -241,9 +241,9 @@
 			<div class='row'>
 			    {{#each preview in previews}}
 			    	<div class='col-xs-6 col-md-3'>
-			    		<a href='#' class='thumbnail'>
-							<img {{bind-attr src=preview.thumbnail_url}} >
-						</a>	
+			    		<a {{bind-attr href=preview.image_url}} class='thumbnail' target='_blank'>
+							<img {{bind-attr src=preview.thumbnail_url}} />
+						</a>
 			    	</div>
 			    {{/each}}
 			</div>
