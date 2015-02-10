@@ -119,7 +119,7 @@ app.use(function(req, resp, next){
     var limit = req.query.limit;
     var min_ratings = req.query.min_ratings;
     
-    logger.info('since', since, 'until', until, 'limit', limit, 'min_ratings', min_ratings);
+    logger.info('filter criteria', {since: since, until: until, limit: limit, min_ratings: min_ratings});
 
     if (since || until || limit || min_ratings) {
         logger.info("found filter url params");

@@ -14,6 +14,18 @@ TheCount.Router.map(function() {
   this.resource('pie', { path: '/pie/:pie_kind' });
 });
 
+TheCount.IndexRoute = Ember.Route.extend({
+  setupController: function(controller, data) {
+    controller.set('model', data);
+    console.log('IndexRoute.setupController');
+  },
+  model: function(params) {
+    $('.loading').show();
+    console.log('fetching /globalstatistics');
+    return Ember.$.getJSON('/globalstatistics');
+  }
+});
+
 TheCount.AppsRoute = Ember.Route.extend({
   setupController: function(controller, data) {
     controller.set('model', data);
@@ -32,7 +44,7 @@ TheCount.AppsRoute = Ember.Route.extend({
   actions: {
     error: function(error, transition) {
       console.log('error in apps route');
-      console.log(error.responseText);
+      console.log(error);
       $('.loading').hide();
     }
   }
@@ -84,6 +96,7 @@ TheCount.AppRoute = Ember.Route.extend({
   actions: {
     error: function(error, transition) {
       console.log('error in app route');
+      console.log(error);
       $('.loading').hide();
     }
   }
@@ -104,6 +117,7 @@ TheCount.FrequencyRoute = Ember.Route.extend({
   actions: {
     error: function(error, transition) {
       console.log('error in frequency route');
+      console.log(error);
       $('.loading').hide();
     }
   }
@@ -124,6 +138,7 @@ TheCount.DistributionRoute = Ember.Route.extend({
   actions: {
     error: function(error, transition) {
       console.log('error in distribution route');
+      console.log(error);
       $('.loading').hide();
     }
   }
@@ -144,6 +159,7 @@ TheCount.PieRoute = Ember.Route.extend({
   actions: {
     error: function(error, transition) {
       console.log('error in pie route');
+      console.log(error);
       $('.loading').hide();
     }
   }

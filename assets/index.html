@@ -84,6 +84,41 @@
 		{{outlet}}
 	</script>
 
+	<script type="text/x-handlebars" data-template-name="index">
+		<div class='container'>
+			<div class='row'>
+				<div class='col-md-6'>
+					<h1>Welcome to TheCount</h1>
+
+					<p>
+						TheCount is a Node.js/Ember.js app based around the Firefox Marketplace API
+						It serves two purposes.
+						First, it provides aggregate statistics on the Firefox Marketplace catalog, showing which permissions are most popular, graphing the distribution of packaged app sizes, and so forth.
+						Second, it shows how a third party can construct their own app store using the Firefox Marketplace API to populate their store with a wide variety of content.
+					</p>
+
+					<p>
+						TheCount is using a snapshot of the FirefoxMarketplace catalog with {{formatNumber appCount}} apps by {{formatNumber authorCount}} authors. Users have provided {{formatNumber ratingCount}} ratings of those apps.
+					</p>
+
+				</div>
+				<div class='col-md-6'>			
+					<h2>Getting Started</h2>
+
+					<p>Here are some jumping off points for exploring TheCount:</p>
+
+					<ul class='list-group'>					
+						<li class='list-group-item'>{{#linkTo 'apps' 'min_ratings' 30}}Apps with at least 30 user ratings{{/linkTo}}</li>
+						<li class='list-group-item'>{{#linkTo 'frequency' 'platform'}}Frequency of platform and packaging categories{{/linkTo}}</li>
+						<li class='list-group-item'>{{#linkTo 'frequency' 'permission'}}Most frequently requested app permissions{{/linkTo}}</li>
+						<li class='list-group-item'>{{#linkTo 'distribution' 'package_size'}}Distribution of packaged app sizes{{/linkTo}}</li>
+						<li class='list-group-item'>{{#linkTo 'frequency' 'library'}}Most commonly used JS and CSS libraries{{/linkTo}}</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</script>
+
 	<script type="text/x-handlebars" data-template-name="apps">
 		<div class='container'>
 			<div class='row'>

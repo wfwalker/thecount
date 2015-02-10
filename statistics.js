@@ -77,8 +77,6 @@ function getDaysSinceCreated(inApp) {
 // any number of string values.
 
 function getFrequency(inApps, getArrayOfStringsPerAppFn) {
-    console.log('getFrequency');
-
     var counts = {};
     var appsFound = 0;
 
