@@ -288,16 +288,23 @@
 
 					{{#if manifest}}
 						<h3>manifest</h3>
+						{{#if is_packaged}}
+							from {{miniManifest.package_path}}
+						{{else}}
+							{{manifest_url}}
+						{{/if}}
 						<pre>{{json manifest}}</pre>
 					{{/if}}
 
 					{{#if miniManifest}}
 						<h3>mini manifest</h3>
+						{{manifest_url}}
 						<pre>{{json miniManifest}}</pre>
 					{{/if}}
 
 					{{#if appcache_manifest}}
-						<h3>appcache_manifest</h3>
+						<h3>appcache manifest</h3>
+						{{manifest.appcache_path}}
 						<pre>{{appcache_manifest}}</pre>
 					{{/if}}
 				</div>

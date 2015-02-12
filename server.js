@@ -28,12 +28,13 @@ var logger = new (winston.Logger)({
 
 // CONFIGURE SERVER
 
-// statically serve up some assets
-app.use("/fonts", express.static('fonts'));
-app.use("/images", express.static('images'));
-app.use("/scripts", express.static('scripts'));
-app.use("/stylesheets", express.static('stylesheets'));
-app.use("/", express.static('assets'));
+// statically serve up some assets, cache everything for a day
+
+app.use("/fonts", express.static('fonts', { maxage: 86400000 }));
+app.use("/images", express.static('images', { maxage: 86400000 }));
+app.use("/scripts", express.static('scripts', { maxage: 86400000 }));
+app.use("/stylesheets", express.static('stylesheets', { maxage: 86400000 }));
+app.use("/", express.static('assets', { maxage: 86400000 }));
 
 // LAUNCH SERVER
 
@@ -549,6 +550,7 @@ var graphs = [
     { kind: 'frequency', routeFragment: 'category', title: 'category', getter: statistics.getCategoryStrings },
     { kind: 'frequency', routeFragment: 'platform', title: 'platform', getter: statistics.getPlatformCategories },
     { kind: 'frequency', routeFragment: 'payment', title: 'payment', getter: statistics.getPaymentCategories },
+    { kind: 'pie', routeFragment: 'payment', title: 'payment', getter: statistics.getPaymentCategories },
     { kind: 'frequency', routeFragment: 'author', title: 'author', getter: statistics.getAuthor, listingKind: 'author' },
     { kind: 'frequency', routeFragment: 'locale', title: 'locale', getter: statistics.getSupportedLocales, listingKind: 'locale' },
     { kind: 'frequency', routeFragment: 'region', title: 'region', getter: statistics.getSupportedRegions },
