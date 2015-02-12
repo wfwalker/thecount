@@ -402,7 +402,7 @@ app.param('locale', function(req, resp, next, id) {
 // route requests to retrieve a single app by ID
 
 app.get('/apps/:app_id', function(req, resp, next) {
-    logger.info('route /apps/:app_id', req.appData);
+    logger.info('route /apps/:app_id');
     resp.json({app: req.appData});
 });
 
