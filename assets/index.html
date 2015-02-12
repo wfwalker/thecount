@@ -87,7 +87,7 @@
 	<script type="text/x-handlebars" data-template-name="index">
 		<div class='container'>
 			<div class='row'>
-				<div class='col-md-6'>
+				<div class='col-md-8'>
 					<h1>Welcome to TheCount</h1>
 
 					<p>
@@ -102,7 +102,7 @@
 					</p>
 
 				</div>
-				<div class='col-md-6'>			
+				<div class='col-md-4'>			
 					<h2>Getting Started</h2>
 
 					<p>Here are some jumping off points for exploring TheCount:</p>
@@ -222,6 +222,11 @@
 						<a class='btn btn-info' {{bind-attr href=miniManifest.package_path}} >
 						    <span class="glyphicon glyphicon-file"></span>
 						    <span>download package {{formatNumber miniManifest.size}} bytes</span>
+						</a>
+					{{else}}
+						<a target="_blank" class="btn btn-info" {{bind-attr href=fullLaunchPath}}>
+							<span class='glyphicon glyphicon-share-alt'> </span>
+							<span>launch</span>
 						</a>
 					{{/if}}
 
