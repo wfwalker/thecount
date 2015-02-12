@@ -539,6 +539,7 @@ app.get('/globalstatistics', function(req, resp, next) {
 // This data structure defines all the routes for analytics in TheCount, their paths, their getter functions
 
 var graphs = [
+    { kind: 'pie', routeFragment: 'manifest_protocol', title: 'manifest protocol', getter: statistics.getManifestProtocol },
     { kind: 'distribution', routeFragment: 'rating_count', title: 'num ratings', getter: statistics.getRatingCount },
     { kind: 'distribution', routeFragment: 'rating', title: 'avg rating', getter: statistics.getAverageRating },
     { kind: 'distribution', routeFragment: 'package_size', title: 'package size in MB', getter: statistics.getPackageSize },

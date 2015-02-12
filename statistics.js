@@ -54,6 +54,16 @@ function getPackageSize(inApp) {
     return null;
 }
 
+// returns the manifest protocol
+
+function getManifestProtocol(inApp) {
+    if (inApp.manifest_url && inApp.manifest_url.indexOf('https') >= 0) {
+        return ['https'];
+    } else {
+        return ['http'];
+    }
+}
+
 // returns how many days since the app was reviewed
 
 function getDaysSinceReviewed(inApp) {
@@ -546,6 +556,7 @@ module.exports.getDaysSinceCreated = getDaysSinceCreated;
 module.exports.getDaysSinceReviewed = getDaysSinceReviewed;
 
 module.exports.getFrequency = getFrequency;
+module.exports.getManifestProtocol = getManifestProtocol;
 module.exports.getAuthor = getAuthor;
 module.exports.getOrientation = getOrientation;
 module.exports.getInstallsAllowedFrom = getInstallsAllowedFrom;
