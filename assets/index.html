@@ -224,10 +224,10 @@
 						    <span>download package {{formatNumber miniManifest.size}} bytes</span>
 						</a>
 					{{else}}
-						<a target="_blank" class="btn btn-info" {{bind-attr href=fullLaunchPath}}>
+						<button {{action 'launchInTab'}} class="btn btn-primary">
 							<span class='glyphicon glyphicon-share-alt'> </span>
-							<span>launch</span>
-						</a>
+							Launch in Tab
+						</button>
 					{{/if}}
 
 					<span>
