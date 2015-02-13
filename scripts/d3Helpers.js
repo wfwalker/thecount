@@ -50,6 +50,8 @@ function createFrequencyGraph(inDivClass, inListingKind, data) {
 function createHistogram(values, inListingKind) {
     console.log('histogram kind ' + inListingKind);
 
+    var outsideLabelThreshold = 400;
+
     // A formatter for counts.
     var formatCount = d3.format(",.0f");
 
@@ -100,11 +102,11 @@ function createHistogram(values, inListingKind) {
         .attr("height", function(d) { return height - y(d.y); });
 
     bar.append("text")
-        .attr("dy", ".75em")
-        .attr("y", 6)
         .attr("x", (x(data[0].x + data[0].dx) - x(data[0].x)) / 2)
+        .attr("y", 6)
+        .attr("dy", function(d) { return y(d.y) > outsideLabelThreshold? "-1em" : "1em"; })
         .attr("text-anchor", "middle")
-        .attr("class", "label")
+        .attr("class", function(d) { return y(d.y) > outsideLabelThreshold? "outside-label label" : "label"; })
         .text(function(d) { return formatCount(d.y); });
 
     svg.append("g")

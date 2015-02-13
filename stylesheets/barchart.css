@@ -18,6 +18,15 @@
   fill: steelblue;
 }
 
+.histogram .label {
+  text-overflow: ellipsis;
+  position: absolute;
+}
+
+.histogram .outside-label {
+  fill: steelblue;
+}
+
 .bar rect {
   fill: steelblue;
   shape-rendering: crispEdges;
