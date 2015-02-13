@@ -27,16 +27,18 @@ TheCount.AppController = Ember.ObjectController.extend({
     return 'http://marketplace.firefox.com/app/' + this.get('model.slug');
   }.property('model.marketplaceLink'),
   fullLaunchPath: function() {
-    // // take full manifest_url url and pull off filename
-    // var url = require('url');
-    var parser = document.createElement('a');
-    parser.href = this.get('model.manifest_url');
-    if (this.get('model.manifest.launch_path')) {
-      parser.pathname = this.get('model.manifest.launch_path');
+    if (this.get('model.is_packaged')) {
+      return null;
     } else {
-      parser.pathname = '';
+      var parser = document.createElement('a');
+      parser.href = this.get('model.manifest_url');
+      if (this.get('model.manifest.launch_path')) {
+        parser.pathname = this.get('model.manifest.launch_path');
+      } else {
+        parser.pathname = '';
+      }
+      return parser.href;
     }
-    return parser.href;
   }.property('model.fullLaunchPath'),  
   isPaidApp: function() {
     return this.get('model.premium_type') == 'premium';

@@ -42,7 +42,7 @@ function addCommasToNumberString(inNumberString) {
   return ('' + inNumberString).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
 }
 
-function getDisplayName(nameDictionary) {
+function getEnglishOrOther(nameDictionary) {
   if (nameDictionary['en-US']) {
     return nameDictionary['en-US'];
   } else {
@@ -62,8 +62,8 @@ Ember.Handlebars.helper('json', function(property, options) {
   return JSON.stringify(property, null, 2);
 });
 
-Ember.Handlebars.helper('appName', function(property, options) {
-  return getDisplayName(property);
+Ember.Handlebars.helper('englishOrOther', function(property, options) {
+  return getEnglishOrOther(property);
 });
 
 Ember.Handlebars.helper('premiumIcon', function(property, options) {

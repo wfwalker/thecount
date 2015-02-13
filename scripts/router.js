@@ -55,7 +55,7 @@ TheCount.AppRoute = Ember.Route.extend({
   setupController: function(controller, app) {
     controller.set('model', app);
     $('.loading').hide();
-    document.title = 'TheCount | ' + getDisplayName(controller.get('model.name'));
+    document.title = 'TheCount | ' + getEnglishOrOther(controller.get('model.name'));
 
     // Either retrieve the manifest URL's of all installed apps or disable all install buttons
     var installedManifestURLs = [];

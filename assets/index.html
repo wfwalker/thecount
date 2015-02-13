@@ -139,7 +139,7 @@
 					{{#each}}
 						<tr>
 							<td><img width='32' height='32' {{bind-attr src=icons.[128]}} ></td>
-							<td>{{#link-to 'app' this}}{{appName this.name}}{{/link-to}}</td>
+							<td>{{#link-to 'app' this}}{{englishOrOther this.name}}{{/link-to}}</td>
 							<td>{{author}}</td>
 							<td>{{daysSince reviewed}}</td>
 							<td style='white-space: nowrap'>
@@ -173,7 +173,7 @@
 		        <div class="col-md-6">
 					<h2>
 						<img width='32' height='32' {{bind-attr src=icons.[128]}} >
-						<span>{{appName this.name}}</span>
+						<span>{{englishOrOther this.name}}</span>
 					</h2>
 		        </div>
 
@@ -239,7 +239,7 @@
 
 					<hr />			
 
-					<div>{{{description.en-US}}}</div>
+					<div>{{{englishOrOther this.description}}}</div>
 				</div>
 			</div>
 
