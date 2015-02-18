@@ -124,7 +124,7 @@ function getFrequency(inApps, getArrayOfStringsPerAppFn) {
         return b.val - a.val;
     });
 
-    return {total: appsFound, chartData: chartData};
+    return {total: appsFound, chartData: chartData.slice(0, 40)};
 }
 
 // returns the author of an app
@@ -317,6 +317,8 @@ knownLibraries['jquery-1.9.1.min.js'] = 'jQuery';
 knownLibraries['jquery-2.0.2.js'] = 'jQuery';
 knownLibraries['jquery-2.0.3.js'] = 'jQuery';
 knownLibraries['jquery-2.1.1.min.js'] = 'jQuery';
+knownLibraries['jquery-2.0.0.min.js'] = 'jQuery';
+knownLibraries['jquery.min.js'] = 'jQuery';
 knownLibraries['jquery.js'] = 'jQuery';
 
 knownLibraries['localforage.js'] = 'LocalForage';
@@ -520,6 +522,23 @@ function getLibraryNames(inApp) {
     return uniqueLibraries;
 }
 
+// returns a list of filenames not associated with libraries
+
+function getUnknownFilenames(inApp) {
+    var filteredFilenames = getFilenames(inApp);
+
+    var unknownFilenames = [];
+
+    for (var index in filteredFilenames) {
+        var filename = filteredFilenames[index];
+        if (! knownLibraries[filename]) {
+            unknownFilenames.push(filename);
+        }
+    }
+
+    return unknownFilenames;
+}
+
 function computeGlobalStatistics(marketplaceCatalog) {
     var authors = [];
     var ratingCount = 0;
@@ -546,6 +565,7 @@ function computeGlobalStatistics(marketplaceCatalog) {
 // We export these functions for use by the server (see server.js)
 
 module.exports.getLibraryNames = getLibraryNames;
+module.exports.getUnknownFilenames = getUnknownFilenames;
 module.exports.knownLibraries = knownLibraries;
 module.exports.getValues = getValues;
 

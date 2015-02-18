@@ -474,26 +474,6 @@ app.get('/listing/appcache', function(req, resp, next) {
 });
 
 
-// route for popular filenames not associated with libraries
-
-app.get('/filenames/unknown', function(req, resp, next) {
-    allFilenames = statistics.getFrequency(req.apps, statistics.getFilenames);
-    theFilenames = [];
-
-    for (var index in allFilenames.chartData) {
-        var aFilename = allFilenames.chartData[index];
-
-        if (aFilename.val > 10 && (! statistics.knownLibraries[aFilename.label])) {
-            theFilenames.push(aFilename);
-        }
-    }
-
-    logger.debug(theFilenames);
-
-    resp.json(theFilenames);
-});
-
-
 // route requests to retrieve apps by number of user ratings
 
 app.get('/listing/min_ratings/:min_ratings', function(req, resp, next) {
@@ -545,6 +525,7 @@ var graphs = [
     { kind: 'distribution', routeFragment: 'package_size', title: 'package size in MB', getter: statistics.getPackageSize },
     { kind: 'distribution', routeFragment: 'days_since_reviewed', title: 'days since reviewed', getter: statistics.getDaysSinceReviewed },
     { kind: 'distribution', routeFragment: 'days_since_created', title: 'days since created', getter: statistics.getDaysSinceCreated },
+    { kind: 'frequency', routeFragment: 'unknown', title: 'unknown filenames', getter: statistics.getUnknownFilenames, listingKind: 'filename' },
     { kind: 'frequency', routeFragment: 'icon_sizes', title: 'icon sizes', getter: statistics.getIconSizes },
     { kind: 'frequency', routeFragment: 'library', title: 'library', getter: statistics.getLibraryNames, listingKind: 'library' },
     { kind: 'frequency', routeFragment: 'file', title: 'file', getter: statistics.getFilenames, listingKind: 'filename' },
