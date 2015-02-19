@@ -40,6 +40,16 @@ function getRatingCount(inApp) {
     }
 }
 
+// returns the number of user ratings for apps with 50 or fewer ratings; null otherwise
+
+function getNumberOfVersions(inApp) {
+    if (! inApp.versions ){ 
+        return null;
+    } else {
+        return Object.keys(inApp.versions).length;
+    }
+}
+
 // returns the package size, in millions of bytes, for packaged apps; null otherwise
 
 function getPackageSize(inApp) {
@@ -596,6 +606,7 @@ module.exports.getValues = getValues;
 
 module.exports.getRatingCount = getRatingCount;
 module.exports.getAverageRating = getAverageRating;
+module.exports.getNumberOfVersions = getNumberOfVersions;
 module.exports.getPackageSize = getPackageSize;
 module.exports.getDaysSinceCreated = getDaysSinceCreated;
 module.exports.getDaysSinceReviewed = getDaysSinceReviewed;

@@ -521,6 +521,7 @@ app.get('/globalstatistics', function(req, resp, next) {
 var graphs = [
     { kind: 'pie', routeFragment: 'manifest_protocol', title: 'manifest protocol', getter: statistics.getManifestProtocol },
     { kind: 'distribution', routeFragment: 'rating_count', title: 'num ratings', getter: statistics.getRatingCount },
+    { kind: 'distribution', routeFragment: 'number_of_versions', title: 'number of versions', getter: statistics.getNumberOfVersions },
     { kind: 'distribution', routeFragment: 'rating', title: 'avg rating', getter: statistics.getAverageRating },
     { kind: 'distribution', routeFragment: 'package_size', title: 'package size in MB', getter: statistics.getPackageSize },
     { kind: 'distribution', routeFragment: 'days_since_reviewed', title: 'days since reviewed', getter: statistics.getDaysSinceReviewed },
