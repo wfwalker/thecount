@@ -50,6 +50,10 @@ function getEnglishOrOther(nameDictionary) {
   }  
 }
 
+Ember.Handlebars.helper('formatDate', function(property, options) {
+  return new Date(property).toString();
+});
+
 Ember.Handlebars.helper('daysSince', function(property, options) {
   return Math.round((Date.now() - Date.parse(property)) / (24*60*60*1000));
 });

@@ -80,6 +80,18 @@ function getDaysSinceCreated(inApp) {
     return (now - reviewedDate) / (24 * 60 * 60 * 1000.0);
 }
 
+// returns date when app was reviewed
+
+function getReviewedDate(inApp) {
+    return Date.parse(inApp.reviewed);
+}
+
+// returns date when app was created
+
+function getCreationDate(inApp) {
+    return Date.parse(inApp.created);
+}
+
 // FREQUENCY HELPER CODE
 
 // computes the frequency of occurrence of strings associated with each app
@@ -541,10 +553,21 @@ function getUnknownFilenames(inApp) {
 
 function computeGlobalStatistics(marketplaceCatalog) {
     var authors = [];
+    var earliestCreated = new Date();
+    var latestCreated = new Date(0);
     var ratingCount = 0;
 
     for (index in marketplaceCatalog) {
         var marketplaceApp = marketplaceCatalog[index];
+        var createdDate = Date.parse(marketplaceApp.created);
+
+        if (createdDate < earliestCreated) {
+            earliestCreated = createdDate;
+        }
+
+        if (createdDate > latestCreated) {
+            latestCreated = createdDate;
+        }
 
         if (authors.indexOf(marketplaceApp.author) < 0) {
             authors.push(marketplaceApp.author);
@@ -558,7 +581,9 @@ function computeGlobalStatistics(marketplaceCatalog) {
     return {
         appCount: Object.keys(marketplaceCatalog).length,
         authorCount: authors.length,
-        ratingCount: ratingCount
+        ratingCount: ratingCount,
+        earliestCreated: earliestCreated,
+        latestCreated: latestCreated
     };
 }
 
@@ -574,6 +599,8 @@ module.exports.getAverageRating = getAverageRating;
 module.exports.getPackageSize = getPackageSize;
 module.exports.getDaysSinceCreated = getDaysSinceCreated;
 module.exports.getDaysSinceReviewed = getDaysSinceReviewed;
+module.exports.getCreationDate = getCreationDate;
+module.exports.getReviewedDate = getReviewedDate;
 
 module.exports.getFrequency = getFrequency;
 module.exports.getManifestProtocol = getManifestProtocol;
