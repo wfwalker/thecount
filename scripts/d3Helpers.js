@@ -60,6 +60,7 @@ function createHistogram(values, inListingKind) {
         height = 500 - margin.top - margin.bottom;
 
     var extent = d3.extent(values);
+    // TODO: what if we don't include 0 in the extent, needed for Dates
     extent[0] = 0;
 
     var x = d3.scale.linear()
@@ -79,6 +80,8 @@ function createHistogram(values, inListingKind) {
 
     var xAxis = d3.svg.axis()
         .scale(x)
+        // TODO: date formatting
+        // .tickFormat(function(d) { var tmp = new Date(d); return (1+ tmp.getMonth()) + "/" + (1900+tmp.getYear()); })
         .orient("bottom");
 
     // nuke the old one
