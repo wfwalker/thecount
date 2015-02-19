@@ -47,8 +47,8 @@ function createFrequencyGraph(inDivClass, inListingKind, data) {
         .text(function(d) { return d.label + " (" + formatCount(d.val) + ")"  });
 }
 
-function createHistogram(values, inListingKind) {
-    console.log('histogram kind ' + inListingKind);
+function createHistogram(values) {
+    console.log('histogram');
 
     var outsideLabelThreshold = 400;
 
