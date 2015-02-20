@@ -201,6 +201,17 @@ function getPermissionKeys(inApp) {
     }
 }
 
+// returns the list of permission strings for the given app
+
+function getContentRatingDescriptors(inApp) {
+    if (inApp.content_ratings && inApp.content_ratings.descriptors && (inApp.content_ratings.descriptors.length > 0)) {
+        return inApp.content_ratings.descriptors;
+    } else {
+        return [];
+    }
+}
+
+
 // returns the list of icon sizes for the given app
 
 function getIconSizes(inApp) {
@@ -619,6 +630,7 @@ module.exports.getAuthor = getAuthor;
 module.exports.getOrientation = getOrientation;
 module.exports.getInstallsAllowedFrom = getInstallsAllowedFrom;
 module.exports.getPermissionKeys = getPermissionKeys;
+module.exports.getContentRatingDescriptors = getContentRatingDescriptors;
 module.exports.getIconSizes = getIconSizes;
 module.exports.getSupportedLocales = getSupportedLocales;
 module.exports.getSupportedRegions = getSupportedRegions;

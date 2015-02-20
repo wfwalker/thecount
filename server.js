@@ -541,6 +541,7 @@ var graphs = [
     { kind: 'frequency', routeFragment: 'region', title: 'region', getter: statistics.getSupportedRegions },
     { kind: 'frequency', routeFragment: 'permission', title: 'permission', getter: statistics.getPermissionKeys },
     { kind: 'frequency', routeFragment: 'activity', title: 'activity', getter: statistics.getActivityKeys },
+    { kind: 'frequency', routeFragment: 'content_rating_descriptor', title: 'content_rating descriptor', getter: statistics.getContentRatingDescriptors },
     { kind: 'frequency', routeFragment: 'orientation', title: 'orientation', getter: statistics.getOrientation },
     { kind: 'pie', routeFragment: 'installs_allowed_from', title: 'installs allowed from', getter: statistics.getInstallsAllowedFrom }
 ]
