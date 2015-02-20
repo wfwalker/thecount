@@ -16,11 +16,13 @@ TheCount.distributionView = Ember.View.extend({
   classNames: ['histogram'],
   didInsertElement: function() {
     console.log('didInsertElement distribution');
-    createHistogram(this.get('content'));
+    // tell the histogram to use date range if the kind field includes "date"
+    createHistogram(this.get('content'), this.get('kind').indexOf('date') > 0);
   },
   updateChart: function updateChart() {
     console.log('updateChart distribution');
-    createHistogram(this.get('content'));
+    // tell the histogram to use date range if the kind field includes "date"
+    createHistogram(this.get('content'), this.get('kind').indexOf('date') > 0);
   }.observes('content.@each')
 });
 

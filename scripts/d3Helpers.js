@@ -47,8 +47,8 @@ function createFrequencyGraph(inDivClass, inListingKind, data) {
         .text(function(d) { return d.label + " (" + formatCount(d.val) + ")"  });
 }
 
-function createHistogram(values) {
-    console.log('histogram');
+function createHistogram(values, useDateRange) {
+    console.log('createHistogram ' + useDateRange);
 
     var outsideLabelThreshold = 400;
 
@@ -60,8 +60,11 @@ function createHistogram(values) {
         height = 500 - margin.top - margin.bottom;
 
     var extent = d3.extent(values);
-    // TODO: what if we don't include 0 in the extent, needed for Dates
-    extent[0] = 0;
+
+    // don't include 0 in xRange if we're doing dates
+    if (! useDateRange) {      
+        extent[0] = 0;
+    }
 
     var x = d3.scale.linear()
         .domain(extent)
@@ -80,9 +83,12 @@ function createHistogram(values) {
 
     var xAxis = d3.svg.axis()
         .scale(x)
-        // TODO: date formatting
-        // .tickFormat(function(d) { var tmp = new Date(d); return (1+ tmp.getMonth()) + "/" + (1900+tmp.getYear()); })
         .orient("bottom");
+
+    // use date formatting for dates
+    if (useDateRange) {
+        xAxis.tickFormat(function(d) { var tmp = new Date(d); return (1+ tmp.getMonth()) + "/" + (1900+tmp.getYear()); });
+    }
 
     // nuke the old one
     d3.select(".histogram svg").remove();
