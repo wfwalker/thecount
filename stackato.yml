@@ -13,4 +13,4 @@ hooks:
   pre-staging:
     - npm cache clean
 
-ignores: ["node_modules"]  
+ignores: ["node_modules", "everythingme", "thecount.log"]  

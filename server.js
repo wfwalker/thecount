@@ -339,7 +339,7 @@ app.param('filename', function(req, resp, next, id) {
     next();
 });
 
-// deal with a permission parameter by retrieving all the apps that contain the given filename
+// deal with a permission parameter by retrieving all the apps that request that permission
 
 app.param('permission', function(req, resp, next, id) {
     var permission = req.param('permission')
@@ -358,6 +358,24 @@ app.param('permission', function(req, resp, next, id) {
     next();
 });
 
+// deal with a content_rating_descriptor parameter by retrieving all the apps that list that content_rating_descriptor
+
+app.param('content_rating_descriptor', function(req, resp, next, id) {
+    var content_rating_descriptor = req.param('content_rating_descriptor')
+    logger.info('param :content_rating_descriptor', content_rating_descriptor);
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        if (statistics.getContentRatingDescriptors(app).indexOf(content_rating_descriptor) >= 0) {
+            apps.push(app);
+        }
+    }
+
+    req.content_rating_descriptor = content_rating_descriptor;
+    req.apps = apps;
+    next();
+});
 
 // deal with a days_old parameter by retrieving all the apps that were published within that many days
 
@@ -409,6 +427,12 @@ app.get('/apps/:app_id', function(req, resp, next) {
 // route requests to retrieve apps by author
 
 app.get('/listing/author/:author', function(req, resp, next) {
+    resp.json(req.apps);
+});
+
+// route requests to retrieve apps by content rating descriptor
+
+app.get('/listing/content_rating_descriptor/:content_rating_descriptor', function(req, resp, next) {
     resp.json(req.apps);
 });
 
