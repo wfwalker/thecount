@@ -1,7 +1,9 @@
-function middlewareQueryParams(params) {
-  return
-    '?since=' + $('#since').val() +
-    '&until=' + $('#until').val();
+// retrieve values from form to use with middleware on server
+
+function middlewareQueryParams() {
+  return '?since=' + $('#since').val() +
+    '&until=' + $('#until').val() +
+    '&min_ratings=' + $('#min_ratings').val();
 }
 
 // ROUTES -------------------------------------------------
@@ -113,7 +115,7 @@ TheCount.FrequencyRoute = Ember.Route.extend({
   model: function(params) {
     this.set('frequencyKind', params.frequency_kind);
     $('.loading').show();
-    return Ember.$.getJSON('/frequency/' + params.frequency_kind + '?since=' + $('#since').val() + '&until=' + $('#until').val()+ '&min_ratings=' + $('#min_ratings').val());
+    return Ember.$.getJSON('/frequency/' + params.frequency_kind + middlewareQueryParams());
   },
   actions: {
     error: function(error, transition) {
@@ -134,7 +136,7 @@ TheCount.DistributionRoute = Ember.Route.extend({
   model: function(params) {
     this.set('distributionKind', params.distribution_kind);
     $('.loading').show();
-    return Ember.$.getJSON('/distribution/' + params.distribution_kind + '?since=' + $('#since').val() + '&until=' + $('#until').val());
+    return Ember.$.getJSON('/distribution/' + params.distribution_kind + middlewareQueryParams());
   },
   actions: {
     error: function(error, transition) {
@@ -155,7 +157,7 @@ TheCount.PieRoute = Ember.Route.extend({
   model: function(params) {
     this.set('pieKind', params.pie_kind);
     $('.loading').show();
-    return Ember.$.getJSON('/pie/' + params.pie_kind + '?since=' + $('#since').val() + '&until=' + $('#until').val());
+    return Ember.$.getJSON('/pie/' + params.pie_kind + middlewareQueryParams());
   },
   actions: {
     error: function(error, transition) {
