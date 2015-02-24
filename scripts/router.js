@@ -1,6 +1,7 @@
 // retrieve values from form to use with middleware on server
 
 function middlewareQueryParams() {
+  console.log('middleware', $('#since').val(), $('#until').val(), $('#min_ratings').val());
   return '?since=' + $('#since').val() +
     '&until=' + $('#until').val() +
     '&min_ratings=' + $('#min_ratings').val();

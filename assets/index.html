@@ -70,9 +70,12 @@
 
 					<form class="navbar-form navbar-left">
 						<div class="form-group">
-							<input id="since" name="since" type="text" size='10' placeholder="since" data-date-format="yyyy-mm-dd" autocomplete="off" class="form-control datepicker">
-							<input id="until" name="until" type="text" size='10' placeholder="until" data-date-format="yyyy-mm-dd" autocomplete="off" class="form-control datepicker">
-							<input id="min_ratings" name="min_ratings" type="text" size='10' placeholder="min_ratings" autocomplete="off" class="form-control">
+							{{#view TheCount.MyTextField placeholder='since' id='since' viewName='since' controllerBinding='TheCount.ApplicationController'}}
+							{{/view}}
+							{{#view TheCount.MyTextField placeholder='until' id='until' viewName='until'  controllerBinding='TheCount.ApplicationController'}}
+							{{/view}}
+							{{#view TheCount.MyTextField placeholder='min_ratings' id='min_ratings' viewName='min_rating'  controllerBinding='TheCount.ApplicationController'}}
+							{{/view}}
 						</div>
 					</form>					
 

@@ -1,12 +1,24 @@
 // CONTROLLERS -------------------------------------------------
 
 TheCount.ApplicationController = Ember.Controller.extend({
+  formDirty: false,
   actions: {
     search: function() {
       console.log('ApplicationController search ' + this.get("searchText"));
       return this.transitionToRoute('apps', 'search', this.get("searchText"));
-    }    
+    }
   }
+});
+
+TheCount.MyTextField = Ember.TextField.extend({
+  classNames: ['form-control'],
+  attributeBindings: ['size'],
+  controller: TheCount.ApplicationController,
+  size: 10,
+  value:null,
+  valueChanged: function() {
+    console.log('MyTextField', 'valueChanged', this.value);
+  }.observes('value')
 });
 
 TheCount.AppsController = Ember.ArrayController.extend({
@@ -18,7 +30,7 @@ TheCount.AppsController = Ember.ArrayController.extend({
       // do stuff with your data here
       console.log("I AM SORTING " + fieldName);
       this.set('sortProperties', [fieldName]);
-    }     
+    }
   }
 });
 
