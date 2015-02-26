@@ -34,3 +34,6 @@ TheCount.Distribution = DS.Model.extend({
   total: DS.attr(),
   values: DS.attr()
 });
+
+// TheCount.Table = DS.Model.extend({
+// });

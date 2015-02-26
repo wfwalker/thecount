@@ -13,6 +13,7 @@ TheCount.Router.map(function() {
   this.resource('apps', { path: '/listing/:listing_kind/:listing_param' });
   this.resource('app', { path: '/app/:app_id'});
   this.resource('frequency', { path: '/frequency/:frequency_kind' });
+  this.resource('table', { path: '/table' });
   this.resource('distribution', { path: '/distribution/:distribution_kind' });
   this.resource('pie', { path: '/pie/:pie_kind' });
 });
@@ -168,3 +169,23 @@ TheCount.PieRoute = Ember.Route.extend({
     }
   }
 });
+
+TheCount.TableRoute = Ember.Route.extend({
+  setupController: function(controller, data) {
+    controller.set('model', data);  
+    $('.loading').hide();
+    document.title = 'TheCount | packaged by category';
+  },
+  model: function(params) {
+    $('.loading').show();
+    return Ember.$.getJSON('/packaged_by_category' + middlewareQueryParams());
+  },
+  actions: {
+    error: function(error, transition) {
+      console.log('error in table route');
+      console.log(error);
+      $('.loading').hide();
+    }
+  }
+});
+

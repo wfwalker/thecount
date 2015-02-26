@@ -104,6 +104,35 @@ function getCreationDate(inApp) {
 
 // FREQUENCY HELPER CODE
 
+function getPackagedCategoryTable(inApps) {
+    var counts = {};
+
+    for (index in inApps) {
+        var app = inApps[index];
+
+        for (catIndex in app.categories) {
+            var catString = app.categories[catIndex];
+            if (! counts[catString]) {
+                counts[catString] = {};
+                counts[catString]['true'] = 0;
+                counts[catString]['false'] = 0;
+            }
+            counts[catString][app.is_packaged] += 1;
+
+        }
+    }    
+
+    var countsArray = [];
+
+    for (var index2 in counts) {
+        countsArray.push({category: index2, packaged: counts[index2]['true'], hosted: counts[index2]['false']});
+    }
+
+    return countsArray;
+}
+
+
+
 // computes the frequency of occurrence of strings associated with each app
 // using the given getter function. Used for properties where each app may have 
 // any number of string values.
@@ -615,6 +644,8 @@ module.exports.getLibraryNames = getLibraryNames;
 module.exports.getUnknownFilenames = getUnknownFilenames;
 module.exports.knownLibraries = knownLibraries;
 module.exports.getValues = getValues;
+
+module.exports.getPackagedCategoryTable = getPackagedCategoryTable;
 
 module.exports.getRatingCount = getRatingCount;
 module.exports.getAverageRating = getAverageRating;

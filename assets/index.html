@@ -128,6 +128,27 @@
 		</div>
 	</script>
 
+	<script type="text/x-handlebars" data-template-name="table">
+		<div class='container'>
+			<div class='row'>
+				<div class='col-md-4'>
+				<table class='table table-condensed'>
+					<tr>
+						<th>category</th>
+						<th style="text-align: right">packaged</th>
+						<th style="text-align: right">hosted</th>
+					</tr>
+					{{#each tableData}}
+						<tr><td>{{category}}</td>
+						<td style="text-align: right">{{packaged}}</td>
+						<td style="text-align: right">{{hosted}}</td></tr>
+					{{/each}}
+				</table>
+				</div>
+			</div>
+		</div>
+	</script>
+
 	<script type="text/x-handlebars" data-template-name="apps">
 		<div class='container'>
 			<div class='row'>

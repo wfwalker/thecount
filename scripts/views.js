@@ -38,6 +38,17 @@ TheCount.pieView = Ember.View.extend({
   }.observes('content.@each.value')
 });
 
+TheCount.tableView = Ember.View.extend({
+  classNames: ['table'],
+  didInsertElement: function() {
+    console.log('didInsertElement pie');
+  },
+  updateChart: function updateChart() {
+    console.log('updateChart pie');
+  }.observes('content.@each.value')
+});
+
+
 // HELPERS!
 
 function addCommasToNumberString(inNumberString) {

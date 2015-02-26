@@ -540,6 +540,13 @@ app.get('/globalstatistics', function(req, resp, next) {
     resp.json(globalStatistics);
 });
 
+// route requests to get packaged/hosted by category
+
+app.get('/packaged_by_category', function(req, resp, next) {
+    logger.info('packaged_by_category');
+    resp.json({ tableData: statistics.getPackagedCategoryTable(req.apps) });
+});
+
 // This data structure defines all the routes for analytics in TheCount, their paths, their getter functions
 
 var graphs = [
