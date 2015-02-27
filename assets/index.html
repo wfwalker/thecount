@@ -199,33 +199,44 @@
 	<script type="text/x-handlebars" data-template-name="app">
 		<div class='container'>
 			<div class='row'>
+				<div class="col-md-2">
+					<img class='media-object' {{bind-attr src=icons.[128]}} >
+				</div>
+		        <div class="col-md-10">
+					<h1>
+						{{englishOrOther this.name}}</span>
+					</h1>
+		
+					<div style='padding-bottom: 5px'>
+		        		<span class='billpill'><span class='glyphicon glyphicon-user'></span> {{author}}</span>
+						<span class='billpill'>{{{stars ratings.average}}} ({{formatNumber ratings.count}})</span>
+						<span class='billpill'><span class='glyphicon glyphicon-time'></span> Created {{formatDate created}}</span>
+						<span class='billpill'><span class='glyphicon glyphicon-time'></span> Reviewed {{formatDate reviewed}}</span>
+					</div>
 
-		        <div class="col-md-6">
-					<h2>
-						<img width='32' height='32' {{bind-attr src=icons.[128]}} >
-						<span>{{englishOrOther this.name}}</span>
-					</h2>
-		        </div>
-
-		        <div style="text-align: right" class="col-md-6">
-		        	<h3>
+					<div style='padding-bottom: 10px'>
 			        	{{#if is_packaged}}
-			        		<span class='glyphicon glyphicon-file'></span>
+			        		<span class='billpill'><span class='glyphicon glyphicon-file'></span> Packaged</span>
 			        	{{else}}
-			        		<span class='glyphicon glyphicon-cloud'></span>
+			        		<span class='billpill'><span class='glyphicon glyphicon-cloud'></span> Hosted</span>
 			        	{{/if}}
 			        	{{#if is_offline}}
-			        		<span class='glyphicon glyphicon-plane'></span>
+			        		<span class='billpill'><span class='glyphicon glyphicon-plane'></span> Offline</span>
 			        	{{/if}}
 			        	{{#if isPaidApp}}
-			        		<span class='glyphicon glyphicon-usd'></span>
+			        		<span class='billpill'><span class='glyphicon glyphicon-usd'></span> Premium</span>
 			        	{{/if}}
-		        	</h3>
-		        </div>
-	        </div>
+						{{#each theType in device_types}}
+							<span class='billpill'>{{theType}}</span>
+						{{/each}}
+						{{#each theCategory in categories}}
+							<span class='billpill'>{{theCategory}}</span>
+						{{/each}}
+						{{#each theTag in tags}}
+							<span class='billpill'>{{theTag}}</span>
+						{{/each}}
+					</div>
 
-			<div class='row'>
-				<div class='col-md-12'>
 					{{#if alreadyInstalled}}
 						<button {{action 'launch'}} class="btn btn-primary launchButton">
 							Launch
@@ -251,7 +262,7 @@
 					{{#if is_packaged}}
 						<a class='btn btn-info' {{bind-attr href=miniManifest.package_path}} >
 						    <span class="glyphicon glyphicon-file"></span>
-						    <span>download package {{formatNumber miniManifest.size}} bytes</span>
+						    <span>download package</span>
 						</a>
 					{{else}}
 						<button {{action 'launchInTab'}} class="btn btn-primary">
@@ -267,9 +278,13 @@
 						</a>
 					</span>	
 
+				</div>
+	        </div>
+			<div class='row'>
+				<div class='col-md-12'>
 					<hr />			
 
-					<div>{{{englishOrOther this.description}}}</div>
+					<div>{{{englishOrOther this.description}}}</div>					
 				</div>
 			</div>
 
@@ -287,35 +302,6 @@
 
 			<div class='row'>
 				<div class='col-md-12'>
-					<h3>{{author}}</h3>
-
-					<div>
-						{{#each theType in device_types}}
-							<span class='label label-primary'>{{theType}}</span>
-						{{/each}}
-						{{#each theCategory in categories}}
-							<span class='label label-default'>{{theCategory}}</span>
-						{{/each}}
-						{{#each theTag in tags}}
-							<span class='label label-info'>{{theTag}}</span>
-						{{/each}}
-					</div>
-
-					<h4>
-						{{{stars ratings.average}}}
-						({{formatNumber ratings.count}})
-					</h4>
-
-					<p>
-						<span class='glyphicon glyphicon-time'> </span>
-						Created {{created}} ({{daysSince created}} days ago)
-					</p>
-
-					<p>
-						<span class='glyphicon glyphicon-time'> </span>
-						Reviewed {{reviewed}} ({{daysSince reviewed}} days ago)
-					</p>
-
 					{{#if manifest}}
 						<h3>manifest</h3>
 						{{#if is_packaged}}

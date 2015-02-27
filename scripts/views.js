@@ -64,7 +64,8 @@ function getEnglishOrOther(nameDictionary) {
 }
 
 Ember.Handlebars.helper('formatDate', function(property, options) {
-  return new Date(property).toString();
+  var theDate = new Date(property);
+  return theDate.toDateString();
 });
 
 Ember.Handlebars.helper('daysSince', function(property, options) {
@@ -98,7 +99,7 @@ Ember.Handlebars.helper('stars', function(property, options) {
     if (property >= index)
       stars.push("<span class='glyphicon glyphicon-star'> </span>");
     else
-      stars.push("<span class='glyphicon glyphicon-star-empty' style='color: lightgray'> </span>");    
+      stars.push("<span class='glyphicon glyphicon-star-empty' style='color: gray'> </span>");    
   }
 
   return new Handlebars.SafeString(stars.join(''));

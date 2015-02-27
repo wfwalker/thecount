@@ -1,3 +1,11 @@
+.billpill {
+  background: #f3f3f3;
+  font-size: 75%;
+  font-weight: bold;
+  padding: 0.2em 0.6em 0.3em;
+  border-radius: 0.25em;
+}
+
 .barchart div {
   background: lightgray;
   color: white;
