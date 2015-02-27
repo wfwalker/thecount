@@ -211,7 +211,7 @@
 							</h1>
 
 							<div style='padding-bottom: 5px'>
-				        		<span class='billpill'><span class='glyphicon glyphicon-user'></span> {{author}}</span>
+				        		<span class='billpill'>{{#link-to 'apps' 'author' author}}<span class='glyphicon glyphicon-user'></span> {{author}}{{/link-to}}</span>
 								<span class='billpill'>{{{stars ratings.average}}} ({{formatNumber ratings.count}})</span>
 								<span class='billpill'><span class='glyphicon glyphicon-time'></span> Created {{formatDate created}}</span>
 								<span class='billpill'><span class='glyphicon glyphicon-time'></span> Reviewed {{formatDate reviewed}}</span>
