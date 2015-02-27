@@ -199,87 +199,92 @@
 	<script type="text/x-handlebars" data-template-name="app">
 		<div class='container'>
 			<div class='row'>
-				<div class="col-md-2">
-					<img class='media-object' {{bind-attr src=icons.[128]}} >
-				</div>
-		        <div class="col-md-10">
-					<h1>
-						{{englishOrOther this.name}}</span>
-					</h1>
-		
-					<div style='padding-bottom: 5px'>
-		        		<span class='billpill'><span class='glyphicon glyphicon-user'></span> {{author}}</span>
-						<span class='billpill'>{{{stars ratings.average}}} ({{formatNumber ratings.count}})</span>
-						<span class='billpill'><span class='glyphicon glyphicon-time'></span> Created {{formatDate created}}</span>
-						<span class='billpill'><span class='glyphicon glyphicon-time'></span> Reviewed {{formatDate reviewed}}</span>
-					</div>
+		        <div class="col-md-12">
+			        <div class='media'>
+				        <div class='media-left'>
+							<img class='media-object' {{bind-attr src=icons.[128]}} >
+						</div>
 
-					<div style='padding-bottom: 10px'>
-			        	{{#if is_packaged}}
-			        		<span class='billpill'><span class='glyphicon glyphicon-file'></span> Packaged</span>
-			        	{{else}}
-			        		<span class='billpill'><span class='glyphicon glyphicon-cloud'></span> Hosted</span>
-			        	{{/if}}
-			        	{{#if is_offline}}
-			        		<span class='billpill'><span class='glyphicon glyphicon-plane'></span> Offline</span>
-			        	{{/if}}
-			        	{{#if isPaidApp}}
-			        		<span class='billpill'><span class='glyphicon glyphicon-usd'></span> Premium</span>
-			        	{{/if}}
-						{{#each theType in device_types}}
-							<span class='billpill'>{{theType}}</span>
-						{{/each}}
-						{{#each theCategory in categories}}
-							<span class='billpill'>{{theCategory}}</span>
-						{{/each}}
-						{{#each theTag in tags}}
-							<span class='billpill'>{{theTag}}</span>
-						{{/each}}
-					</div>
+						<div class='media-body'>
+							<h1 class='media-heading'>
+								{{englishOrOther this.name}}</span>
+							</h1>
 
-					{{#if alreadyInstalled}}
-						<button {{action 'launch'}} class="btn btn-primary launchButton">
-							Launch
-						</button>
-					{{else}}
-						{{#if isPaidApp}}
-							<a target="_blank" {{bind-attr href=marketplaceLink}} class="btn btn-primary">
-								<span>Buy at Firefox Marketplace</span>
-							</a>
-						{{else}}
-							<button {{action 'install'}} class="btn btn-primary installButton">
-								{{#if is_packaged}}
-									Install Packaged
+							<div style='padding-bottom: 5px'>
+				        		<span class='billpill'><span class='glyphicon glyphicon-user'></span> {{author}}</span>
+								<span class='billpill'>{{{stars ratings.average}}} ({{formatNumber ratings.count}})</span>
+								<span class='billpill'><span class='glyphicon glyphicon-time'></span> Created {{formatDate created}}</span>
+								<span class='billpill'><span class='glyphicon glyphicon-time'></span> Reviewed {{formatDate reviewed}}</span>
+							</div>
+
+							<div style='padding-bottom: 10px'>
+					        	{{#if is_packaged}}
+					        		<span class='billpill'><span class='glyphicon glyphicon-file'></span> Packaged</span>
+					        	{{else}}
+					        		<span class='billpill'><span class='glyphicon glyphicon-cloud'></span> Hosted</span>
+					        	{{/if}}
+					        	{{#if is_offline}}
+					        		<span class='billpill'><span class='glyphicon glyphicon-plane'></span> Offline</span>
+					        	{{/if}}
+					        	{{#if isPaidApp}}
+					        		<span class='billpill'><span class='glyphicon glyphicon-usd'></span> Premium</span>
+					        	{{/if}}
+								{{#each theType in device_types}}
+									<span class='billpill'>{{theType}}</span>
+								{{/each}}
+								{{#each theCategory in categories}}
+									<span class='billpill'>{{theCategory}}</span>
+								{{/each}}
+								{{#each theTag in tags}}
+									<span class='billpill'>{{theTag}}</span>
+								{{/each}}
+							</div>
+
+							{{#if alreadyInstalled}}
+								<button {{action 'launch'}} class="btn btn-primary launchButton">
+									Launch
+								</button>
+							{{else}}
+								{{#if isPaidApp}}
+									<a target="_blank" {{bind-attr href=marketplaceLink}} class="btn btn-primary">
+										<span>Buy at Firefox Marketplace</span>
+									</a>
 								{{else}}
-									Install Hosted
+									<button {{action 'install'}} class="btn btn-primary installButton">
+										{{#if is_packaged}}
+											Install Packaged
+										{{else}}
+											Install Hosted
+										{{/if}}
+									</button>
 								{{/if}}
-							</button>
-						{{/if}}
-					{{/if}}
+							{{/if}}
 
-					<span id="progress"></span>
+							<span id="progress"></span>
 
-					{{#if is_packaged}}
-						<a class='btn btn-info' {{bind-attr href=miniManifest.package_path}} >
-						    <span class="glyphicon glyphicon-file"></span>
-						    <span>download package</span>
-						</a>
-					{{else}}
-						<button {{action 'launchInTab'}} class="btn btn-primary">
-							<span class='glyphicon glyphicon-share-alt'> </span>
-							Launch in Tab
-						</button>
-					{{/if}}
+							{{#if is_packaged}}
+								<a class='btn btn-info' {{bind-attr href=miniManifest.package_path}} >
+								    <span class="glyphicon glyphicon-file"></span>
+								    <span>download package</span>
+								</a>
+							{{else}}
+								<button {{action 'launchInTab'}} class="btn btn-primary">
+									<span class='glyphicon glyphicon-share-alt'> </span>
+									Launch in Tab
+								</button>
+							{{/if}}
 
-					<span>
-						<a target="_blank" {{bind-attr href=marketplaceLink}} class="btn btn-info">
-							<span class='glyphicon glyphicon-share-alt'> </span>
-							<span>marketplace</span>
-						</a>
-					</span>	
-
+							<span>
+								<a target="_blank" {{bind-attr href=marketplaceLink}} class="btn btn-info">
+									<span class='glyphicon glyphicon-share-alt'> </span>
+									<span>marketplace</span>
+								</a>
+							</span>	
+						</div>
+					</div>
 				</div>
 	        </div>
+	        
 			<div class='row'>
 				<div class='col-md-12'>
 					<hr />			
