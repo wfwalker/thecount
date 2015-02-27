@@ -284,23 +284,21 @@
 					</div>
 				</div>
 	        </div>
-	        
-			<div class='row'>
-				<div class='col-md-12'>
-					<hr />			
 
+			<hr />	        
+
+			<div class='row'>
+				<div class='col-md-6'>
 					<div>{{{englishOrOther this.description}}}</div>					
 				</div>
-			</div>
 
-			<div class='row'>
-			    {{#each preview in previews}}
-			    	<div class='col-xs-6 col-md-3'>
-			    		<a {{bind-attr href=preview.image_url}} class='thumbnail' target='_blank'>
-							<img {{bind-attr src=preview.thumbnail_url}} />
+		    	<div class='col-md-6'>
+				    {{#each preview in previews}}
+			    		<a {{bind-attr href=preview.image_url}} target='_blank'>
+							<img style='padding: 5px' {{bind-attr src=preview.thumbnail_url}} />
 						</a>
-			    	</div>
-			    {{/each}}
+				    {{/each}}
+		    	</div>
 			</div>
 
 			<hr />
