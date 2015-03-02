@@ -7,6 +7,26 @@ function middlewareQueryParams() {
     '&min_ratings=' + $('#min_ratings').val();
 }
 
+function insertAlert(inText) {
+  var newAlert = jQuery('<div/>', {
+    id: 'pants',
+    class: 'alert alert-warning alert-dismissible',
+    role: 'alert',
+    text: inText
+  });
+
+  jQuery('<button/>', {
+    type: 'button',
+    class: 'close',
+    'data-dismiss': 'alert',
+    'aria-label': 'Close',
+    text:'X'
+  }).appendTo(newAlert);
+
+  newAlert.appendTo('#alertContainer');
+}
+
+
 // ROUTES -------------------------------------------------
 
 TheCount.Router.map(function() {
@@ -27,8 +47,6 @@ TheCount.IndexRoute = Ember.Route.extend({
   model: function(params) {
     $('.loading').show();
 
-    // TODO try inserting error-alert 
-    
     console.log('fetching /globalstatistics');
     return Ember.$.getJSON('/globalstatistics');
   }
@@ -52,6 +70,7 @@ TheCount.AppsRoute = Ember.Route.extend({
   actions: {
     error: function(error, transition) {
       console.log('error in apps route');
+      insertAlert('Cannot get listing');
       console.log(error);
       $('.loading').hide();
     }
@@ -104,6 +123,7 @@ TheCount.AppRoute = Ember.Route.extend({
   actions: {
     error: function(error, transition) {
       console.log('error in app route');
+      insertAlert('Cannot fetch app details');
       console.log(error);
       $('.loading').hide();
     }
@@ -120,11 +140,13 @@ TheCount.FrequencyRoute = Ember.Route.extend({
   model: function(params) {
     this.set('frequencyKind', params.frequency_kind);
     $('.loading').show();
+
     return Ember.$.getJSON('/frequency/' + params.frequency_kind + middlewareQueryParams());
   },
   actions: {
     error: function(error, transition) {
       console.log('error in frequency route');
+      insertAlert('Cannot fetch frequency data');
       console.log(error);
       $('.loading').hide();
     }
@@ -146,6 +168,7 @@ TheCount.DistributionRoute = Ember.Route.extend({
   actions: {
     error: function(error, transition) {
       console.log('error in distribution route');
+      insertAlert('Cannot fetch distribution data');
       console.log(error);
       $('.loading').hide();
     }
@@ -167,6 +190,7 @@ TheCount.PieRoute = Ember.Route.extend({
   actions: {
     error: function(error, transition) {
       console.log('error in pie route');
+      insertAlert('Cannot find pie chart data');
       console.log(error);
       $('.loading').hide();
     }
@@ -186,6 +210,7 @@ TheCount.TableRoute = Ember.Route.extend({
   actions: {
     error: function(error, transition) {
       console.log('error in table route');
+      insertAlert('Cannot fetch table data');
       console.log(error);
       $('.loading').hide();
     }

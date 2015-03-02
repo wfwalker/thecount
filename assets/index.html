@@ -8,12 +8,6 @@
   <link rel="stylesheet" href="/stylesheets/tablesorter.blue.css" type="text/css">
   <link rel="stylesheet" href="/stylesheets/datepicker.css" type="text/css">
 
-	<script type="text/x-handlebars" data-template-name="error-alert">
-		<div style='display: none' class="alert alert-warning alert-dismissible" role="alert">
-			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			<strong>Warning!</strong> Better check yourself, you're not looking too good.</strong>
-		</div>
-	</script>
 </head>
 
 <body>
@@ -92,6 +86,15 @@
 		</div>
 
 		<div style="margin-top: 60px"></div>
+
+		<div class='container'>
+			<div class='row'>
+				<div class='col-md=12'>
+					<div id='alertContainer'>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		{{outlet}}
 	</script>
