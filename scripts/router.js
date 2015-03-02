@@ -43,6 +43,7 @@ TheCount.IndexRoute = Ember.Route.extend({
     controller.set('model', data);
     console.log('IndexRoute.setupController');
     document.title = 'TheCount | home';
+    $('.loading').hide();
   },
   model: function(params) {
     $('.loading').show();
