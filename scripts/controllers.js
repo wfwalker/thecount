@@ -59,6 +59,11 @@ TheCount.AppController = Ember.ObjectController.extend({
         request.onerror = installFail;
       }
     },
+    pictureModal: function(argument) {
+      console.log('picture Modal!', argument);
+      $('#screenshot').attr('src', argument);
+      $('#screenshot-modal').modal();
+    },
     launch: function() {
       console.log('actions.launch ' + this.get('model.manifest_url'));
       var appRecordsByManifest = this.get('appRecordsByManifest');

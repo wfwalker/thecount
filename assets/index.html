@@ -7,6 +7,13 @@
   <link rel="stylesheet" href="/stylesheets/barchart.css" type="text/css">
   <link rel="stylesheet" href="/stylesheets/tablesorter.blue.css" type="text/css">
   <link rel="stylesheet" href="/stylesheets/datepicker.css" type="text/css">
+
+	<script type="text/x-handlebars" data-template-name="error-alert">
+		<div style='display: none' class="alert alert-warning alert-dismissible" role="alert">
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<strong>Warning!</strong> Better check yourself, you're not looking too good.</strong>
+		</div>
+	</script>
 </head>
 
 <body>
@@ -197,6 +204,20 @@
 	</script>
 
 	<script type="text/x-handlebars" data-template-name="app">
+
+		<div id='screenshot-modal' class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-body">
+						<center><img id='screenshot'></center>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
 		<div class='container'>
 			<div class='row'>
 		        <div class="col-md-12">
@@ -294,7 +315,7 @@
 
 		    	<div class='col-md-6'>
 				    {{#each preview in previews}}
-			    		<a {{bind-attr href=preview.image_url}} target='_blank'>
+			    		<a {{action 'pictureModal' preview.image_url}} target='_blank'>
 							<img style='padding: 5px' {{bind-attr src=preview.thumbnail_url}} />
 						</a>
 				    {{/each}}

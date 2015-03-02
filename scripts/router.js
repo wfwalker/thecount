@@ -26,6 +26,9 @@ TheCount.IndexRoute = Ember.Route.extend({
   },
   model: function(params) {
     $('.loading').show();
+
+    // TODO try inserting error-alert 
+    
     console.log('fetching /globalstatistics');
     return Ember.$.getJSON('/globalstatistics');
   }
