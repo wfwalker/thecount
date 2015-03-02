@@ -200,6 +200,26 @@ app.param('category', function(req, resp, next, id) {
     next();
 });
 
+// deal with an platform parameter in a REST route by retrieving all the apps whose platform list contains the given string
+
+app.param('platform', function(req, resp, next, id) {
+    var platform = req.param('platform')
+    logger.info('param :platform', platform);
+    var apps = [];
+
+    for (index in marketplaceCatalog) {
+        var app = marketplaceCatalog[index];
+        if (statistics.getPlatformCategories(app).indexOf(platform) >= 0) {
+            apps.push(app);
+        }
+    }
+
+    req.platform = platform;
+    req.apps = apps;
+    next();
+});
+
+
 // deal with an premium parameter in a REST route by retrieving all the specified kind of premium apps 
 
 app.param('premium_type', function(req, resp, next, id) {
@@ -445,6 +465,12 @@ app.get('/listing/permission/:permission', function(req, resp, next) {
 // route requests to retrieve apps by category
 
 app.get('/listing/category/:category', function(req, resp, next) {
+    resp.json(req.apps);
+});
+
+// route requests to retrieve apps by platform
+
+app.get('/listing/platform/:platform', function(req, resp, next) {
     resp.json(req.apps);
 });
 
