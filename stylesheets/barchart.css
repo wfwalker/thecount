@@ -17,6 +17,10 @@
   position: relative;
 }
 
+.active {
+  fill: black;
+}
+
 .barchart .label {
   text-overflow: ellipsis;
   position: absolute;
@@ -35,7 +39,7 @@
   fill: steelblue;
 }
 
-.bar rect {
+.bar {
   fill: steelblue;
   shape-rendering: crispEdges;
 }

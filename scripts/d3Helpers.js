@@ -33,7 +33,13 @@ function createFrequencyGraph(inDivClass, inListingKind, data) {
 
     bar.append("rect")
         .attr("width", function(d) { return x(d.val); })
-        .attr("height", barHeight - 1);
+        .attr("height", barHeight - 1)
+        .on("mouseover", function(d) {
+            d3.select(this).classed('active', true);
+        })
+        .on("mouseout", function(d) {
+            d3.select(this).classed('active', false);
+        });
 
     bar.append('svg:a')
         .attr('xlink:href', function(d) { return '/#/listing/' + inListingKind + '/' + d.label })
@@ -108,7 +114,13 @@ function createHistogram(values, useDateRange) {
     bar.append("rect")
         .attr("x", 1)
         .attr("width", x(data[0].x + data[0].dx) - x(data[0].x) - 1)
-        .attr("height", function(d) { return height - y(d.y); });
+        .attr("height", function(d) { return height - y(d.y); })
+        .on("mouseover", function(d) {
+            d3.select(this).classed('active', true);
+        })
+        .on("mouseout", function(d) {
+            d3.select(this).classed('active', false);
+        });
 
     bar.append("text")
         .attr("x", (x(data[0].x + data[0].dx) - x(data[0].x)) / 2)
