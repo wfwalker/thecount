@@ -9,7 +9,6 @@ function middlewareQueryParams() {
 
 function insertAlert(inText) {
   var newAlert = jQuery('<div/>', {
-    id: 'pants',
     class: 'alert alert-warning alert-dismissible',
     role: 'alert',
     text: inText
