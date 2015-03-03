@@ -58,21 +58,6 @@ function sumAppcacheEntrySizes(app) {
     return total;
 }
 
-function getAppsByAuthor(marketplaceCatalog) {
-    var appsByAuthor = {};
-
-    for (index in req.apps) {
-        var marketplaceApp = req.apps[index];
-        if (appsByAuthor[marketplaceApp.author]) {
-            appsByAuthor[marketplaceApp.author].push(marketplaceApp);
-        } else {
-            appsByAuthor[marketplaceApp.author] = [marketplaceApp];
-        }
-    }
-
-    return appsByAuthor;
-}
-
 // GLOBALS
 
 var marketplaceCatalog = {};
@@ -100,9 +85,6 @@ try {
 
     globalStatistics = statistics.computeGlobalStatistics(marketplaceCatalog);
     logger.info('global stats', globalStatistics);
-
-    appsByAuthor = getAppsByAuthor(marketplaceCatalog);
-    logger.info('added apps by author ' + Object.keys(appsByAuthor).length);
 }
 catch (e) {
     logger.info('error parsing catalog');
@@ -119,7 +101,7 @@ app.use(function(req, resp, next){
     var until = req.query.until;
     var limit = req.query.limit;
     var min_ratings = req.query.min_ratings;
-    
+
     logger.info('filter criteria', {since: since, until: until, limit: limit, min_ratings: min_ratings});
 
     if (since || until || limit || min_ratings) {
@@ -129,12 +111,14 @@ app.use(function(req, resp, next){
         startDate = since ? Date.parse(since) : null;
         endDate = until ? Date.parse(until) : null;
         minRatings = min_ratings ? parseInt(min_ratings) : null;
+        logger.info('real filter criteria', {since: startDate, until: endDate, limit: limit, minRatings: minRatings});
 
         for (index in marketplaceCatalog) {
             var app = marketplaceCatalog[index];
             var createdDate = Date.parse(app.created);
 
-            if (minRatings && app.ratings && app.ratings.count && (app.ratings.count < minRatings))
+            // if there's no ratings, or no ratings count, OR if there is a minRatings and this guy has fewer, then SKIP
+            if ((!app.ratings) || (!app.ratings.count) || (minRatings && app.ratings.count < minRatings))
                 continue;
             if ( startDate && createdDate < startDate )
                 continue;
@@ -142,6 +126,7 @@ app.use(function(req, resp, next){
                 continue;
             if ( count >= limit)
                 continue;
+
             filteredCatalog[index] = app;
             count++;
         }
