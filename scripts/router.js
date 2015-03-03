@@ -75,7 +75,7 @@ TheCount.AppsRoute = Ember.Route.extend({
     this.set('listingKind', params.listing_kind);
     this.set('listingParam', params.listing_param);
     $('.loading').show();
-    return Ember.$.getJSON('/listing/' + params.listing_kind + '/' + params.listing_param + '?since=' + $('#since').val() + '&until=' + $('#until').val());
+    return Ember.$.getJSON('/listing/' + params.listing_kind + '/' + params.listing_param + middlewareQueryParams());
   },
   actions: {
     error: function(error, transition) {
