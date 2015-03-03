@@ -605,6 +605,10 @@ function getLibraryNames(inApp) {
         return self.indexOf(elem) == pos;
     });
 
+    if (uniqueLibraries.length == 0) {
+        uniqueLibraries.push('Unknown');
+    }
+
     return uniqueLibraries;
 }
 
