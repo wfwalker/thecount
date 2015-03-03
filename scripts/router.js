@@ -45,6 +45,7 @@ TheCount.Router.map(function() {
   this.resource('table', { path: '/table' });
   this.resource('distribution', { path: '/distribution/:distribution_kind' });
   this.resource('pie', { path: '/pie/:pie_kind' });
+  this.route('bad_url', { path: '/*badurl' });
 });
 
 TheCount.IndexRoute = Ember.Route.extend({
