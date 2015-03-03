@@ -20,6 +20,16 @@ function getValues(inApps, getIntValuePerAppFn) {
     return { total: appsFound, values: values, average: Math.round(100.0 * sumOfValues / (1.0 * appsFound)) / 100.0 }
 }
 
+// returns the price for paid apps, null otherwise
+
+function getPrice(inApp) {
+    if (inApp.price) {
+        return inApp.price;
+    } else {
+        return null;
+    }
+}
+
 // returns the average rating for apps with more than five ratings, null otherwise
 
 function getAverageRating(inApp) {
@@ -676,6 +686,7 @@ module.exports.getPackagedCategoryTable = getPackagedCategoryTable;
 
 module.exports.getRatingCount = getRatingCount;
 module.exports.getAverageRating = getAverageRating;
+module.exports.getPrice = getPrice;
 module.exports.getNumberOfVersions = getNumberOfVersions;
 module.exports.getPackageSize = getPackageSize;
 module.exports.getDaysSinceCreated = getDaysSinceCreated;

@@ -564,6 +564,7 @@ app.get('/packaged_by_category', function(req, resp, next) {
 
 var graphs = [
     { kind: 'pie', routeFragment: 'manifest_protocol', title: 'manifest protocol', getter: statistics.getManifestProtocol },
+    { kind: 'distribution', routeFragment: 'price', title: 'price', getter: statistics.getPrice },
     { kind: 'distribution', routeFragment: 'rating_count', title: 'num ratings', getter: statistics.getRatingCount },
     { kind: 'distribution', routeFragment: 'number_of_versions', title: 'number of versions', getter: statistics.getNumberOfVersions },
     { kind: 'distribution', routeFragment: 'rating', title: 'avg rating', getter: statistics.getAverageRating },
