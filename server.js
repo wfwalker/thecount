@@ -61,8 +61,8 @@ function sumAppcacheEntrySizes(app) {
 function getAppsByAuthor(marketplaceCatalog) {
     var appsByAuthor = {};
 
-    for (index in marketplaceCatalog) {
-        var marketplaceApp = marketplaceCatalog[index];
+    for (index in req.apps) {
+        var marketplaceApp = req.apps[index];
         if (appsByAuthor[marketplaceApp.author]) {
             appsByAuthor[marketplaceApp.author].push(marketplaceApp);
         } else {
@@ -113,7 +113,7 @@ catch (e) {
 // Someone was already abusing globals when I got here
 
 app.use(function(req, resp, next){
-    logger.info('filter middleware');
+    logger.info('filter middleware, starting count', Object.keys(marketplaceCatalog).length);
     req.apps = marketplaceCatalog;
     var since = req.query.since;
     var until = req.query.until;
@@ -145,7 +145,7 @@ app.use(function(req, resp, next){
             filteredCatalog[index] = app;
             count++;
         }
-        logger.info("catalog count", Object.keys(filteredCatalog).length);
+        logger.info("filter middleware, ending count", Object.keys(filteredCatalog).length);
         req.apps = filteredCatalog;
     }
     next();
@@ -229,8 +229,8 @@ app.param('premium_type', function(req, resp, next, id) {
     logger.info('param :premium_type', premium_type);
     var apps = [];
 
-    for (index in marketplaceCatalog) {
-        var app = marketplaceCatalog[index];
+    for (index in req.apps) {
+        var app = req.apps[index];
         if (app.premium_type && app.premium_type == premium_type) {
             apps.push(app);
         }
@@ -249,8 +249,8 @@ app.param('search', function(req, resp, next, id) {
     logger.info('param :search', search);
     var apps = [];
 
-    for (index in marketplaceCatalog) {
-        var app = marketplaceCatalog[index];
+    for (index in req.apps) {
+        var app = req.apps[index];
         if (JSON.stringify(app).indexOf(search) >= 0) {
             apps.push(app);
         }
@@ -269,8 +269,8 @@ app.param('min_ratings', function(req, resp, next, id) {
     logger.info('param :min_ratings', min_ratings);
     var apps = [];
 
-    for (index in marketplaceCatalog) {
-        var app = marketplaceCatalog[index];
+    for (index in req.apps) {
+        var app = req.apps[index];
         if (app.ratings && app.ratings.count > min_ratings) {
             apps.push(app);
         }
@@ -288,8 +288,8 @@ app.param('max_ratings', function(req, resp, next, id) {
     logger.info('param :max_ratings', max_ratings);
     var apps = [];
 
-    for (index in marketplaceCatalog) {
-        var app = marketplaceCatalog[index];
+    for (index in req.apps) {
+        var app = req.apps[index];
         if (app.ratings && app.ratings.count <= max_ratings) {
             apps.push(app);
         }
@@ -307,8 +307,8 @@ app.param('activity', function(req, resp, next, id) {
     logger.info('param :activity', activity);
     var apps = [];
 
-    for (index in marketplaceCatalog) {
-        var app = marketplaceCatalog[index];
+    for (index in req.apps) {
+        var app = req.apps[index];
 
         if (app.manifest && app.manifest.activities && (Object.keys(app.manifest.activities).length > 0)) {
             if (Object.keys(app.manifest.activities).indexOf(activity) >= 0) {
@@ -330,8 +330,8 @@ app.param('library', function(req, resp, next, id) {
     logger.info('param :library', library);
     var apps = [];
 
-    for (index in marketplaceCatalog) {
-        var app = marketplaceCatalog[index];
+    for (index in req.apps) {
+        var app = req.apps[index];
         if (statistics.getLibraryNames(app).indexOf(library) >= 0) {
             apps.push(app);
         }
@@ -349,8 +349,8 @@ app.param('filename', function(req, resp, next, id) {
     logger.info('param :filename', filename);
     var apps = [];
 
-    for (index in marketplaceCatalog) {
-        var app = marketplaceCatalog[index];
+    for (index in req.apps) {
+        var app = req.apps[index];
         if (statistics.getFilenames(app).indexOf(filename) >= 0) {
             apps.push(app);
         }
@@ -368,8 +368,8 @@ app.param('permission', function(req, resp, next, id) {
     logger.info('param :permission', permission);
     var apps = [];
 
-    for (index in marketplaceCatalog) {
-        var app = marketplaceCatalog[index];
+    for (index in req.apps) {
+        var app = req.apps[index];
         if (statistics.getPermissionKeys(app).indexOf(permission) >= 0) {
             apps.push(app);
         }
@@ -387,8 +387,8 @@ app.param('content_rating_descriptor', function(req, resp, next, id) {
     logger.info('param :content_rating_descriptor', content_rating_descriptor);
     var apps = [];
 
-    for (index in marketplaceCatalog) {
-        var app = marketplaceCatalog[index];
+    for (index in req.apps) {
+        var app = req.apps[index];
         if (statistics.getContentRatingDescriptors(app).indexOf(content_rating_descriptor) >= 0) {
             apps.push(app);
         }
@@ -406,8 +406,8 @@ app.param('days_old', function(req, resp, next, id) {
     logger.info('param :days_old', days_old);
     var apps = [];
 
-    for (index in marketplaceCatalog) {
-        var app = marketplaceCatalog[index];
+    for (index in req.apps) {
+        var app = req.apps[index];
         if (statistics.getDaysSinceReviewed(app) < days_old) {
             apps.push(app);
         }
@@ -425,8 +425,8 @@ app.param('locale', function(req, resp, next, id) {
     logger.info('param :locale', locale);
     var apps = [];
 
-    for (index in marketplaceCatalog) {
-        var app = marketplaceCatalog[index];
+    for (index in req.apps) {
+        var app = req.apps[index];
         if (statistics.getSupportedLocales(app).indexOf(locale) >= 0) {
             apps.push(app);
         }
@@ -500,8 +500,8 @@ app.get('/listing/search/:search', function(req, resp, next) {
 app.get('/listing/errors', function(req, resp, next) {
     var apps = [];
 
-    for (index in marketplaceCatalog) {
-        var app = marketplaceCatalog[index];
+    for (index in req.apps) {
+        var app = req.apps[index];
         if ((!app.manifest) || (app.manifest && app.manifest.error) || (app.appcache_manifest && app.appcache_manifest.error)) {
             apps.push(app);
         }
@@ -515,8 +515,8 @@ app.get('/listing/errors', function(req, resp, next) {
 app.get('/listing/appcache', function(req, resp, next) {
     var apps = [];
 
-    for (index in marketplaceCatalog) {
-        var app = marketplaceCatalog[index];
+    for (index in req.apps) {
+        var app = req.apps[index];
         if (app.manifest && app.manifest.appcache_path) {
             apps.push(app);
         }
@@ -661,42 +661,6 @@ app.get('/rebuild', function(req, resp, next) {
 
     resp.redirect('/rebuildreport');
 });
-
-app.get('/authors/num_apps', function(req, resp, next) {
-    logger.info('/authors/days_since_created');
-
-    var numberOfApps = [];
-
-    for (var authorIndex in appsByAuthor) {
-        var apps = appsByAuthor[authorIndex];
-        logger.debug(apps.length + " " + authorIndex);
-        numberOfApps.push(apps.length);
-    }
-
-    // distribution
-    resp.json(numberOfApps);
-});
-
-app.get('/authors/months_since_submission', function(req, resp, next) {
-    logger.info('/authors/months_since_submission');
-
-    var monthsSinceSubmission = [];
-
-    for (var authorIndex in appsByAuthor) {
-        var apps = appsByAuthor[authorIndex];
-
-        // arbitrarily pick the first one
-        var marketplaceApp = apps[0];
-        var createdDate = Date.parse(marketplaceApp.created);
-        var now = Date.now();
-        // note: not really months, actually just buckets of 30 days
-        monthsSinceSubmission.push((now - createdDate) / (30 * 24 * 60 * 60 * 1000));
-    }
-
-    // distribution
-    resp.json(monthsSinceSubmission);
-});
-
 
 app.get('/rebuildreport', function(req, resp, next) {
     logger.info('/rebuildreport');
