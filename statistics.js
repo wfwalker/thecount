@@ -102,36 +102,54 @@ function getCreationDate(inApp) {
     return Date.parse(inApp.created);
 }
 
-// FREQUENCY HELPER CODE
+// Create two dimensional table counting platform designators versus app categories
 
 function getPackagedCategoryTable(inApps) {
     var counts = {};
+    var appCount = 0;
+    var allPlatformCategories = getAllPlatformCategories();
 
     for (index in inApps) {
         var app = inApps[index];
+        var platformStrings = getPlatformCategories(app);
+
+        appCount++;
 
         for (catIndex in app.categories) {
             var catString = app.categories[catIndex];
+
             if (! counts[catString]) {
                 counts[catString] = {};
-                counts[catString]['true'] = 0;
-                counts[catString]['false'] = 0;
-            }
-            counts[catString][app.is_packaged] += 1;
+                counts[catString]['category'] = catString;
 
+                for (var initIndex in allPlatformCategories) {
+                    var initPlatformCategory = allPlatformCategories[initIndex];
+                    counts[catString][initPlatformCategory] = 0;
+                    counts[catString]['total'] = 0;
+                }
+            }
+
+            counts[catString]['total']++;
+
+            for (var platIndex in platformStrings) {
+                var aPlatformString = platformStrings[platIndex];
+                counts[catString][aPlatformString]++;
+            }
         }
     }    
 
     var countsArray = [];
 
     for (var index2 in counts) {
-        countsArray.push({category: index2, packaged: counts[index2]['true'], hosted: counts[index2]['false']});
+        countsArray.push(counts[index2]);
+        // console.log(counts[index2]);
     }
 
+    console.log('app count', appCount);
     return countsArray;
 }
 
-
+// FREQUENCY HELPER CODE
 
 // computes the frequency of occurrence of strings associated with each app
 // using the given getter function. Used for properties where each app may have 
@@ -317,6 +335,10 @@ function getPaymentCategories(inApp) {
 
 // returns a list of platform category strings for the given app,
 
+function getAllPlatformCategories() {
+    return ['hosted', 'privileged', 'desktop', 'appcache', 'browser_chrome', 'packaged', 'firefoxos', 'fullscreen', 'meta_viewport', 'public_stats', 'tarako', 'android', 'androidtablet', 'androidmobile'];
+}
+
 function getPlatformCategories(inApp) {
     var categories = []
 
@@ -336,10 +358,10 @@ function getPlatformCategories(inApp) {
     if (inApp.tags.indexOf('tarako') > -1) { categories.push('tarako'); }
     
     if (inApp.device_types.indexOf('desktop') > -1) { categories.push('desktop'); }
-    if (inApp.device_types.indexOf('firefoxos') > -1) { categories.push('firefox os'); }
-    if (inApp.device_types.indexOf('android-tablet') > -1) { categories.push('android tablet'); categories.push('android'); }
-    if (inApp.device_types.indexOf('android-mobile') > -1) { categories.push('android mobile'); categories.push('android'); }
-    
+    if (inApp.device_types.indexOf('firefoxos') > -1) { categories.push('firefoxos'); }
+    if (inApp.device_types.indexOf('android-tablet') > -1) { categories.push('androidtablet'); }
+    if (inApp.device_types.indexOf('android-mobile') > -1) { categories.push('androidmobile'); }
+    if ((inApp.device_types.indexOf('android-tablet') > -1) || (inApp.device_types.indexOf('android-mobile') > -1)) { categories.push('android'); }
     return categories;
 }
 
@@ -361,6 +383,7 @@ knownLibraries['bootstrap.js'] = 'Bootstrap';
 knownLibraries['bootstrap-responsive.css'] = 'Bootstrap';
 knownLibraries['bootstrap.min.js'] = 'Bootstrap';
 knownLibraries['bootstrap.min.css'] = 'Bootstrap';
+knownLibraries['bootstrap.css'] = 'Bootstrap';
 
 knownLibraries['backbone.js'] = 'Backbone';
 knownLibraries['backbone-min.js'] = 'Backbone';

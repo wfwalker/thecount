@@ -147,11 +147,37 @@
 						<th>category</th>
 						<th style="text-align: right">packaged</th>
 						<th style="text-align: right">hosted</th>
+						<th style="text-align: right">privileged</th>
+						<th style="text-align: right">fullscreen</th>
+						<th style="text-align: right">meta_viewport</th>
+						<th style="text-align: right">tarako</th>
+						<th style="text-align: right">desktop</th>
+						<th style="text-align: right">firefox os</th>
+						<th style="text-align: right">android tablet</th>
+						<th style="text-align: right">android mobile</th>
+						<th style="text-align: right">appcache</th>
+						<th style="text-align: right">browser chrome</th>
+						<th style="text-align: right">fullscreen</th>
+						<th style="text-align: right">TOTAL</th>
 					</tr>
 					{{#each tableData}}
-						<tr><td>{{category}}</td>
-						<td style="text-align: right">{{packaged}}</td>
-						<td style="text-align: right">{{hosted}}</td></tr>
+						<tr>
+							<td>{{category}}</td>
+							<td style="text-align: right">{{formatNumber packaged}}</td>
+							<td style="text-align: right">{{formatNumber hosted}}</td>
+							<td style="text-align: right">{{formatNumber privileged}}</td>
+							<td style="text-align: right">{{formatNumber fullscreen}}</td>
+							<td style="text-align: right">{{formatNumber meta_viewport}}</td>
+							<td style="text-align: right">{{formatNumber tarako}}</td>
+							<td style="text-align: right">{{formatNumber desktop}}</td>
+							<td style="text-align: right">{{formatNumber firefoxos}}</td>
+							<td style="text-align: right">{{formatNumber androidtablet}}</td>
+							<td style="text-align: right">{{formatNumber androidmobile}}</td>
+							<td style="text-align: right">{{formatNumber appcache}}</td>
+							<td style="text-align: right">{{formatNumber browser_chrome}}</td>
+							<td style="text-align: right">{{formatNumber fullscreen}}</td>
+							<td style="text-align: right">{{formatNumber total}}</td>
+						</tr>
 					{{/each}}
 				</table>
 				</div>
