@@ -128,11 +128,13 @@ app.use(function(req, resp, next){
         filteredCatalog = {};
         startDate = since ? Date.parse(since) : null;
         endDate = until ? Date.parse(until) : null;
+        minRatings = min_ratings ? parseInt(min_ratings) : null;
+
         for (index in marketplaceCatalog) {
             var app = marketplaceCatalog[index];
             var createdDate = Date.parse(app.created);
 
-            if (!app.ratings || !app.ratings.count || (app.ratings.count < min_ratings))
+            if (minRatings && app.ratings && app.ratings.count && (app.ratings.count < minRatings))
                 continue;
             if ( startDate && createdDate < startDate )
                 continue;
