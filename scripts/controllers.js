@@ -16,7 +16,7 @@ TheCount.MyTextField = Ember.TextField.extend({
   attributeBindings: ['size'],
   controller: TheCount.ApplicationController,
   size: 10,
-  value: null,
+  value: '',
   valueChanged: function() {
     this.set('formDirty', !Ember.empty(this.value));
     console.log('MyTextField', 'valueChanged', this.value);

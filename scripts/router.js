@@ -1,10 +1,20 @@
 // retrieve values from form to use with middleware on server
 
 function middlewareQueryParams() {
-  console.log('middleware', $('#since').val(), $('#until').val(), $('#min_ratings').val());
-  return '?since=' + $('#since').val() +
-    '&until=' + $('#until').val() +
-    '&min_ratings=' + $('#min_ratings').val();
+  var sinceVal = $('#since').val();
+  if (sinceVal == null) { sinceVal = ''; }
+  
+  var untilVal = $('#until').val();
+  if (untilVal == null) { untilVal = ''; }
+
+  var minRatingsVal = $('#min_ratings').val();
+  if (minRatingsVal == null) { minRatingsVal = ''; }
+
+  console.log('middleware', sinceVal, untilVal, minRatingsVal);
+
+  return '?since=' + sinceVal +
+    '&until=' + untilVal +
+    '&min_ratings=' + minRatingsVal;
 }
 
 function insertAlert(inText) {
