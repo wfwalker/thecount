@@ -10,6 +10,7 @@ TheCount.App = DS.Model.extend({
   slug: DS.attr(),
   ratings: DS.attr(),
   created: DS.attr(),
+  last_updated: DS.attr(),
   reviewed: DS.attr(),
   app_type: DS.attr('string'),
   reviewed: DS.attr('string'),

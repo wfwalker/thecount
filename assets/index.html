@@ -38,6 +38,7 @@
 								<li>{{#link-to 'frequency' 'author'}}author{{/link-to}}</li>
 								<li>{{#link-to 'distribution' 'creation_date'}}creation date{{/link-to}}</li>
 								<li>{{#link-to 'distribution' 'reviewed_date'}}reviewed date{{/link-to}}</li>
+								<li>{{#link-to 'distribution' 'last_updated_date'}}last updated date{{/link-to}}</li>
 								<li>{{#link-to 'distribution' 'price'}}price{{/link-to}}</li>
 								<li>{{#link-to 'distribution' 'number_of_versions'}}number of versions{{/link-to}}</li>
 								<li>{{#link-to 'frequency' 'locale'}}locale{{/link-to}}</li>
@@ -107,7 +108,7 @@
 					<h1>Welcome to TheCount</h1>
 
 					<p>
-						TheCount is a Node.js/Ember.js app based around the Firefox Marketplace API
+						TheCount is a Node.js/Ember.js app based around the Firefox Marketplace API.
 						It serves two purposes.
 						First, it provides aggregate statistics on the Firefox Marketplace catalog, showing which permissions are most popular, graphing the distribution of packaged app sizes, and so forth.
 						Second, it shows how a third party can construct their own app store using the Firefox Marketplace API to populate their store with a wide variety of content.
@@ -266,6 +267,7 @@
 								<span class='billpill'>{{{stars ratings.average}}} ({{formatNumber ratings.count}})</span>
 								<span class='billpill'><span class='glyphicon glyphicon-time'></span> Created {{formatDate created}}</span>
 								<span class='billpill'><span class='glyphicon glyphicon-time'></span> Reviewed {{formatDate reviewed}}</span>
+								<span class='billpill'><span class='glyphicon glyphicon-time'></span> Last Updated {{formatDate last_updated}}</span>
 							</div>
 
 							<div style='padding-bottom: 10px'>

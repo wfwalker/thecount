@@ -112,6 +112,12 @@ function getCreationDate(inApp) {
     return Date.parse(inApp.created);
 }
 
+// returns date when app was last updated
+
+function getLastUpdatedDate(inApp) {
+    return Date.parse(inApp.last_updated);
+}
+
 // Create two dimensional table counting platform designators versus app categories
 
 function getPackagedCategoryTable(inApps) {
@@ -693,6 +699,7 @@ module.exports.getDaysSinceCreated = getDaysSinceCreated;
 module.exports.getDaysSinceReviewed = getDaysSinceReviewed;
 module.exports.getCreationDate = getCreationDate;
 module.exports.getReviewedDate = getReviewedDate;
+module.exports.getLastUpdatedDate = getLastUpdatedDate;
 
 module.exports.getFrequency = getFrequency;
 module.exports.getManifestProtocol = getManifestProtocol;

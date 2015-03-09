@@ -573,6 +573,7 @@ var graphs = [
     { kind: 'distribution', routeFragment: 'days_since_created', title: 'days since created', getter: statistics.getDaysSinceCreated },
     { kind: 'distribution', routeFragment: 'creation_date', title: 'creation date', getter: statistics.getCreationDate },
     { kind: 'distribution', routeFragment: 'reviewed_date', title: 'reviewed date', getter: statistics.getReviewedDate },
+    { kind: 'distribution', routeFragment: 'last_updated_date', title: 'last updated date', getter: statistics.getLastUpdatedDate },
     { kind: 'frequency', routeFragment: 'unknown', title: 'unknown filenames', getter: statistics.getUnknownFilenames },
     { kind: 'frequency', routeFragment: 'icon_sizes', title: 'icon sizes', getter: statistics.getIconSizes },
     { kind: 'frequency', routeFragment: 'library', title: 'library', getter: statistics.getLibraryNames },
