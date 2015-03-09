@@ -11,5 +11,12 @@ var argv = parseArgs(process.argv.slice(2));
 
 if (argv['build']) {
     catalog.createMarketplaceCatalogDB('apps.json');
+
+    setInterval(function() {
+    	var report = catalog.progressReport();
+    	report.errorApps = report.errorApps.length; 
+    	console.log("\033[2J\033[;H");
+    	console.log(report);
+	}, 5000);
 }
 

@@ -11,6 +11,15 @@ var admZip = require('adm-zip');
 var util = require('util');
 var cheerio = require('cheerio');
 
+var winston = require('winston');
+var logger = new (winston.Logger)({
+    transports: [
+        // TODO: only show debug logs if this is dev server
+        new (winston.transports.Console)({ level: 'debug' }),
+        new (winston.transports.File)({ filename: 'thecountbuilder.log' })
+    ]
+});
+
 // global scope
 
 var theScope = {};
@@ -28,23 +37,30 @@ function getPromiseForRequestAndParseJSON(inURL) {
 
     theScope.pendingRequests += 1;
 
+    logger.debug('about to request', inURL);
+
     request({ uri: inURL, strictSSL: false, timeout: theScope.timeout }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             theScope.pendingRequests -= 1;
 
             try {
-                deferred.resolve(JSON.parse(body.trim()));
+                logger.debug('about to parse JSON', inURL);
+                var parsedJSON = JSON.parse(body.trim());
+                logger.debug('parsed JSON', inURL);
+                deferred.resolve(parsedJSON);
             }
             catch (e) {
-                console.log('cannot parse ' + inURL + ', ' + e);
+                logger.error('Cannot parse JSON', inURL);
                 deferred.reject(new Error(e));
             }
         } else {
             theScope.pendingRequests -= 1;
-            // console.log('cannot retrieve ' + inURL + ', ' + error);
+            logger.error('Cannot retrieve JSON', inURL);
             deferred.reject(new Error(error));
         }
     });
+
+    logger.debug('done requesting', inURL);
 
     return deferred.promise;
 }
@@ -59,24 +75,29 @@ function getPromiseForDownloadPackageAndExtractManifest(inURL, inFilename) {
 
     theScope.pendingRequests += 1;
 
+    logger.debug('about to request', inURL);   
+
     request({ uri: inURL, strictSSL: false, timeout: theScope.timeout, encoding: null }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             theScope.pendingRequests -= 1;
 
             try {
+                logger.debug('about to write file', inFilename);
                 fs.writeFileSync(inFilename, body);
                 var zip = new admZip(inFilename);
                 var manifestBuffer = zip.readFile("manifest.webapp");
-                // console.log(JSON.parse(manifestBuffer));
-                deferred.resolve(JSON.parse(manifestBuffer.toString().trim()));
+                logger.debug('about to parse manifest', inURL);
+                var parsedJSON = JSON.parse(manifestBuffer.toString().trim());
+                logger.debug('parsed manifest', inURL);
+                deferred.resolve(parsedJSON);
             }
             catch (e) {
-                console.log('cannot parse ' + inURL + ', ' + e);
+                logger.error('Cannot parse Manifest', inURL, e);
                 deferred.reject(new Error(e));
             }
         } else {
             theScope.pendingRequests -= 1;
-            // console.log('cannot retrieve ' + inURL + ', ' + error);
+            logger.info('cannot retrieve', inURL, error, response);
             deferred.reject(new Error(error));
         }
     });
@@ -94,13 +115,16 @@ function getPromiseForRequest(inURL) {
 
     theScope.pendingRequests += 1;
 
+    logger.debug('about to request', inURL);
+
     request({ uri: inURL, strictSSL: false, timeout: theScope.timeout }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             theScope.pendingRequests -= 1;
+            logger.debug('retrieved', inURL);
             deferred.resolve(body);
         } else {
             theScope.pendingRequests -= 1;
-            // console.log('cannot retrieve ' + inURL + ', ' + error);
+            logger.info('cannot retrieve', inURL);
             deferred.reject(new Error(error));
         }
     });
@@ -117,16 +141,21 @@ function getPromiseForResponseContentSize(inURL) {
 
     theScope.pendingRequests += 1;
 
-    request({ uri: inURL, strictSSL: false, timeout: theScope.timeout }, function (error, response, body) {
+    logger.debug('about to request', inURL);
+
+    request({ uri: inURL, strictSSL: false, timeout: theScope.setTimeout }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             theScope.pendingRequests -= 1;
+            logger.debug('retrieved', inURL);
             deferred.resolve(response.headers['content-length']);
         } else {
             theScope.pendingRequests -= 1;
-            // console.log('cannot retrieve ' + inURL + ', ' + error);
+            logger.info('cannot retrieve', inURL);
             deferred.reject(new Error(error));
         }
     });
+
+    logger.debug('done requesting', inURL);
 
     return deferred.promise;
 }
@@ -137,7 +166,7 @@ function getPromiseForResponseContentSize(inURL) {
 
 function getManifest(inApp) {
     return getPromiseForRequestAndParseJSON(inApp.manifest_url).catch(function (error) {
-        console.log('getManifest ' + inApp.manifest_url + ' CATCH ' + error);
+        logger.error('getManifest catch', inApp.manifest_url);
         // TODO: this doesn't seem to work
         return {'error' : error.toString() };
     });
@@ -151,7 +180,7 @@ function getAppcacheManifest(inApp) {
     var appcacheManifestURL = url.resolve(manifestURL, inApp.manifest.appcache_path);
 
     return getPromiseForRequest(appcacheManifestURL).catch(function (error) {
-        console.log('getAppcacheManifest ' + appcacheManifestURL + ' CATCH ' + error);
+        logger.error('getAppcacheManifest CATCH', inApp.id);
         // TODO: this doesn't seem to work
         return {'error' : error.toString() };
     });
@@ -169,7 +198,7 @@ function getLaunchPage(inApp) {
     }
 
     return getPromiseForRequest(launchPathURL).catch(function (error) {
-        console.log('getLaunchPage ' + launchPathURL + ' CATCH ' + error);
+        logger.error('getLaunchPage catch', launchPathURL);
         // TODO: this doesn't seem to work
         return {'error' : error.toString() };
     });
@@ -182,10 +211,9 @@ function getAppPackageAndExtractManifest(inApp) {
     var filename = '/tmp/' + inApp.id + '.zip';
     var manifestURL = url.parse(inApp.manifest_url);
     var packageURL = url.resolve(manifestURL, inApp.manifest.package_path);
-    // console.log('packageURL ' + packageURL);
 
     return getPromiseForDownloadPackageAndExtractManifest(packageURL, filename).catch(function (error) {
-        console.log('getAppPackageAndExtractManifest app.id=' + inApp.id + ' ' + packageURL + ' CATCH ' + error);
+        logger.error('getAppPackageAndExtractManifest catch', inApp.id);
         // TODO: this doesn't seem to work
         return {'error' : error.toString() };
     });
@@ -196,7 +224,7 @@ function getAppPackageAndExtractManifest(inApp) {
 
 function getAppcacheManifestEntrySize(inEntryURL) {
     return getPromiseForResponseContentSize(inEntryURL).catch(function (error) {
-        // console.log('getAppcacheManifestEntrySize ' + inEntryURL + ' CATCH ' + error);
+        logger.error('getAppcacheManifestEntrySize catch', inEntryURL);
         // TODO: this doesn't seem to work
         return 0;
     })
@@ -228,35 +256,40 @@ function addPromiseForManifest(subpromises, app) {
             if (data.package_path) {
                 theScope.apps[app.id].miniManifest = data;
 
-                subpromises.push(getAppPackageAndExtractManifest(theScope.apps[app.id]).catch(function () {
-                    console.log('catch getAppPackageAndExtractManifest inside addPromiseForManifest');
+                subpromises.push(getAppPackageAndExtractManifest(theScope.apps[app.id]).catch(function (error) {
+                    logger.debug('catch getAppPackageAndExtractManifest inside addPromiseForManifest', app.id);
                 }).then(function (manifestFromPackage) {
+                    logger.debug('got manifest from package', app.manifest_url);
                     theScope.apps[app.id].manifest = manifestFromPackage;
 
                     // now that the package is here, grab the filenames
                     var packageFilename = '/tmp/' + app.id + '.zip';
+                    logger.debug('about to create admZip', packageFilename);
                     var zip = new admZip(packageFilename);
                     var zipEntries = zip.getEntries(); // an array of ZipEntry records
                     theScope.apps[app.id].package_entries = [];
 
+                    logger.debug('about to iterate thru zip entries', packageFilename);
                     zipEntries.forEach(function(zipEntry) {
                         var filename = zipEntry.entryName.substring(zipEntry.entryName.lastIndexOf('/') + 1);
                         theScope.apps[app.id].package_entries.push(filename);
                     });
                 }));
             } else {
-                subpromises.push(getLaunchPage(theScope.apps[app.id]).catch(function () {
-                    console.log('catch getLaunchPage inside addPromiseForManifest');
+                subpromises.push(getLaunchPage(theScope.apps[app.id]).catch(function (error) {
+                    logger.error('catch getLaunchPage inside addPromiseForManifest', app.id);
                 }).then(function (launchPageData) {
+                    logger.debug('got launch page', app.id);
                     theScope.apps[app.id].included_scripts = [];
+                    logger.debug('about to parse launch page', app.id);
                     $ = cheerio.load(launchPageData);
+                    logger.debug('parsed launch page', app.id);
 
                     // TODO: don't just look in launch page for hosted apps
                     // also do it for packaged apps
                     $('html').find('meta').each(function (index, metaTag) {
                         if (metaTag.attribs.name && metaTag.attribs.name == 'viewport') {
-                            console.log("VIEWPORT");
-                            console.log(metaTag.attribs.content);
+                            logger.debug("VIEWPORT", app.id);
                             theScope.apps[app.id].meta_viewport = metaTag.attribs.content;
                         } else {
                             // say nothin'
@@ -266,7 +299,7 @@ function addPromiseForManifest(subpromises, app) {
                     $('html').find('script').each(function (index, scriptTag) {
                         if (scriptTag.attribs.src) {
                             theScope.apps[app.id].included_scripts.push(scriptTag.attribs.src);
-                            // console.log(app.id + ' ' + scriptTag.attribs.src);
+                            // logger.info(app.id + ' ' + scriptTag.attribs.src);
                         }
                     });
                 }));
@@ -278,9 +311,10 @@ function addPromiseForManifest(subpromises, app) {
                 theScope.apps[app.id].appcache_entry_sizes = {};
 
                 // add a subpromise for the appcache manifest
-                subpromises.push(getAppcacheManifest(theScope.apps[app.id]).catch(function () {
-                    console.log('catch getAppcacheManifest inside addPromiseForManifest');
+                subpromises.push(getAppcacheManifest(theScope.apps[app.id]).catch(function (error) {
+                    logger.error('catch getAppcacheManifest inside addPromiseForManifest', app.id);
                 }).then(function (appcacheData) {
+                    logger.debug("got appcache data", app.id);
                     theScope.apps[app.id].appcache_manifest = appcacheData;
 
                     var entries = parseAppcacheManifest(appcacheData);
@@ -313,7 +347,7 @@ function searchAppData(inSearchURL) {
         }
 
         if (data.meta.next) {
-            console.log(data.meta.offset + '/' + data.meta.total_count + ' pending ' + theScope.pendingRequests + ' size ' + Object.keys(theScope.apps).length);
+            logger.info(data.meta.offset + '/' + data.meta.total_count + ' pending ' + theScope.pendingRequests + ' size ' + Object.keys(theScope.apps).length);
             theScope.totalCount = data.meta.total_count;
             subpromises.push(searchAppData('https://marketplace.firefox.com' + data.meta.next));
         }
@@ -325,7 +359,7 @@ function searchAppData(inSearchURL) {
 // returns a Q promise to retrieve the entire firefox marketplace catalog
 
 function findAppData() {
-    return searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?format=JSON&region=None&limit=200');
+    return searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?format=JSON&region=None&limit=100');
 }
 
 // QUERIES --------------------------------------------
@@ -361,13 +395,13 @@ function firstAppName(app) {
 }
 
 function whoUsesPermission(inPermission) {
-    console.log('who uses "' + inPermission + "'");
+    logger.info('who uses "' + inPermission + "'");
     for (index in theScope.apps) {
         var app = theScope.apps[index];
 
         if (app.manifest && app.manifest.permissions) {
             if (app.manifest.permissions[inPermission]) {
-                console.log(firstAppName(app) + ' by ' + app.author);
+                logger.info(firstAppName(app) + ' by ' + app.author);
             }
         }
     }
@@ -375,12 +409,12 @@ function whoUsesPermission(inPermission) {
 
 
 function whoHasAppcache() {
-    console.log('who has appcache');
+    logger.info('who has appcache');
     for (index in theScope.apps) {
         var app = theScope.apps[index];
 
         if (app.manifest.appcache_path) {
-            console.log(firstAppName(app) + ' by ' + app.author);
+            logger.info(firstAppName(app) + ' by ' + app.author);
         }
     }
 }
@@ -393,15 +427,15 @@ function verifyLocales() {
 
         if (app.default_locale) {
             if (app.supported_locales.length == 0) {
-                // console.log('app ' + app.id + ' has default locale but no supported_locales');
+                // logger.info('app ' + app.id + ' has default locale but no supported_locales');
             }
         }
 
         if (app.supported_locales.length > 0) {
             if (! app.manifest.locales) {
-                console.log('app ' + app.id + ' has supported_locales but no manifest.locales');
+                logger.info('app ' + app.id + ' has supported_locales but no manifest.locales');
             } else if (Object.keys(app.manifest.locales).length != app.supported_locales.length) {
-                console.log('app ' + app.id + ' has ' + Object.keys(app.manifest.locales).length + ' manifest locales but ' + app.supported_locales.length + ' supported locales')
+                logger.info('app ' + app.id + ' has ' + Object.keys(app.manifest.locales).length + ' manifest locales but ' + app.supported_locales.length + ' supported locales')
             }
         }
     }    
@@ -414,17 +448,17 @@ function createMarketplaceCatalogDB(inOutputFile) {
     theScope.startTime = Date.now();
 
     return findAppData().then(function() {
-        console.log('DONE ALL ' + Object.keys(theScope.apps).length + ', still pending ' + theScope.pendingRequests); 
+        logger.info('DONE ALL ' + Object.keys(theScope.apps).length + ', still pending ' + theScope.pendingRequests); 
     }).catch(function (error) {
-        console.log('createMarketplaceCatalogDB err ' + error);
-        console.log(error.stack);
+        logger.info('createMarketplaceCatalogDB err');
+        logger.info(error.stack);
     }).finally(function() {
         theScope.isRunning = false;
         fs.writeFile(inOutputFile, JSON.stringify(theScope.apps, null, 4), function(err) {
             if (err) {
-              console.log('error writing JSON: ' + err);
+              logger.error('error writing JSON', inOutputFile);
             } else {
-              console.log("JSON saved to " + inOutputFile);
+              logger.info("JSON saved to", inOutputFile);
             }
         }); 
     });
@@ -433,6 +467,7 @@ function createMarketplaceCatalogDB(inOutputFile) {
 // returns a JSON blob describing the progress of the catalog scraper.
 
 function progressReport() {
+    console.log('starting ProgressReport');
     var manifestCount = 0;
     var errorApps = [];
 
@@ -465,7 +500,6 @@ function progressReport() {
 function isRunning() {
     return theScope.isRunning;
 }
-
 
 module.exports.createMarketplaceCatalogDB = createMarketplaceCatalogDB;
 module.exports.progressReport = progressReport;
