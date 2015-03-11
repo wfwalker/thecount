@@ -15,7 +15,7 @@ var winston = require('winston');
 var logger = new (winston.Logger)({
     transports: [
         // TODO: only show debug logs if this is dev server
-        new (winston.transports.Console)({ level: 'debug' }),
+        new (winston.transports.Console)({ level: 'info' }),
         new (winston.transports.File)({ filename: 'thecountbuilder.log' })
     ]
 });
@@ -25,6 +25,7 @@ var logger = new (winston.Logger)({
 var theScope = {};
 theScope.apps = {};
 theScope.pendingRequests = 0;
+theScope.finishedRequests = 0;
 theScope.isRunning = false;
 theScope.timeout = 240000;
 
@@ -55,6 +56,7 @@ function getPromiseForRequestAndParseJSON(inURL) {
             }
         } else {
             theScope.pendingRequests -= 1;
+            theScope.finishedRequests += 1;
             logger.error('Cannot retrieve JSON', inURL);
             deferred.reject(new Error(error));
         }
@@ -80,6 +82,7 @@ function getPromiseForDownloadPackageAndExtractManifest(inURL, inFilename) {
     request({ uri: inURL, strictSSL: false, timeout: theScope.timeout, encoding: null }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             theScope.pendingRequests -= 1;
+            theScope.finishedRequests += 1;
 
             try {
                 logger.debug('about to write file', inFilename);
@@ -97,6 +100,7 @@ function getPromiseForDownloadPackageAndExtractManifest(inURL, inFilename) {
             }
         } else {
             theScope.pendingRequests -= 1;
+            theScope.finishedRequests += 1;
             logger.info('cannot retrieve', inURL, error, response);
             deferred.reject(new Error(error));
         }
@@ -120,10 +124,12 @@ function getPromiseForRequest(inURL) {
     request({ uri: inURL, strictSSL: false, timeout: theScope.timeout }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             theScope.pendingRequests -= 1;
+            theScope.finishedRequests += 1;
             logger.debug('retrieved', inURL);
             deferred.resolve(body);
         } else {
             theScope.pendingRequests -= 1;
+            theScope.finishedRequests += 1;
             logger.info('cannot retrieve', inURL);
             deferred.reject(new Error(error));
         }
@@ -146,10 +152,12 @@ function getPromiseForResponseContentSize(inURL) {
     request({ uri: inURL, strictSSL: false, timeout: theScope.setTimeout }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             theScope.pendingRequests -= 1;
+            theScope.finishedRequests += 1;
             logger.debug('retrieved', inURL);
             deferred.resolve(response.headers['content-length']);
         } else {
             theScope.pendingRequests -= 1;
+            theScope.finishedRequests += 1;
             logger.info('cannot retrieve', inURL);
             deferred.reject(new Error(error));
         }
@@ -486,6 +494,7 @@ function progressReport() {
     return {
         apps: Object.keys(theScope.apps).length, 
         pendingRequests: theScope.pendingRequests,
+        finishedRequests: theScope.finishedRequests,
         manifestCount: manifestCount,
         totalCount: theScope.totalCount,
         elapsedSeconds: (Date.now() - theScope.startTime) / 1000,
