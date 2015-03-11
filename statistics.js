@@ -285,6 +285,16 @@ function getIconSizes(inApp) {
     }
 }
 
+// returns the number of previews
+
+function getNumberOfPreviews(inApp) {
+    if (inApp.previews) {
+        return inApp.previews.length;
+    } else {
+        return 0;
+    }
+}
+
 // returns the list of supported locales for the given app
 // the list is the union of supported_locales, default locale, and locales listed in the manifest
 
@@ -709,6 +719,7 @@ module.exports.getInstallsAllowedFrom = getInstallsAllowedFrom;
 module.exports.getPermissionKeys = getPermissionKeys;
 module.exports.getContentRatingDescriptors = getContentRatingDescriptors;
 module.exports.getIconSizes = getIconSizes;
+module.exports.getNumberOfPreviews = getNumberOfPreviews;
 module.exports.getSupportedLocales = getSupportedLocales;
 module.exports.getSupportedRegions = getSupportedRegions;
 module.exports.getCategoryStrings = getCategoryStrings;
