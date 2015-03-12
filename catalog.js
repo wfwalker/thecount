@@ -455,28 +455,6 @@ function whoHasAppcache() {
     }
 }
 
-// VERIFICATION -------------------------------------------------------------------------------
-
-function verifyLocales() {
-    for (index in theScope.apps) {
-        var app = theScope.apps[index];
-
-        if (app.default_locale) {
-            if (app.supported_locales.length == 0) {
-                // logger.info('app ' + app.id + ' has default locale but no supported_locales');
-            }
-        }
-
-        if (app.supported_locales.length > 0) {
-            if (! app.manifest.locales) {
-                logger.info('app ' + app.id + ' has supported_locales but no manifest.locales');
-            } else if (Object.keys(app.manifest.locales).length != app.supported_locales.length) {
-                logger.info('app ' + app.id + ' has ' + Object.keys(app.manifest.locales).length + ' manifest locales but ' + app.supported_locales.length + ' supported locales')
-            }
-        }
-    }    
-}
-
 // retrieve all the data in the Firefox Marketplace catalog using the Marketplace API
 
 function createMarketplaceCatalogDB(inOutputFile) {
@@ -541,4 +519,3 @@ function isRunning() {
 module.exports.createMarketplaceCatalogDB = createMarketplaceCatalogDB;
 module.exports.progressReport = progressReport;
 module.exports.isRunning = isRunning;
-// module.exports.verifyLocales = verifyLocales;
