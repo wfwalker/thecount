@@ -33,7 +33,7 @@ theScope.timeout = 240000;
 //      resolves upon getting the bytes at the supplied URL and parsing them as JSON
 //      rejects otherwise
 
-function getPromiseForRequestAndParseJSON(inURL) {
+function requestAndParseJSON(inURL) {
     var deferred = Q.defer();
 
     theScope.pendingRequests += 1;
@@ -173,7 +173,7 @@ function getPromiseForResponseContentSize(inURL) {
 // catches errors and returns them as JSON
 
 function getManifest(inApp) {
-    return getPromiseForRequestAndParseJSON(inApp.manifest_url).catch(function (error) {
+    return requestAndParseJSON(inApp.manifest_url).catch(function (error) {
         logger.error('getManifest catch', inApp.manifest_url);
         // TODO: this doesn't seem to work
         return {'error' : error.toString() };
@@ -184,7 +184,7 @@ function getManifest(inApp) {
 // catches errors and returns them as JSON
 
 function getAppStats(inApp) {
-    return getPromiseForRequestAndParseJSON('https://marketplace.firefox.com/api/v2/stats/app/' + inApp.id + '/totals/').catch(function (error) {
+    return requestAndParseJSON('https://marketplace.firefox.com/api/v2/stats/app/' + inApp.id + '/totals/').catch(function (error) {
         logger.error('getAppStats catch', inApp.id);
         // TODO: this doesn't seem to work
         return {'error' : error.toString() };
@@ -253,21 +253,21 @@ function getAppcacheManifestEntrySize(inEntryURL) {
 // adds to the existing array of promises a promise
 // to retrieve the size of an entry in the appcache manifest
 
-function addPromiseForAppcacheEntry(subpromises, app, entryURL) {
-    subpromises.push(getAppcacheManifestEntrySize(entryURL).then(function (responseContentLength) {
+function getAppcacheEntry(app, entryURL) {
+    return getAppcacheManifestEntrySize(entryURL).then(function (responseContentLength) {
         theScope.apps[app.id].appcache_entry_sizes[entryURL] = responseContentLength;
-    }));    
+    });    
 }
 
 // adds to the existing array of promises one or two promises
 // to retrieve the app manifest and appcache manifest
     
-function addPromiseForManifest(subpromises, app) {
+function handleManifest(app) {
     if (app.manifest_url) {
         var manifestURL = url.parse(app.manifest_url);
 
-        // add a subpromise for the app manifest
-        subpromises.push(getManifest(app).then(function (data) {
+        // get the manifest and handle packaged and hosted apps
+        return getManifest(app).then(function (data) {
             theScope.apps[app.id].manifest = data;
             theScope.apps[app.id].included_scripts = [];
 
@@ -275,7 +275,7 @@ function addPromiseForManifest(subpromises, app) {
             if (data.package_path) {
                 theScope.apps[app.id].miniManifest = data;
 
-                subpromises.push(getAppPackageAndExtractManifest(theScope.apps[app.id]).catch(function (error) {
+                return getAppPackageAndExtractManifest(theScope.apps[app.id]).catch(function (error) {
                     logger.debug('catch getAppPackageAndExtractManifest inside addPromiseForManifest', app.id);
                 }).then(function (manifestFromPackage) {
                     logger.debug('got manifest from package', app.manifest_url);
@@ -293,9 +293,10 @@ function addPromiseForManifest(subpromises, app) {
                         var filename = zipEntry.entryName.substring(zipEntry.entryName.lastIndexOf('/') + 1);
                         theScope.apps[app.id].package_entries.push(filename);
                     });
-                }));
+                });
+            // for hosted apps, get launch page
             } else {
-                subpromises.push(getLaunchPage(theScope.apps[app.id]).catch(function (error) {
+                return getLaunchPage(theScope.apps[app.id]).catch(function (error) {
                     logger.error('catch getLaunchPage inside addPromiseForManifest', app.id);
                 }).then(function (launchPageData) {
                     logger.debug('got launch page', app.id);
@@ -321,41 +322,45 @@ function addPromiseForManifest(subpromises, app) {
                             // logger.info(app.id + ' ' + scriptTag.attribs.src);
                         }
                     });
-                }));
-            }
+                }).then(function () {
+                    // for apps that use appcache, add promises to retrieve the size of each
+                    // asset listed in the appcache manifest
+                    if (data.appcache_path) {
+                        theScope.apps[app.id].appcache_entry_sizes = {};
 
-            // for apps that use appcache, add promises to retrieve the size of each
-            // asset listed in the appcache manifest
-            if (data.appcache_path) {
-                theScope.apps[app.id].appcache_entry_sizes = {};
+                        // get the appcache manifest
+                        getAppcacheManifest(theScope.apps[app.id]).catch(function (error) {
+                            logger.error('catch getAppcacheManifest inside addPromiseForManifest', app.id);
+                        }).then(function (appcacheData) {
+                            logger.debug("got appcache data", app.id);
+                            theScope.apps[app.id].appcache_manifest = appcacheData;
 
-                // add a subpromise for the appcache manifest
-                subpromises.push(getAppcacheManifest(theScope.apps[app.id]).catch(function (error) {
-                    logger.error('catch getAppcacheManifest inside addPromiseForManifest', app.id);
-                }).then(function (appcacheData) {
-                    logger.debug("got appcache data", app.id);
-                    theScope.apps[app.id].appcache_manifest = appcacheData;
+                            var entries = parseAppcacheManifest(appcacheData);
+                            theScope.apps[app.id].appcache_entry_count = entries.cache.length;
 
-                    var entries = parseAppcacheManifest(appcacheData);
-                    theScope.apps[app.id].appcache_entry_count = entries.cache.length;
+                            var temp = [];
 
-                    for (var entryIndex = 0; entryIndex < entries.cache.length; entryIndex++) {
-                        var entry = entries.cache[entryIndex];
-                        var entryURL = url.resolve(manifestURL, entry);
+                            for (var entryIndex = 0; entryIndex < entries.cache.length; entryIndex++) {
+                                var entry = entries.cache[entryIndex];
+                                var entryURL = url.resolve(manifestURL, entry);
 
-                        // add a subpromise for the size of each appcache entry
-                        addPromiseForAppcacheEntry(subpromises, app, entryURL);
+                                // collect promises for the size of each appcache entry
+                                temp.push(getAppcacheEntry(app, entryURL));
+                            }
+
+                            return Q.allSettled(temp);
+                        });
                     }
-                }));
+                });
             }
-        }));
+        });
     }
 }
 
 // returns a Q Promise for searching the Apps catalog using the Marketplace API
 
 function searchAppData(inSearchURL) {
-    return getPromiseForRequestAndParseJSON(inSearchURL).then(function (data) {
+    return requestAndParseJSON(inSearchURL).then(function (data) {
         // resolved
         var subpromises = [];
 
@@ -364,7 +369,7 @@ function searchAppData(inSearchURL) {
             theScope.apps[app.id] = app;
 
             // add a subpromise for fetching the manifest
-            addPromiseForManifest(subpromises, app);
+            subpromises.push(handleManifest(app));
 
             if (app.public_stats) {
                 logger.info('getting stats', app.id);
