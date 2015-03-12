@@ -183,11 +183,16 @@ function getManifest(inApp) {
 // returns a Q Promise for retrieving and parsing an app's statistics
 // catches errors and returns them as JSON
 
-function getAppStats(inApp) {
+function handleAppStats(inApp) {
+    logger.info('getting stats', inApp.id);
+
     return requestAndParseJSON('https://marketplace.firefox.com/api/v2/stats/app/' + inApp.id + '/totals/').catch(function (error) {
-        logger.error('getAppStats catch', inApp.id);
+        logger.error('handleAppStats catch', inApp.id);
         // TODO: this doesn't seem to work
         return {'error' : error.toString() };
+    }).then(function(data) {
+        logger.info('handleAppStats', inApp.id);
+        theScope.apps[inApp.id].appStats = data;
     });
 }
 
@@ -372,13 +377,8 @@ function searchAppData(inSearchURL) {
             subpromises.push(handleManifest(app));
 
             if (app.public_stats) {
-                logger.info('getting stats', app.id);
-
                 // add a subpromise for fetching app stats
-                subpromises.push(getAppStats(app).then(function(data) {
-                    logger.info('got app stats', app.id);
-                    theScope.apps[app.id].appStats = data;
-                }));
+                subpromises.push(handleAppStats(app));
             }
         }
 
@@ -396,63 +396,6 @@ function searchAppData(inSearchURL) {
 
 function findAppData() {
     return searchAppData('https://marketplace.firefox.com/api/v1/apps/search/?format=JSON&region=None&limit=100');
-}
-
-// QUERIES --------------------------------------------
-
-function getFilenames(inApp) {
-    var unionOfFilenames = [];
-    var stopNames = ['', 'app.js', 'main.js', 'manifest.webapp', 'zigbert.rsa', 'zigbert.sf', 'manifest.mf', 'ids.json', 'index.html'];
-
-    if (inApp.package_entries) {
-        unionOfFilenames.push.apply(unionOfFilenames, inApp.package_entries);
-    }
-
-    if (inApp.appcache_entry_sizes) {
-        for (var entryIndex in inApp.appcache_entry_sizes) {
-            unionOfFilenames.push(entryIndex.substring(entryIndex.lastIndexOf('/') + 1));
-        }
-    } 
-
-    var uniqueFilenames = unionOfFilenames.filter(function(elem, pos, self) {
-        return self.indexOf(elem) == pos;
-    });
-
-    var filteredFilenames = uniqueFilenames.filter(function(elem, pos, self) {
-        return elem.indexOf('.js') > 0 && stopNames.indexOf(elem) == -1;
-    });
-
-    return filteredFilenames;
-}
-
-function firstAppName(app) {
-    var appNameKeys = Object.keys(app.name);
-    return app.name[appNameKeys[0]].replace(/,/g, '');
-}
-
-function whoUsesPermission(inPermission) {
-    logger.info('who uses "' + inPermission + "'");
-    for (index in theScope.apps) {
-        var app = theScope.apps[index];
-
-        if (app.manifest && app.manifest.permissions) {
-            if (app.manifest.permissions[inPermission]) {
-                logger.info(firstAppName(app) + ' by ' + app.author);
-            }
-        }
-    }
-}
-
-
-function whoHasAppcache() {
-    logger.info('who has appcache');
-    for (index in theScope.apps) {
-        var app = theScope.apps[index];
-
-        if (app.manifest.appcache_path) {
-            logger.info(firstAppName(app) + ' by ' + app.author);
-        }
-    }
 }
 
 // retrieve all the data in the Firefox Marketplace catalog using the Marketplace API
