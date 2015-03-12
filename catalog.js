@@ -180,6 +180,17 @@ function getManifest(inApp) {
     });
 }
 
+// returns a Q Promise for retrieving and parsing an app's statistics
+// catches errors and returns them as JSON
+
+function getAppStats(inApp) {
+    return getPromiseForRequestAndParseJSON('https://marketplace.firefox.com/api/v2/stats/app/' + inApp.id + '/totals/').catch(function (error) {
+        logger.error('getAppStats catch', inApp.id);
+        // TODO: this doesn't seem to work
+        return {'error' : error.toString() };
+    });
+}
+
 // returns a Q promise for retrieving an app's appcache manifest
 // catches errors and returns them as JSON
 
@@ -351,7 +362,19 @@ function searchAppData(inSearchURL) {
         for (index in data.objects) {
             var app = data.objects[index];
             theScope.apps[app.id] = app;
+
+            // add a subpromise for fetching the manifest
             addPromiseForManifest(subpromises, app);
+
+            if (app.public_stats) {
+                logger.info('getting stats', app.id);
+
+                // add a subpromise for fetching app stats
+                subpromises.push(getAppStats(app).then(function(data) {
+                    logger.info('got app stats', app.id);
+                    theScope.apps[app.id].appStats = data;
+                }));
+            }
         }
 
         if (data.meta.next) {
@@ -360,7 +383,7 @@ function searchAppData(inSearchURL) {
             subpromises.push(searchAppData('https://marketplace.firefox.com' + data.meta.next));
         }
 
-        return Q.all(subpromises);
+        return Q.allSettled(subpromises);
     });
 }
 
