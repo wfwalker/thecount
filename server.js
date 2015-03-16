@@ -569,6 +569,8 @@ var graphs = [
     { kind: 'distribution', routeFragment: 'number_of_versions', title: 'number of versions', getter: statistics.getNumberOfVersions },
     { kind: 'distribution', routeFragment: 'number_of_previews', title: 'number of previews', getter: statistics.getNumberOfPreviews },
     { kind: 'distribution', routeFragment: 'rating', title: 'avg rating', getter: statistics.getAverageRating },
+    { kind: 'distribution', routeFragment: 'abuse_report_count', title: 'abuse report count', getter: statistics.getAbuseReportCount },
+    { kind: 'distribution', routeFragment: 'install_count', title: 'install count', getter: statistics.getInstallCount },
     { kind: 'distribution', routeFragment: 'package_size', title: 'package size in MB', getter: statistics.getPackageSize },
     { kind: 'distribution', routeFragment: 'days_since_reviewed', title: 'days since reviewed', getter: statistics.getDaysSinceReviewed },
     { kind: 'distribution', routeFragment: 'days_since_created', title: 'days since created', getter: statistics.getDaysSinceCreated },

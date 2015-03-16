@@ -40,6 +40,27 @@ function getAverageRating(inApp) {
     }
 }
 
+// returns the number of abuse reports filed for this app, null otherwise
+
+function getAbuseReportCount(inApp) {
+    if (inApp.appStats && inApp.appStats.abuse_reports) {
+        return inApp.appStats.abuse_reports.total;
+    } else {
+        return null;
+    }
+}
+
+// returns the number of installs recorded for this app, null otherwise
+
+function getInstallCount(inApp) {
+    if (inApp.appStats && inApp.appStats.installs) {
+        return inApp.appStats.installs.total;
+    } else {
+        return null;
+    }
+}
+
+
 // returns the number of user ratings for apps with 50 or fewer ratings; null otherwise
 
 function getRatingCount(inApp) {
@@ -702,6 +723,8 @@ module.exports.getPackagedCategoryTable = getPackagedCategoryTable;
 
 module.exports.getRatingCount = getRatingCount;
 module.exports.getAverageRating = getAverageRating;
+module.exports.getAbuseReportCount = getAbuseReportCount;
+module.exports.getInstallCount = getInstallCount;
 module.exports.getPrice = getPrice;
 module.exports.getNumberOfVersions = getNumberOfVersions;
 module.exports.getPackageSize = getPackageSize;
