@@ -79,8 +79,9 @@ function roundRect(ctx, x, y, w, h, r)
 	ctx.stroke();   
 }
 
-function createVRScene(kind, param, model) {
-	console.log('createVRScene', kind, param);
+function createVRScene(inView) {
+	console.log('createVRScene');
+	var model = inView.get('model');
 
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(75, 800 / 600, 0.1, 1000);

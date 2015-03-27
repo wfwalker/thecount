@@ -52,7 +52,7 @@ TheCount.vrView = Ember.View.extend({
   classNames: ['vr'],
   didInsertElement: function() {
     console.log('didInsertElement vr');
-    createVRScene(this.get('kind'), this.get('param'), this.get('model'));
+    createVRScene(this);
   },
   updateChart: function updateChart() {
     console.log('updateChart vr');
