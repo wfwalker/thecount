@@ -95,10 +95,12 @@ function createVRScene(kind, param, model) {
 	hemiLight.position.set( 0, 500, 0 );
 	scene.add( hemiLight );
 
+	var aTexture = new THREE.ImageUtils.loadTexture( 'firefox-marketplace-logo.png' );
 
 	for (var index = 0; index < model.length; index++) {
 		var scaledRatings = Math.min(4.0, 0.5 + model[index].ratings.count / 100.0);
-		var material = new THREE.MeshLambertMaterial( { color: 0x808080 } );
+
+		var material = new THREE.MeshPhongMaterial( { bumpMap: aTexture, color: 0x808080 } );
 		var geometry = new THREE.BoxGeometry(scaledRatings, 1, scaledRatings );
 
 		model[index].cube = new THREE.Mesh( geometry, material );
@@ -106,7 +108,8 @@ function createVRScene(kind, param, model) {
 		model[index].cube.position.x = 15 * Math.sin(Math.PI * index / 10);
 		model[index].cube.position.y = -10 + 2 * (index / 10);
 		model[index].cube.position.z = 15 * Math.cos(Math.PI * index / 10);
-		model[index].cube.slug = model[index].slug;
+		model[index].cube.app = model[index];
+
 		scene.add(model[index].cube);
 		targetList.push(model[index].cube);
 
@@ -140,13 +143,23 @@ function render() {
 	var intersects = ray.intersectObjects( targetList );
 
 	if (intersects.length == 1) {
-		highlight = intersects[0];
-		intersects[0].object.material.color = {r: 0.9, g: 0.9, b: 0.9};
-	} else if (highlight != null) {
-		for (var resetIndex = 0; resetIndex < targetList.length; resetIndex++) {
-			targetList[resetIndex].material.color = {r: 0.5, g: 0.5, b: 0.5};
+		if ((highlight == null) || (highlight != intersects[0].object.app)) {
+			highlight = intersects[0].object.app;
+			intersects[0].object.material.color = {r: 0.9, g: 0.9, b: 0.9};
+			console.log(highlight.manifest_url);
 		}
-		highlight = null;
+
+		if (intersects[0].distance < 5) {
+			console.log('BOOM');
+			window.location='/#/app/' + highlight.id;
+		}
+	} else {
+		if (highlight != null) {
+			for (var resetIndex = 0; resetIndex < targetList.length; resetIndex++) {
+				targetList[resetIndex].material.color = {r: 0.5, g: 0.5, b: 0.5};
+			}
+			highlight = null;
+		}
 	}
 
 	renderer.render(scene, camera);
