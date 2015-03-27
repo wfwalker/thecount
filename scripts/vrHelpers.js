@@ -79,6 +79,36 @@ function roundRect(ctx, x, y, w, h, r)
 	ctx.stroke();   
 }
 
+function addAppModelToScene(inApp) {
+	var aTexture = new THREE.ImageUtils.loadTexture( 'firefox-marketplace-logo.png' );
+	var scaledRatings = Math.min(4.0, 0.5 + inApp.ratings.count / 100.0);
+
+	var material = new THREE.MeshPhongMaterial( { bumpMap: aTexture, color: 0x808080 } );
+	var geometry = new THREE.BoxGeometry(scaledRatings, 1, scaledRatings );
+
+	inApp.cube = new THREE.Mesh( geometry, material );
+
+	inApp.cube.position.x = Math.random() * 30 - 15;
+	inApp.cube.position.y = Math.random() * 30 - 15;
+	inApp.cube.position.z = Math.random() * 30 - 15;
+	inApp.cube.app = inApp;
+
+	scene.add(inApp.cube);
+	targetList.push(inApp.cube);
+
+	var spritey = makeTextSprite(
+			inApp.slug, 
+			{
+				fontsize: 24,
+				borderColor: {r:255, g:0, b:0, a:1.0},
+				backgroundColor: {r:255, g:100, b:100, a:0.8}
+			});
+
+	spritey.position.set(inApp.cube.position.x, inApp.cube.position.y + 0.5, inApp.cube.position.z);
+
+	scene.add(spritey);		
+}
+
 function createVRScene(inView) {
 	console.log('createVRScene');
 	var model = inView.get('model');
@@ -96,35 +126,8 @@ function createVRScene(inView) {
 	hemiLight.position.set( 0, 500, 0 );
 	scene.add( hemiLight );
 
-	var aTexture = new THREE.ImageUtils.loadTexture( 'firefox-marketplace-logo.png' );
-
 	for (var index = 0; index < model.length; index++) {
-		var scaledRatings = Math.min(4.0, 0.5 + model[index].ratings.count / 100.0);
-
-		var material = new THREE.MeshPhongMaterial( { bumpMap: aTexture, color: 0x808080 } );
-		var geometry = new THREE.BoxGeometry(scaledRatings, 1, scaledRatings );
-
-		model[index].cube = new THREE.Mesh( geometry, material );
-
-		model[index].cube.position.x = 15 * Math.sin(Math.PI * index / 10);
-		model[index].cube.position.y = -10 + 2 * (index / 10);
-		model[index].cube.position.z = 15 * Math.cos(Math.PI * index / 10);
-		model[index].cube.app = model[index];
-
-		scene.add(model[index].cube);
-		targetList.push(model[index].cube);
-
-		var spritey = makeTextSprite(
-				model[index].slug, 
-				{
-					fontsize: 24,
-					borderColor: {r:255, g:0, b:0, a:1.0},
-					backgroundColor: {r:255, g:100, b:100, a:0.8}
-				});
-
-		spritey.position.set(model[index].cube.position.x, model[index].cube.position.y + 0.5, model[index].cube.position.z);
-
-		scene.add(spritey);		
+		addAppModelToScene(model[index]);
 	}
 
 	controls = new THREE.FirstPersonControls(camera);
@@ -134,9 +137,7 @@ function createVRScene(inView) {
 	render();
 }
 
-function render() {
-	controls.update( clock.getDelta() );
-
+function handleSelection() {
 	var vector = new THREE.Vector3( 0, 0, 1 );
 	vector.unproject( camera );
 	var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
@@ -162,6 +163,12 @@ function render() {
 			highlight = null;
 		}
 	}
+}
+
+function render() {
+	controls.update( clock.getDelta() );
+
+	handleSelection();
 
 	renderer.render(scene, camera);
 	requestAnimationFrame(render);
