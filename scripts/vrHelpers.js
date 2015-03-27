@@ -80,17 +80,16 @@ function roundRect(ctx, x, y, w, h, r)
 }
 
 function addAppModelToScene(inApp) {
-	var aTexture = new THREE.ImageUtils.loadTexture( 'firefox-marketplace-logo.png' );
 	var scaledRatings = Math.min(4.0, 0.5 + inApp.ratings.count / 100.0);
 
-	var material = new THREE.MeshPhongMaterial( { bumpMap: aTexture, color: 0x808080 } );
+	var material = new THREE.MeshPhongMaterial( { color: 0x808080 } );
 	var geometry = new THREE.BoxGeometry(scaledRatings, 1, scaledRatings );
 
 	inApp.cube = new THREE.Mesh( geometry, material );
 
-	inApp.cube.position.x = Math.random() * 30 - 15;
-	inApp.cube.position.y = Math.random() * 30 - 15;
-	inApp.cube.position.z = Math.random() * 30 - 15;
+	inApp.cube.position.x = Math.random() * 100 - 50;
+	inApp.cube.position.y = Math.random() * 2 +2;
+	inApp.cube.position.z = Math.random() * 100 - 50;
 	inApp.cube.app = inApp;
 
 	scene.add(inApp.cube);
@@ -120,6 +119,23 @@ function createVRScene(inView) {
 	projector = new THREE.Projector();
 	$('.vr')[0].appendChild(renderer.domElement);
 
+	var floorTexture = new THREE.ImageUtils.loadTexture( 'checkerboard.jpg' );
+	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
+	floorTexture.repeat.set( 10, 10 );
+	// DoubleSide: render texture on both sides of mesh
+	var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
+	var floorGeometry = new THREE.PlaneGeometry(100, 100, 1, 1);
+	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+	floor.rotation.x = Math.PI / 2;
+	scene.add(floor);	
+
+	// make sure the camera's "far" value is large enough so that it will render the skyBox!
+	var skyBoxGeometry = new THREE.CubeGeometry( 1000, 1000, 1000 );
+	// BackSide: render faces from inside of the cube, instead of from outside (default).
+	var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0xC0C0C0, side: THREE.BackSide } );
+	var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
+	scene.add(skyBox);	
+
 	hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
 	hemiLight.color.setHSL( 0.6, 1, 0.6 );
 	hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
@@ -133,6 +149,8 @@ function createVRScene(inView) {
 	controls = new THREE.FirstPersonControls(camera);
 	controls.movementSpeed = 4;
 	controls.lookSpeed = 0.08;
+
+	camera.position.y = 10;
 
 	render();
 }
