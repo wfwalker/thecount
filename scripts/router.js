@@ -43,6 +43,7 @@ TheCount.Router.map(function() {
   this.resource('app', { path: '/app/:app_id'});
   this.resource('frequency', { path: '/frequency/:frequency_kind' });
   this.resource('table', { path: '/table' });
+  this.resource('vr', { path: '/vr/:vr_kind/:vr_param' });
   this.resource('distribution', { path: '/distribution/:distribution_kind' });
   this.resource('pie', { path: '/pie/:pie_kind' });
   this.route('bad_url', { path: '/*badurl' });
@@ -222,6 +223,32 @@ TheCount.TableRoute = Ember.Route.extend({
     error: function(error, transition) {
       console.log('error in table route');
       insertAlert('Cannot fetch table data');
+      console.log(error);
+      $('.loading').hide();
+    }
+  }
+});
+
+TheCount.VrRoute = Ember.Route.extend({
+
+  setupController: function(controller, data) {
+    controller.set('model', data);
+    controller.set('count', data.length);  
+    controller.set('vrKind', this.get('vrKind'));
+    controller.set('vrParam', this.get('vrParam'));
+    $('.loading').hide();
+    document.title = 'TheCount | VR';
+  },
+  model: function(params) {
+    this.set('vrKind', params.vr_kind);
+    this.set('vrParam', params.vr_param);
+    $('.loading').show();
+    return Ember.$.getJSON('/listing/' + params.vr_kind + '/' + params.vr_param + middlewareQueryParams());
+  },
+  actions: {
+    error: function(error, transition) {
+      console.log('error in vr route');
+      insertAlert('Cannot get listing');
       console.log(error);
       $('.loading').hide();
     }

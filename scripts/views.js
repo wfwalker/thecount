@@ -41,13 +41,23 @@ TheCount.pieView = Ember.View.extend({
 TheCount.tableView = Ember.View.extend({
   classNames: ['table'],
   didInsertElement: function() {
-    console.log('didInsertElement pie');
+    console.log('didInsertElement table');
   },
   updateChart: function updateChart() {
-    console.log('updateChart pie');
+    console.log('updateChart table');
   }.observes('content.@each.value')
 });
 
+TheCount.vrView = Ember.View.extend({
+  classNames: ['vr'],
+  didInsertElement: function() {
+    console.log('didInsertElement vr');
+    createVRScene(this.get('kind'), this.get('param'), this.get('model'));
+  },
+  updateChart: function updateChart() {
+    console.log('updateChart vr');
+  }.observes('content.@each.value')
+});
 
 // HELPERS!
 

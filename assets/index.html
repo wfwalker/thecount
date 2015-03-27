@@ -413,6 +413,17 @@
 		</div>
 	</script>
 
+	<script type="text/x-handlebars" data-template-name="vr">
+		<div class='container'>
+			<div class='row'>
+				<div class='col-md-12'>
+					canvas here {{vrKind}} {{vrParam}}
+					{{view TheCount.vrView kind=vrKind param=vrParam model=model}}
+				</div>
+			</div>
+		</div>
+	</script>
+
 	<script type="text/x-handlebars" data-template-name="distribution">
 		<div class='container'>
 			<div class='row'>
@@ -431,6 +442,8 @@
 
 	<script src="/scripts/jquery-1.10.2.js"> </script>
 	<script src="/scripts/handlebars-1.3.0.js"> </script>
+	<script src="/scripts/three.min.js"> </script>
+	<script src="/scripts/FirstPersonControls.js"> </script>
 	<script src="/scripts/ember-1.8.1.js"> </script>
 	<script src="/scripts/ember-data.js"> </script>
 	<script src="/scripts/bootstrap.js">
@@ -438,6 +451,7 @@
 	<script src="/scripts/d3.v3.min.js"> </script>
 	<script src="/scripts/installHelpers.js"> </script>
 	<script src="/scripts/d3Helpers.js"> </script>
+	<script src="/scripts/vrHelpers.js"> </script>
 	<script src="/scripts/app.js"> </script>
 	<script src="/scripts/router.js"> </script>
 	<script src="/scripts/views.js"> </script>
