@@ -89,6 +89,7 @@ function addAppModelToScene(inApp) {
 		map: inApp.is_packaged? brickTexture : woodTexture,
 		color: {r: 0.9, g: 0.9, b: 0.9} } );
 
+	// TODO: use scale.x,scale.y,scale.z instead of dimensioning here?
 	var geometry = new THREE.BoxGeometry(scaledRatings, scaledRatings, scaledRatings );
 
 	inApp.cube = new THREE.Mesh( geometry, material );
@@ -107,8 +108,8 @@ function addAppModelToScene(inApp) {
 			inApp.slug, 
 			{
 				fontsize: 24,
-				borderColor: {r:255, g:0, b:0, a:1.0},
-				backgroundColor: {r:255, g:100, b:100, a:0.8}
+				borderColor: inApp.app_type == 'privileged' ? {r:0, g:255, b:0, a:1.0} : {r:255, g:0, b:0, a:1.0},
+				backgroundColor: inApp.app_type == 'privileged' ? {r:100, g:255, b:100, a:0.8} : {r:255, g:100, b:100, a:0.8}
 			});
 
 	appLabel.position.set(inApp.cube.position.x, inApp.cube.position.y + scaledRatings / 2, inApp.cube.position.z);
