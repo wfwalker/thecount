@@ -6,6 +6,8 @@ var controls = null;
 var projector = null;
 var highlight = null;
 var targetList = [];
+var boxTexture = null;
+var floorTexture = null;
 
 function makeTextSprite( message, parameters )
 {
@@ -82,20 +84,22 @@ function roundRect(ctx, x, y, w, h, r)
 function addAppModelToScene(inApp) {
 	var scaledRatings = Math.min(4.0, 0.5 + inApp.ratings.count / 100.0);
 
-	var material = new THREE.MeshPhongMaterial( { color: 0x808080 } );
-	var geometry = new THREE.BoxGeometry(scaledRatings, 1, scaledRatings );
+	var material = new THREE.MeshBasicMaterial( { map: boxTexture, color: {r: 0.9, g: 0.9, b: 0.9} } );
+	var geometry = new THREE.BoxGeometry(scaledRatings, scaledRatings, scaledRatings );
 
 	inApp.cube = new THREE.Mesh( geometry, material );
 
+	inApp.cube.castShadow = true;
+
 	inApp.cube.position.x = Math.random() * 100 - 50;
-	inApp.cube.position.y = Math.random() * 2 +2;
+	inApp.cube.position.y = scaledRatings / 2;
 	inApp.cube.position.z = Math.random() * 100 - 50;
 	inApp.cube.app = inApp;
 
 	scene.add(inApp.cube);
 	targetList.push(inApp.cube);
 
-	var spritey = makeTextSprite(
+	var appLabel = makeTextSprite(
 			inApp.slug, 
 			{
 				fontsize: 24,
@@ -103,9 +107,9 @@ function addAppModelToScene(inApp) {
 				backgroundColor: {r:255, g:100, b:100, a:0.8}
 			});
 
-	spritey.position.set(inApp.cube.position.x, inApp.cube.position.y + 0.5, inApp.cube.position.z);
+	appLabel.position.set(inApp.cube.position.x, inApp.cube.position.y + scaledRatings / 2, inApp.cube.position.z);
 
-	scene.add(spritey);		
+	scene.add(appLabel);		
 }
 
 function createVRScene(inView) {
@@ -116,31 +120,34 @@ function createVRScene(inView) {
 	camera = new THREE.PerspectiveCamera(75, 800 / 600, 0.1, 1000);
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize(800, 600);
+    renderer.shadowMapEnabled = true;
+    renderer.shadowMapSoft = true;
+
 	projector = new THREE.Projector();
 	$('.vr')[0].appendChild(renderer.domElement);
 
-	var floorTexture = new THREE.ImageUtils.loadTexture( 'checkerboard.jpg' );
+	floorTexture = new THREE.ImageUtils.loadTexture( 'roadway.jpg' );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set( 10, 10 );
+	floorTexture.repeat.set( 20, 20 );
+
 	// DoubleSide: render texture on both sides of mesh
 	var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
 	var floorGeometry = new THREE.PlaneGeometry(100, 100, 1, 1);
 	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
 	floor.rotation.x = Math.PI / 2;
+    floor.receiveShadow = true;
 	scene.add(floor);	
+
+	boxTexture = new THREE.ImageUtils.loadTexture( 'brick-texture3.jpg' );
+	boxTexture.wrapS = boxTexture.wrapT = THREE.RepeatWrapping; 
+	boxTexture.repeat.set( 2, 2 );
 
 	// make sure the camera's "far" value is large enough so that it will render the skyBox!
 	var skyBoxGeometry = new THREE.CubeGeometry( 1000, 1000, 1000 );
 	// BackSide: render faces from inside of the cube, instead of from outside (default).
-	var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0xC0C0C0, side: THREE.BackSide } );
+	var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x007fff, side: THREE.BackSide } );
 	var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
 	scene.add(skyBox);	
-
-	hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
-	hemiLight.color.setHSL( 0.6, 1, 0.6 );
-	hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
-	hemiLight.position.set( 0, 500, 0 );
-	scene.add( hemiLight );
 
 	for (var index = 0; index < model.length; index++) {
 		addAppModelToScene(model[index]);
@@ -149,8 +156,11 @@ function createVRScene(inView) {
 	controls = new THREE.FirstPersonControls(camera);
 	controls.movementSpeed = 4;
 	controls.lookSpeed = 0.08;
+    controls.constrainVertical = true;
+    controls.verticalMin = Math.PI * 0.25;
+    controls.verticalMax = Math.PI * 0.55;
 
-	camera.position.y = 10;
+	camera.position.y = 1;
 
 	render();
 }
@@ -165,18 +175,18 @@ function handleSelection() {
 	if (intersects.length == 1) {
 		if ((highlight == null) || (highlight != intersects[0].object.app)) {
 			highlight = intersects[0].object.app;
-			intersects[0].object.material.color = {r: 0.9, g: 0.9, b: 0.9};
+			intersects[0].object.material.color = {r: 0.9, g: 0.1, b: 0.1};
 			console.log(highlight.manifest_url);
 		}
 
 		if (intersects[0].distance < 5) {
 			console.log('BOOM');
-			window.location='/#/app/' + highlight.id;
+			// window.location='/#/app/' + highlight.id;
 		}
 	} else {
 		if (highlight != null) {
 			for (var resetIndex = 0; resetIndex < targetList.length; resetIndex++) {
-				targetList[resetIndex].material.color = {r: 0.5, g: 0.5, b: 0.5};
+				targetList[resetIndex].material.color = {r: 0.9, g: 0.9, b: 0.9};
 			}
 			highlight = null;
 		}
@@ -185,6 +195,8 @@ function handleSelection() {
 
 function render() {
 	controls.update( clock.getDelta() );
+
+	camera.position.y = THREE.Math.clamp( camera.position.y, 0.5, 5.0 );
 
 	handleSelection();
 
