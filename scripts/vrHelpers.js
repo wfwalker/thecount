@@ -6,7 +6,8 @@ var controls = null;
 var projector = null;
 var highlight = null;
 var targetList = [];
-var boxTexture = null;
+var brickTexture = null;
+var woodTexture = null;
 var floorTexture = null;
 
 function makeTextSprite( message, parameters )
@@ -84,7 +85,10 @@ function roundRect(ctx, x, y, w, h, r)
 function addAppModelToScene(inApp) {
 	var scaledRatings = Math.min(4.0, 0.5 + inApp.ratings.count / 100.0);
 
-	var material = new THREE.MeshBasicMaterial( { map: boxTexture, color: {r: 0.9, g: 0.9, b: 0.9} } );
+	var material = new THREE.MeshBasicMaterial( {
+		map: inApp.is_packaged? brickTexture : woodTexture,
+		color: {r: 0.9, g: 0.9, b: 0.9} } );
+
 	var geometry = new THREE.BoxGeometry(scaledRatings, scaledRatings, scaledRatings );
 
 	inApp.cube = new THREE.Mesh( geometry, material );
@@ -138,9 +142,13 @@ function createVRScene(inView) {
     floor.receiveShadow = true;
 	scene.add(floor);	
 
-	boxTexture = new THREE.ImageUtils.loadTexture( 'brick-texture3.jpg' );
-	boxTexture.wrapS = boxTexture.wrapT = THREE.RepeatWrapping; 
-	boxTexture.repeat.set( 2, 2 );
+	brickTexture = new THREE.ImageUtils.loadTexture( 'brick-texture3.jpg' );
+	brickTexture.wrapS = brickTexture.wrapT = THREE.RepeatWrapping; 
+	brickTexture.repeat.set( 2, 2 );
+
+	woodTexture = new THREE.ImageUtils.loadTexture( 'wood-texture.jpg' );
+	woodTexture.wrapS = woodTexture.wrapT = THREE.RepeatWrapping; 
+	woodTexture.repeat.set( 1, 1 );
 
 	// make sure the camera's "far" value is large enough so that it will render the skyBox!
 	var skyBoxGeometry = new THREE.CubeGeometry( 1000, 1000, 1000 );
