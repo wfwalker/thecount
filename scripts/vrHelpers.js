@@ -82,6 +82,8 @@ function roundRect(ctx, x, y, w, h, r)
 	ctx.stroke();   
 }
 
+// for a given app, create a model and add it to the scene
+// visualize information about the app using sizes, colors, textures, and placement
 function addAppModelToScene(inApp) {
 	var scaledRatings = Math.min(4.0, 0.5 + inApp.ratings.count / 100.0);
 
@@ -89,10 +91,11 @@ function addAppModelToScene(inApp) {
 		map: inApp.is_packaged? brickTexture : woodTexture,
 		color: {r: 0.9, g: 0.9, b: 0.9} } );
 
-	// TODO: use scale.x,scale.y,scale.z instead of dimensioning here?
-	var geometry = new THREE.BoxGeometry(scaledRatings, scaledRatings, scaledRatings );
-
+	var geometry = new THREE.BoxGeometry(1, 1, 1);
 	inApp.cube = new THREE.Mesh( geometry, material );
+	inApp.cube.scale.x = scaledRatings;
+	inApp.cube.scale.y = scaledRatings;
+	inApp.cube.scale.z = scaledRatings;
 
 	inApp.cube.castShadow = true;
 
@@ -104,6 +107,7 @@ function addAppModelToScene(inApp) {
 	scene.add(inApp.cube);
 	targetList.push(inApp.cube);
 
+	// make different colors for privileged and not privileged apps
 	var appLabel = makeTextSprite(
 			inApp.slug, 
 			{
@@ -125,8 +129,6 @@ function createVRScene(inView) {
 	camera = new THREE.PerspectiveCamera(75, 800 / 600, 0.1, 1000);
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize(800, 600);
-    renderer.shadowMapEnabled = true;
-    renderer.shadowMapSoft = true;
 
 	projector = new THREE.Projector();
 	$('.vr')[0].appendChild(renderer.domElement);
