@@ -140,7 +140,6 @@ function createVRScene(inView) {
 	var floorGeometry = new THREE.PlaneBufferGeometry(100, 100, 1, 1);
 	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
 	floor.rotation.x = Math.PI / 2;
-    floor.receiveShadow = true;
 	scene.add(floor);	
 
 	brickTexture = new THREE.ImageUtils.loadTexture( 'brick-texture3.jpg' );
@@ -151,12 +150,24 @@ function createVRScene(inView) {
 	woodTexture.wrapS = woodTexture.wrapT = THREE.RepeatWrapping; 
 	woodTexture.repeat.set( 1, 1 );
 
-	// make sure the camera's "far" value is large enough so that it will render the skyBox!
-	var skyBoxGeometry = new THREE.BoxGeometry( 1000, 1000, 1000 );
-	// BackSide: render faces from inside of the cube, instead of from outside (default).
-	var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x007fff, side: THREE.BackSide } );
-	var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
-	scene.add(skyBox);	
+	var materialArray = [];
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'clouds4.jpg' ) }));
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'clouds2.jpg' ) }));
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'cloudstop.jpg' ) }));
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'cloudsbot.jpg' ) }));
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'clouds3.jpg' ) }));
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'clouds1.jpg' ) }));
+	for (var i = 0; i < 6; i++)
+	   materialArray[i].side = THREE.BackSide;
+	var skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
+	
+	var skyboxGeom = new THREE.BoxGeometry( 1000, 1000, 1000, 1, 1, 1 );
+	
+	var skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
+
+	scene.add( skybox );	
+	scene.fog = new THREE.FogExp2( 0x999999, 0.0002 );
+
 
 	for (var index = 0; index < model.length; index++) {
 		addAppModelToScene(model[index]);
@@ -185,7 +196,7 @@ function handleSelection() {
 		if ((highlight == null) || (highlight != intersects[0].object.app)) {
 			highlight = intersects[0].object.app;
 			intersects[0].object.material.color = {r: 0.9, g: 0.1, b: 0.1};
-			console.log(highlight.manifest_url);
+			// console.log(highlight.manifest_url);
 		}
 
 		if (intersects[0].distance < 5) {
@@ -205,6 +216,7 @@ function handleSelection() {
 function render() {
 	controls.update( clock.getDelta() );
 
+	// ensure the altitude (y) doesn't go too high or too low
 	camera.position.y = THREE.Math.clamp( camera.position.y, 0.5, 5.0 );
 
 	handleSelection();
