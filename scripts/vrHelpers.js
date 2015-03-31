@@ -97,8 +97,6 @@ function addAppModelToScene(inApp) {
 	inApp.cube.scale.y = scaledRatings;
 	inApp.cube.scale.z = scaledRatings;
 
-	inApp.cube.castShadow = true;
-
 	inApp.cube.position.x = Math.random() * 100 - 50;
 	inApp.cube.position.y = scaledRatings / 2;
 	inApp.cube.position.z = Math.random() * 100 - 50;
@@ -139,7 +137,7 @@ function createVRScene(inView) {
 
 	// DoubleSide: render texture on both sides of mesh
 	var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
-	var floorGeometry = new THREE.PlaneGeometry(100, 100, 1, 1);
+	var floorGeometry = new THREE.PlaneBufferGeometry(100, 100, 1, 1);
 	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
 	floor.rotation.x = Math.PI / 2;
     floor.receiveShadow = true;
@@ -154,7 +152,7 @@ function createVRScene(inView) {
 	woodTexture.repeat.set( 1, 1 );
 
 	// make sure the camera's "far" value is large enough so that it will render the skyBox!
-	var skyBoxGeometry = new THREE.CubeGeometry( 1000, 1000, 1000 );
+	var skyBoxGeometry = new THREE.BoxGeometry( 1000, 1000, 1000 );
 	// BackSide: render faces from inside of the cube, instead of from outside (default).
 	var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x007fff, side: THREE.BackSide } );
 	var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
