@@ -120,18 +120,7 @@ function addAppModelToScene(inApp) {
 	scene.add(inApp.label);		
 }
 
-function createVRScene(inView) {
-	console.log('createVRScene');
-	var model = inView.get('model');
-
-	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera(75, 800 / 600, 0.1, 1000);
-	renderer = new THREE.WebGLRenderer();
-	renderer.setSize(800, 600);
-
-	projector = new THREE.Projector();
-	$('.vr')[0].appendChild(renderer.domElement);
-
+function createFloor() {
 	floorTexture = new THREE.ImageUtils.loadTexture( 'roadway.jpg' );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 	floorTexture.repeat.set( 20, 20 );
@@ -141,16 +130,11 @@ function createVRScene(inView) {
 	var floorGeometry = new THREE.PlaneBufferGeometry(100, 100, 1, 1);
 	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
 	floor.rotation.x = Math.PI / 2;
-	scene.add(floor);	
 
-	brickTexture = new THREE.ImageUtils.loadTexture( 'brick-texture3.jpg' );
-	brickTexture.wrapS = brickTexture.wrapT = THREE.RepeatWrapping; 
-	brickTexture.repeat.set( 2, 2 );
+	return floor;
+}
 
-	woodTexture = new THREE.ImageUtils.loadTexture( 'wood-texture.jpg' );
-	woodTexture.wrapS = woodTexture.wrapT = THREE.RepeatWrapping; 
-	woodTexture.repeat.set( 1, 1 );
-
+function createSkybox() {
 	var materialArray = [];
 	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'clouds4.jpg' ) }));
 	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'clouds2.jpg' ) }));
@@ -166,9 +150,34 @@ function createVRScene(inView) {
 	
 	var skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
 
-	scene.add( skybox );	
-	scene.fog = new THREE.FogExp2( 0x999999, 0.0002 );
+	return skybox;	
+}
 
+function createVRScene(inView) {
+	console.log('createVRScene');
+	var model = inView.get('model');
+
+	scene = new THREE.Scene();
+	camera = new THREE.PerspectiveCamera(75, 800 / 600, 0.1, 1000);
+	renderer = new THREE.WebGLRenderer();
+	renderer.setSize(800, 600);
+
+	projector = new THREE.Projector();
+	$('.vr')[0].appendChild(renderer.domElement);
+
+	scene.add(createFloor());	
+
+	brickTexture = new THREE.ImageUtils.loadTexture( 'brick-texture3.jpg' );
+	brickTexture.wrapS = brickTexture.wrapT = THREE.RepeatWrapping; 
+	brickTexture.repeat.set( 2, 2 );
+
+	woodTexture = new THREE.ImageUtils.loadTexture( 'wood-texture.jpg' );
+	woodTexture.wrapS = woodTexture.wrapT = THREE.RepeatWrapping; 
+	woodTexture.repeat.set( 1, 1 );
+
+	scene.add(createSkybox());	
+
+	scene.fog = new THREE.FogExp2( 0x999999, 0.0002 );
 
 	for (var index = 0; index < model.length; index++) {
 		addAppModelToScene(model[index]);
