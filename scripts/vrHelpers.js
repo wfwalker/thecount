@@ -106,7 +106,7 @@ function addAppModelToScene(inApp) {
 	targetList.push(inApp.cube);
 
 	// make different colors for privileged and not privileged apps
-	var appLabel = makeTextSprite(
+	inApp.label = makeTextSprite(
 			inApp.slug, 
 			{
 				fontsize: 24,
@@ -114,9 +114,10 @@ function addAppModelToScene(inApp) {
 				backgroundColor: inApp.app_type == 'privileged' ? {r:100, g:255, b:100, a:0.8} : {r:255, g:100, b:100, a:0.8}
 			});
 
-	appLabel.position.set(inApp.cube.position.x, inApp.cube.position.y + scaledRatings / 2, inApp.cube.position.z);
+	inApp.label.position.set(inApp.cube.position.x, inApp.cube.position.y + scaledRatings / 2, inApp.cube.position.z);
+	inApp.label.visible = false;
 
-	scene.add(appLabel);		
+	scene.add(inApp.label);		
 }
 
 function createVRScene(inView) {
@@ -195,6 +196,7 @@ function handleSelection() {
 	if (intersects.length == 1) {
 		if ((highlight == null) || (highlight != intersects[0].object.app)) {
 			highlight = intersects[0].object.app;
+			highlight.label.visible = true;
 			intersects[0].object.material.color = {r: 0.9, g: 0.1, b: 0.1};
 			// console.log(highlight.manifest_url);
 		}
@@ -207,6 +209,7 @@ function handleSelection() {
 		if (highlight != null) {
 			for (var resetIndex = 0; resetIndex < targetList.length; resetIndex++) {
 				targetList[resetIndex].material.color = {r: 0.9, g: 0.9, b: 0.9};
+				targetList[resetIndex].app.label.visible = false;
 			}
 			highlight = null;
 		}
