@@ -9,6 +9,7 @@ var targetList = [];
 var brickTexture = null;
 var woodTexture = null;
 var floorTexture = null;
+var buildingLocations = [];
 
 function makeTextSprite( message, parameters )
 {
@@ -87,20 +88,32 @@ function roundRect(ctx, x, y, w, h, r)
 function addAppModelToScene(inApp) {
 	var scaledRatings = Math.min(4.0, 0.5 + inApp.ratings.count / 100.0);
 
+	if (inApp.is_packaged) {
+		var myTextureMap = new THREE.ImageUtils.loadTexture( 'highrise-512.jpg' );
+		myTextureMap.wrapS = myTextureMap.wrapT = THREE.RepeatWrapping; 
+		myTextureMap.repeat.set( scaledRatings * 0.4, scaledRatings * 0.4 );
+	} else {
+		var myTextureMap = new THREE.ImageUtils.loadTexture( 'highrise2-512.jpg' );
+		myTextureMap.wrapS = myTextureMap.wrapT = THREE.RepeatWrapping; 
+		myTextureMap.repeat.set( scaledRatings * 0.8, scaledRatings * 0.8 );
+	}
+
 	var material = new THREE.MeshBasicMaterial( {
-		map: inApp.is_packaged? brickTexture : woodTexture,
+		map: myTextureMap,
 		color: {r: 0.9, g: 0.9, b: 0.9} } );
 
-	var geometry = new THREE.BoxGeometry(1, 1, 1);
+	var geometry = new THREE.BoxGeometry(0.8, 1, 0.8);
 	inApp.cube = new THREE.Mesh( geometry, material );
-	inApp.cube.scale.x = scaledRatings;
+	inApp.cube.scale.x = 1;
 	inApp.cube.scale.y = scaledRatings;
-	inApp.cube.scale.z = scaledRatings;
+	inApp.cube.scale.z = 1;
 
-	inApp.cube.position.x = Math.random() * 100 - 50;
+	var myLocationID = Math.floor(Math.random() * buildingLocations.length);
+	inApp.cube.position.x = buildingLocations[myLocationID][0];
 	inApp.cube.position.y = scaledRatings / 2;
-	inApp.cube.position.z = Math.random() * 100 - 50;
+	inApp.cube.position.z = buildingLocations[myLocationID][1];
 	inApp.cube.app = inApp;
+    buildingLocations.splice(myLocationID, 1);
 
 	scene.add(inApp.cube);
 	targetList.push(inApp.cube);
@@ -142,12 +155,12 @@ function createSkybox() {
 	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'cloudsbot.jpg' ) }));
 	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'clouds3.jpg' ) }));
 	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'clouds1.jpg' ) }));
+
 	for (var i = 0; i < 6; i++)
 	   materialArray[i].side = THREE.BackSide;
 	var skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
 	
 	var skyboxGeom = new THREE.BoxGeometry( 1000, 1000, 1000, 1, 1, 1 );
-	
 	var skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
 
 	return skybox;	
@@ -168,16 +181,19 @@ function createVRScene(inView) {
 	scene.add(createFloor());	
 
 	brickTexture = new THREE.ImageUtils.loadTexture( 'brick-texture3.jpg' );
-	brickTexture.wrapS = brickTexture.wrapT = THREE.RepeatWrapping; 
-	brickTexture.repeat.set( 2, 2 );
 
 	woodTexture = new THREE.ImageUtils.loadTexture( 'wood-texture.jpg' );
-	woodTexture.wrapS = woodTexture.wrapT = THREE.RepeatWrapping; 
-	woodTexture.repeat.set( 1, 1 );
 
 	scene.add(createSkybox());	
 
 	scene.fog = new THREE.FogExp2( 0x999999, 0.0002 );
+
+	for (var xx = -9; xx < 9; xx++) {
+		for (var yy = -9; yy < 9; yy++) {
+			buildingLocations.push([xx, yy]);
+		}
+	}
+	console.log(buildingLocations);
 
 	for (var index = 0; index < model.length; index++) {
 		addAppModelToScene(model[index]);
