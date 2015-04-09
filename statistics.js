@@ -397,6 +397,7 @@ function getPlatformCategories(inApp) {
     if (inApp.app_type == 'privileged') { categories.push('privileged'); }
     if (inApp.app_type == 'packaged') { categories.push('packaged'); }
 
+    if (inApp.manifest && inApp.manifest.origin) { categories.push('origin'); }
     if (inApp.manifest && inApp.manifest.appcache_path) { categories.push('appcache'); }
     if (inApp.manifest && inApp.manifest.fullscreen) { categories.push('fullscreen'); }
     if (inApp.meta_viewport) { categories.push('meta_viewport'); }
