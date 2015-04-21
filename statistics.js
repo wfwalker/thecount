@@ -510,6 +510,8 @@ knownLibraries['jquery.mobile.theme-1.3.2.min.css'] = 'jQuery Mobile';
 
 knownLibraries['jquery-ui.min.js'] = 'jQuery UI';
 
+knownLibraries['fxpay.min.js'] = 'fxPay';
+
 knownLibraries['tgs-adapters-0.3.min.js'] = 'TreSensa';
 knownLibraries['tgs-0.3.css'] = 'TreSensa';
 knownLibraries['tgs-0.3.min.js'] = 'TreSensa';
@@ -543,6 +545,8 @@ knownLibraries['c2runtime.js'] = 'Construct 2';
 knownLibraries['c2webappstart.js'] = 'Construct 2';
 
 knownLibraries['firebase.js'] = 'Firebase';
+
+knownLibraries['font-awesome.min.css'] = 'Font Awesome';
 
 knownLibraries['angular.js'] = 'Angular';
 knownLibraries['angular-touch.js'] = 'Angular';
@@ -579,6 +583,8 @@ knownLibraries['modernizr-2.5.3.min.js'] = 'Modernizr';
 knownLibraries['modernizr-1.js'] = 'Modernizr';
 
 knownLibraries['progress_activity.css'] = 'Firefox OS Building Blocks';
+knownLibraries['seekbars.css'] = 'Firefox OS Building Blocks';
+knownLibraries['seekbars.js'] = 'Firefox OS Building Blocks';
 knownLibraries['lists.css'] = 'Firefox OS Building Blocks';
 knownLibraries['input_areas.css'] = 'Firefox OS Building Blocks';
 knownLibraries['drawer.css'] = 'Firefox OS Building Blocks';
