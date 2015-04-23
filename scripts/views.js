@@ -86,6 +86,10 @@ Ember.Handlebars.helper('formatNumber', function(property, options) {
   return addCommasToNumberString(property);
 });
 
+Ember.Handlebars.helper('formatPercentage', function(property, total, options) {
+  return Math.round(100 * (parseInt(property) / parseInt(total)));
+});
+
 Ember.Handlebars.helper('json', function(property, options) {
   return JSON.stringify(property, null, 2);
 });

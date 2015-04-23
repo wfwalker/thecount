@@ -55,6 +55,8 @@
 
 							<ul class="dropdown-menu">
 								<li>{{#link-to 'frequency' 'platform'}}platform{{/link-to}}</li>
+								<li>{{#link-to 'table' 'packaged_by_category'}}platform by category{{/link-to}}</li>
+								<li>{{#link-to 'table' 'category_by_popularity'}}platform by popularity{{/link-to}}</li>
 								<li>{{#link-to 'frequency' 'payment'}}payment{{/link-to}}</li>
 								<li>{{#link-to 'frequency' 'library'}}library{{/link-to}}</li>
 								<li>{{#link-to 'distribution' 'package_size'}}package sizes{{/link-to}}</li>
@@ -162,25 +164,23 @@
 						<th style="text-align: right">android mobile</th>
 						<th style="text-align: right">appcache</th>
 						<th style="text-align: right">browser chrome</th>
-						<th style="text-align: right">fullscreen</th>
 						<th style="text-align: right">TOTAL</th>
 					</tr>
 					{{#each tableData}}
 						<tr>
 							<td>{{category}}</td>
-							<td style="text-align: right">{{formatNumber packaged}}</td>
-							<td style="text-align: right">{{formatNumber hosted}}</td>
-							<td style="text-align: right">{{formatNumber privileged}}</td>
-							<td style="text-align: right">{{formatNumber fullscreen}}</td>
-							<td style="text-align: right">{{formatNumber meta_viewport}}</td>
-							<td style="text-align: right">{{formatNumber tarako}}</td>
-							<td style="text-align: right">{{formatNumber desktop}}</td>
-							<td style="text-align: right">{{formatNumber firefoxos}}</td>
-							<td style="text-align: right">{{formatNumber androidtablet}}</td>
-							<td style="text-align: right">{{formatNumber androidmobile}}</td>
-							<td style="text-align: right">{{formatNumber appcache}}</td>
-							<td style="text-align: right">{{formatNumber browser_chrome}}</td>
-							<td style="text-align: right">{{formatNumber fullscreen}}</td>
+							<td style="text-align: right">{{formatPercentage packaged total}}%</td>
+							<td style="text-align: right">{{formatPercentage hosted total}}%</td>
+							<td style="text-align: right">{{formatPercentage privileged total}}%</td>
+							<td style="text-align: right">{{formatPercentage fullscreen total}}%</td>
+							<td style="text-align: right">{{formatPercentage meta_viewport total}}%</td>
+							<td style="text-align: right">{{formatPercentage tarako total}}%</td>
+							<td style="text-align: right">{{formatPercentage desktop total}}%</td>
+							<td style="text-align: right">{{formatPercentage firefoxos total}}%</td>
+							<td style="text-align: right">{{formatPercentage androidtablet total}}%</td>
+							<td style="text-align: right">{{formatPercentage androidmobile total}}%</td>
+							<td style="text-align: right">{{formatPercentage appcache total}}%</td>
+							<td style="text-align: right">{{formatPercentage browser_chrome total}}%</td>
 							<td style="text-align: right">{{formatNumber total}}</td>
 						</tr>
 					{{/each}}

@@ -186,6 +186,56 @@ function getPackagedCategoryTable(inApps) {
     return countsArray;
 }
 
+// Create two dimensional table counting platform designators versus app categories
+
+function getPopularUnpopularCategoryTable(inApps) {
+    var counts = {};
+    var appCount = 0;
+    var allPlatformCategories = getAllPlatformCategories();
+
+    for (index in inApps) {
+        var app = inApps[index];
+        var platformStrings = getPlatformCategories(app);
+
+        appCount++;
+
+        // cat string is just popular or unpopular
+        var catString = 'unpopular';
+
+        if (app.ratings && app.ratings.count > 30) {
+            catString = 'popular';
+        }
+
+        if (! counts[catString]) {
+            counts[catString] = {};
+            counts[catString]['category'] = catString;
+
+            for (var initIndex in allPlatformCategories) {
+                var initPlatformCategory = allPlatformCategories[initIndex];
+                counts[catString][initPlatformCategory] = 0;
+                counts[catString]['total'] = 0;
+            }
+        }
+
+        counts[catString]['total']++;
+
+        for (var platIndex in platformStrings) {
+            var aPlatformString = platformStrings[platIndex];
+            counts[catString][aPlatformString]++;
+        }
+    }    
+
+    var countsArray = [];
+
+    for (var index2 in counts) {
+        countsArray.push(counts[index2]);
+        // console.log(counts[index2]);
+    }
+
+    console.log('app count', appCount);
+    return countsArray;
+}
+
 // FREQUENCY HELPER CODE
 
 // computes the frequency of occurrence of strings associated with each app
@@ -730,6 +780,7 @@ module.exports.knownLibraries = knownLibraries;
 module.exports.getValues = getValues;
 
 module.exports.getPackagedCategoryTable = getPackagedCategoryTable;
+module.exports.getPopularUnpopularCategoryTable = getPopularUnpopularCategoryTable;
 
 module.exports.getRatingCount = getRatingCount;
 module.exports.getAverageRating = getAverageRating;

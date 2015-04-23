@@ -42,7 +42,7 @@ TheCount.Router.map(function() {
   this.resource('apps', { path: '/listing/:listing_kind/:listing_param' });
   this.resource('app', { path: '/app/:app_id'});
   this.resource('frequency', { path: '/frequency/:frequency_kind' });
-  this.resource('table', { path: '/table' });
+  this.resource('table', { path: '/table/:table_kind' });
   this.resource('vr', { path: '/vr/:vr_kind/:vr_param' });
   this.resource('distribution', { path: '/distribution/:distribution_kind' });
   this.resource('pie', { path: '/pie/:pie_kind' });
@@ -216,8 +216,11 @@ TheCount.TableRoute = Ember.Route.extend({
     document.title = 'TheCount | packaged by category';
   },
   model: function(params) {
+    this.set('tableKind', params.table_kind);
     $('.loading').show();
-    return Ember.$.getJSON('/packaged_by_category' + middlewareQueryParams());
+    return Ember.$.getJSON('/table/' + params.table_kind + middlewareQueryParams());
+    // return Ember.$.getJSON('/packaged_by_category' + middlewareQueryParams());
+    // return Ember.$.getJSON('/category_by_popularity' + middlewareQueryParams());
   },
   actions: {
     error: function(error, transition) {
