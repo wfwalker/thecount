@@ -141,26 +141,28 @@ function getLastUpdatedDate(inApp) {
 
 // Create two dimensional table counting platform designators versus app categories
 
-function getPackagedCategoryTable(inApps) {
+function getPlatformTable(inApps, inRowStringsFn) {
     var counts = {};
     var appCount = 0;
-    var allPlatformCategories = getAllPlatformCategories();
+    var allPlatformTags = getAllPlatformTags();
 
     for (index in inApps) {
         var app = inApps[index];
-        var platformStrings = getPlatformCategories(app);
+        var platformStrings = getPlatformTags(app);
 
         appCount++;
 
-        for (catIndex in app.categories) {
-            var catString = app.categories[catIndex];
+        var rowStrings = inRowStringsFn(app);
+
+        for (catIndex in rowStrings) {
+            var catString = rowStrings[catIndex];
 
             if (! counts[catString]) {
                 counts[catString] = {};
                 counts[catString]['category'] = catString;
 
-                for (var initIndex in allPlatformCategories) {
-                    var initPlatformCategory = allPlatformCategories[initIndex];
+                for (var initIndex in allPlatformTags) {
+                    var initPlatformCategory = allPlatformTags[initIndex];
                     counts[catString][initPlatformCategory] = 0;
                     counts[catString]['total'] = 0;
                 }
@@ -186,54 +188,30 @@ function getPackagedCategoryTable(inApps) {
     return countsArray;
 }
 
+function getPlatformTagsByCategoryTable(inApps) {
+    return getPlatformTable(inApps, function (app) {
+        return app.categories;
+    });
+};
+
 // Create two dimensional table counting platform designators versus app categories
 
-function getPopularUnpopularCategoryTable(inApps) {
-    var counts = {};
-    var appCount = 0;
-    var allPlatformCategories = getAllPlatformCategories();
+function getPlatformTagsByPopularityTable(inApps) {
+    return getPlatformTable(inApps, function (app) {
+        var popularityStrings = ['1 reviews'];
 
-    for (index in inApps) {
-        var app = inApps[index];
-        var platformStrings = getPlatformCategories(app);
-
-        appCount++;
-
-        // cat string is just popular or unpopular
-        var catString = 'unpopular';
-
-        if (app.ratings && app.ratings.count > 30) {
-            catString = 'popular';
+        if (app.ratings && app.ratings.count > 400) {
+            popularityStrings.push('400 reviews');
+        }
+        if (app.ratings && app.ratings.count > 40) {
+            popularityStrings.push('40 reviews');
+        } 
+        if (app.ratings && app.ratings.count > 4) {
+            popularityStrings.push('4 reviews');
         }
 
-        if (! counts[catString]) {
-            counts[catString] = {};
-            counts[catString]['category'] = catString;
-
-            for (var initIndex in allPlatformCategories) {
-                var initPlatformCategory = allPlatformCategories[initIndex];
-                counts[catString][initPlatformCategory] = 0;
-                counts[catString]['total'] = 0;
-            }
-        }
-
-        counts[catString]['total']++;
-
-        for (var platIndex in platformStrings) {
-            var aPlatformString = platformStrings[platIndex];
-            counts[catString][aPlatformString]++;
-        }
-    }    
-
-    var countsArray = [];
-
-    for (var index2 in counts) {
-        countsArray.push(counts[index2]);
-        // console.log(counts[index2]);
-    }
-
-    console.log('app count', appCount);
-    return countsArray;
+        return popularityStrings;
+    });
 }
 
 // FREQUENCY HELPER CODE
@@ -432,11 +410,11 @@ function getPaymentCategories(inApp) {
 
 // returns a list of platform category strings for the given app,
 
-function getAllPlatformCategories() {
+function getAllPlatformTags() {
     return ['hosted', 'privileged', 'desktop', 'appcache', 'browser_chrome', 'packaged', 'firefoxos', 'fullscreen', 'meta_viewport', 'public_stats', 'tarako', 'android', 'androidtablet', 'androidmobile'];
 }
 
-function getPlatformCategories(inApp) {
+function getPlatformTags(inApp) {
     var categories = []
 
     if (inApp.manifest && inApp.manifest.chrome && inApp.manifest.chrome.navigation) {
@@ -445,7 +423,7 @@ function getPlatformCategories(inApp) {
 
     if (inApp.app_type == 'hosted') { categories.push('hosted'); }
     if (inApp.app_type == 'privileged') { categories.push('privileged'); }
-    if (inApp.app_type == 'packaged') { categories.push('packaged'); }
+    if (inApp.app_type == 'packaged' || inApp.app_type == 'privileged') { categories.push('packaged'); }
 
     if (inApp.manifest && inApp.manifest.origin) { categories.push('origin'); }
     if (inApp.manifest && inApp.manifest.redirects) { categories.push('redirects'); }
@@ -779,8 +757,8 @@ module.exports.getUnknownFilenames = getUnknownFilenames;
 module.exports.knownLibraries = knownLibraries;
 module.exports.getValues = getValues;
 
-module.exports.getPackagedCategoryTable = getPackagedCategoryTable;
-module.exports.getPopularUnpopularCategoryTable = getPopularUnpopularCategoryTable;
+module.exports.getPlatformTagsByCategoryTable = getPlatformTagsByCategoryTable;
+module.exports.getPlatformTagsByPopularityTable = getPlatformTagsByPopularityTable;
 
 module.exports.getRatingCount = getRatingCount;
 module.exports.getAverageRating = getAverageRating;
@@ -807,7 +785,7 @@ module.exports.getNumberOfPreviews = getNumberOfPreviews;
 module.exports.getSupportedLocales = getSupportedLocales;
 module.exports.getSupportedRegions = getSupportedRegions;
 module.exports.getCategoryStrings = getCategoryStrings;
-module.exports.getPlatformCategories = getPlatformCategories;
+module.exports.getPlatformTags = getPlatformTags;
 module.exports.getPaymentCategories = getPaymentCategories;
 module.exports.getActivityKeys = getActivityKeys;
 module.exports.getFilenames = getFilenames;

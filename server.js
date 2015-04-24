@@ -196,7 +196,7 @@ app.param('platform', function(req, resp, next, id) {
 
     for (index in marketplaceCatalog) {
         var app = marketplaceCatalog[index];
-        if (statistics.getPlatformCategories(app).indexOf(platform) >= 0) {
+        if (statistics.getPlatformTags(app).indexOf(platform) >= 0) {
             apps.push(app);
         }
     }
@@ -555,14 +555,14 @@ app.get('/globalstatistics', function(req, resp, next) {
 
 // route requests to get packaged/hosted by category
 
-app.get('/table/packaged_by_category', function(req, resp, next) {
-    logger.info('packaged_by_category');
-    resp.json({ tableData: statistics.getPackagedCategoryTable(req.apps) });
+app.get('/table/platform_by_category', function(req, resp, next) {
+    logger.info('platform_by_category');
+    resp.json({ tableData: statistics.getPlatformTagsByCategoryTable(req.apps) });
 });
 
-app.get('/table/category_by_popularity', function(req, resp, next) {
-    logger.info('category_by_popularity');
-    resp.json({ tableData: statistics.getPopularUnpopularCategoryTable(req.apps) });
+app.get('/table/platform_by_popularity', function(req, resp, next) {
+    logger.info('platform_by_popularity');
+    resp.json({ tableData: statistics.getPlatformTagsByPopularityTable(req.apps) });
 });
 
 // This data structure defines all the routes for analytics in TheCount, their paths, their getter functions
@@ -587,7 +587,7 @@ var graphs = [
     { kind: 'frequency', routeFragment: 'library', title: 'library', getter: statistics.getLibraryNames },
     { kind: 'frequency', routeFragment: 'file', title: 'file', getter: statistics.getFilenames },
     { kind: 'frequency', routeFragment: 'category', title: 'category', getter: statistics.getCategoryStrings },
-    { kind: 'frequency', routeFragment: 'platform', title: 'platform', getter: statistics.getPlatformCategories },
+    { kind: 'frequency', routeFragment: 'platform', title: 'platform', getter: statistics.getPlatformTags },
     { kind: 'frequency', routeFragment: 'payment', title: 'payment', getter: statistics.getPaymentCategories },
     { kind: 'pie', routeFragment: 'payment', title: 'payment', getter: statistics.getPaymentCategories },
     { kind: 'frequency', routeFragment: 'author', title: 'author', getter: statistics.getAuthor },
