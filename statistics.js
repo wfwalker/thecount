@@ -198,7 +198,7 @@ function getPlatformTagsByCategoryTable(inApps) {
 
 function getPlatformTagsByPopularityTable(inApps) {
     return getPlatformTable(inApps, function (app) {
-        var popularityStrings = ['1 reviews'];
+        var popularityStrings = ['all'];
 
         if (app.ratings && app.ratings.count > 400) {
             popularityStrings.push('400 reviews');
