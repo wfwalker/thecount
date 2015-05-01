@@ -203,6 +203,9 @@ function getPlatformTagsByPopularityTable(inApps) {
         if (app.ratings && app.ratings.count > 400) {
             popularityStrings.push('400 reviews');
         }
+        if (app.ratings && app.ratings.count > 200) {
+            popularityStrings.push('200 reviews');
+        } 
         if (app.ratings && app.ratings.count > 40) {
             popularityStrings.push('40 reviews');
         } 
