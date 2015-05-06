@@ -1,6 +1,6 @@
 name: thecount
 
-mem: 512M
+mem: 1024M
 
 framework:
   type: node
