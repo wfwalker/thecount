@@ -607,12 +607,16 @@ knownLibraries['iscroll-lite.min.js'] = 'Cubiq iSCroll.js';
 knownLibraries['add2home.js'] = 'Cubiq Add to home screen';
 knownLibraries['add2home.css'] = 'Cubiq Add to home screen';
 
+knownLibraries['kik.js'] = 'Kik';
+
 knownLibraries['modernizr.js'] = 'Modernizr';
 knownLibraries['modernizr.custom.js'] = 'Modernizr';
 knownLibraries['modernizr-2.6.2.min.js'] = 'Modernizr';
 knownLibraries['modernizr-2.5.3.min.js'] = 'Modernizr';
 knownLibraries['modernizr-1.js'] = 'Modernizr';
 
+knownLibraries['action_menu.css'] = 'Firefox OS Building Blocks';
+knownLibraries['action_icons.css'] = 'Firefox OS Building Blocks';
 knownLibraries['progress_activity.css'] = 'Firefox OS Building Blocks';
 knownLibraries['seekbars.css'] = 'Firefox OS Building Blocks';
 knownLibraries['seekbars.js'] = 'Firefox OS Building Blocks';
