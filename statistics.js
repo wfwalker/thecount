@@ -240,7 +240,7 @@ function getFrequency(inApps, getArrayOfStringsPerAppFn) {
                     console.log(strings);
                 }
 
-                var stringKey = strings[stringIndex].replace(':', '-');
+                var stringKey = strings[stringIndex];
 
                 if (counts[stringKey]) {
                     counts[stringKey]++;
