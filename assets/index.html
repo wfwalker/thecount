@@ -63,6 +63,7 @@
 								<li>{{#link-to 'frequency' 'icon_sizes'}}icon sizes{{/link-to}}</li>
 								<li>{{#link-to 'frequency' 'permission'}}permission{{/link-to}}</li>
 								<li>{{#link-to 'frequency' 'activity'}}activity{{/link-to}}</li>
+								<li>{{#link-to 'apps' 'desktopbugs' '10'}}desktop bugs{{/link-to}}</li>
 							</ul>
 						</li>
 					</ul>
@@ -334,6 +335,13 @@
 								<a target="_blank" {{bind-attr href=marketplaceLink}} class="btn btn-info">
 									<span class='glyphicon glyphicon-share-alt'> </span>
 									<span>marketplace</span>
+								</a>
+							</span>	
+
+							<span>
+								<a target="_blank" {{bind-attr href=bugzillaLink}} class="btn btn-danger">
+									<span class='glyphicon glyphicon-share-alt'> </span>
+									<span>file bug</span>
 								</a>
 							</span>	
 						</div>

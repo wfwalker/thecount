@@ -495,6 +495,29 @@ app.get('/listing/errors', function(req, resp, next) {
     resp.json(apps);
 });
 
+// route requests to retrieve apps that might expose desktop runtime bugs
+
+app.get('/listing/desktopbugs/:min_ratings', function(req, resp, next) {
+    logger.info('desktop bug list');
+    var apps = [];
+
+    for (index in req.apps) {
+        var app = req.apps[index];
+
+        var isDesktop = app.device_types.indexOf('desktop') > -1;
+        var usesFullscreen = app.manifest && app.manifest.fullscreen;
+
+        if (isDesktop && (usesFullscreen)) {
+            apps.push(app);
+        }
+    }
+
+    logger.info('desktop bug list ' + apps.length);
+
+    resp.json(apps);
+});
+
+
 // route requests to retrieve apps with appcache
 
 app.get('/listing/appcache', function(req, resp, next) {

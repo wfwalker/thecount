@@ -40,6 +40,20 @@ TheCount.AppController = Ember.ObjectController.extend({
   marketplaceLink: function() {
     return 'http://marketplace.firefox.com/app/' + this.get('model.slug');
   }.property('model.marketplaceLink'),
+  bugzillaLink: function() {
+    // TODO: redundant code for launch path handling
+    var parser = document.createElement('a');
+
+    // TODO: does not work for packaged apps! points to marketplace...
+    parser.href = this.get('model.manifest_url');
+    if (this.get('model.manifest.launch_path')) {
+      parser.pathname = this.get('model.manifest.launch_path');
+    } else {
+      parser.pathname = '';
+    }
+
+    return 'https://bugzilla.mozilla.org/enter_bug.cgi?product=Firefox&component=Web+Apps&bug_file_loc=' + encodeURIComponent(parser.href);
+  }.property('model.bugzillaLink'),
   fullLaunchPath: function() {
   }.property('model.fullLaunchPath'),  
   isPaidApp: function() {
