@@ -2,6 +2,9 @@
 // online version at http://wfwalker.github.io/thecount/
 // see https://github.com/wfwalker/thecount
 
+// TODO: use promise-based fetch instead of XHR
+// https://github.com/github/fetch
+
 var request = require('request');
 var fs = require('fs');
 var Q = require('q');
@@ -316,7 +319,10 @@ function handleManifest(app) {
                         if (metaTag.attribs.name && metaTag.attribs.name == 'viewport') {
                             logger.debug("VIEWPORT", app.id);
                             theScope.apps[app.id].meta_viewport = metaTag.attribs.content;
-                        } else {
+                        } else if (metaTag.attribs.name && metaTag.attribs.name == 'manifest') {
+                            logger.debug("W3C MANIFEST", app.id);
+                            theScope.apps[app.id].manifest = metaTag.attribs.content;
+                        } else{
                             // say nothin'
                         }
                     })
@@ -369,6 +375,8 @@ function searchAppData(inSearchURL) {
         // resolved
         var subpromises = [];
 
+        // TODO: use map here?
+        // https://gist.github.com/nickdesaulniers/b5c1d7d12adedc29c11b
         for (index in data.objects) {
             var app = data.objects[index];
             theScope.apps[app.id] = app;
