@@ -118,6 +118,7 @@ function getPromiseForDownloadPackageAndExtractManifest(inURL, inFilename) {
 //      rejects otherwise
 
 function getPromiseForRequest(inURL) {
+    logger.debug('getPromiseForRequest', inURL);
     var deferred = Q.defer();
 
     theScope.pendingRequests += 1;
@@ -194,7 +195,7 @@ function handleAppStats(inApp) {
         // TODO: this doesn't seem to work
         return {'error' : error.toString() };
     }).then(function(data) {
-        logger.info('handleAppStats', inApp.id);
+        logger.debug('handleAppStats', inApp.id);
         theScope.apps[inApp.id].appStats = data;
     });
 }
@@ -218,17 +219,15 @@ function getAppcacheManifest(inApp) {
 
 function getLaunchPage(inApp) {
     var manifestURL = url.parse(inApp.manifest_url);
-    var launchPathURL = manifestURL; 
+    var launchPathURL = manifestURL;
 
     if (inApp.manifest.launch_path) {
         launchPathURL = url.resolve(manifestURL, inApp.manifest.launch_path);
     }
 
-    return getPromiseForRequest(launchPathURL).catch(function (error) {
-        logger.error('getLaunchPage catch', launchPathURL);
-        // TODO: this doesn't seem to work
-        return {'error' : error.toString() };
-    });
+    logger.debug('getLaunchPage', launchPathURL);
+
+    return getPromiseForRequest(launchPathURL);
 }
 
 // returns a Q promise for retrieving an app's appcache manifest
@@ -304,6 +303,7 @@ function handleManifest(app) {
                 });
             // for hosted apps, get launch page
             } else {
+                logger.debug('handleManifest hosted');
                 return getLaunchPage(theScope.apps[app.id]).catch(function (error) {
                     logger.error('catch getLaunchPage inside addPromiseForManifest', app.id);
                 }).then(function (launchPageData) {
@@ -317,13 +317,20 @@ function handleManifest(app) {
                     // also do it for packaged apps
                     $('html').find('meta').each(function (index, metaTag) {
                         if (metaTag.attribs.name && metaTag.attribs.name == 'viewport') {
-                            logger.debug("VIEWPORT", app.id);
+                            logger.info('metatag', "VIEWPORT", app.id);
                             theScope.apps[app.id].meta_viewport = metaTag.attribs.content;
-                        } else if (metaTag.attribs.name && metaTag.attribs.name == 'manifest') {
-                            logger.debug("W3C MANIFEST", app.id);
+                        }
+                        if (metaTag.attribs.name && metaTag.attribs.name == 'manifest') {
+                            logger.info('metatag', "W3C MANIFEST", app.id);
                             theScope.apps[app.id].manifest = metaTag.attribs.content;
-                        } else{
-                            // say nothin'
+                        }
+                        if (metaTag.attribs.name && metaTag.attribs.name == 'apple-mobile-web-app-capable') {
+                            logger.info('metatag', "Apple Mobile Web Clip", app.id);
+                            theScope.apps[app.id].mobileWebClip = metaTag.attribs.content;
+                        }
+                        if (metaTag.attribs.name && metaTag.attribs.name == 'twitter:card') {
+                            logger.info('metatag', "twitter:card", app.id);
+                            theScope.apps[app.id].twitterCard = metaTag.attribs.content;
                         }
                     })
 
@@ -380,6 +387,13 @@ function searchAppData(inSearchURL) {
         for (index in data.objects) {
             var app = data.objects[index];
             theScope.apps[app.id] = app;
+
+            db.insert(app, function (err, newDoc) {
+                logger.info('db.insert callback', err, newDoc);
+                if (err) {
+                    logger.error(app);
+                }
+            });
 
             // add a subpromise for fetching the manifest
             subpromises.push(handleManifest(app));
