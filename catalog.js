@@ -388,12 +388,7 @@ function searchAppData(inSearchURL) {
             var app = data.objects[index];
             theScope.apps[app.id] = app;
 
-            db.insert(app, function (err, newDoc) {
-                logger.info('db.insert callback', err, newDoc);
-                if (err) {
-                    logger.error(app);
-                }
-            });
+            // TODO: insert into a database here
 
             // add a subpromise for fetching the manifest
             subpromises.push(handleManifest(app));
