@@ -15,6 +15,9 @@ var catalog = require('./catalog.js');
 
 var app = express();
 
+var LocalStorage = require('node-localstorage').LocalStorage;
+var localStorage = new LocalStorage('./apps-ls', 200 * 1024 * 1024);
+
 // INITIALIZE LOGGING
 
 var winston = require('winston');
@@ -67,10 +70,17 @@ var appsByAuthor = {};
 try {
     logger.info('About to Parse Catalog');
 
+
     // parse the giant apps.json created by thecount.js command-line tool or by /rebuild
-    var marketplaceCatalog = require('./apps.json');
-    logger.info('loaded ' + Object.keys(marketplaceCatalog).length + ' apps');
-    logger.info('parsed catalog'); 
+    logger.info('localstorage', localStorage.length, 'apps');
+
+    for (var i = 0; i < localStorage.length; i++) {
+        var tmpAppID = localStorage.key(i);
+        var tmpApp = JSON.parse(localStorage.getItem(tmpAppID));
+        marketplaceCatalog[tmpAppID] = tmpApp;
+    }
+
+    logger.info('parsed catalog', marketplaceCatalog.length); 
 
     // compute extra per-app data. for example, the sum of the size of all the appcache entries for each app
 

@@ -436,6 +436,9 @@ function getPlatformTags(inApp) {
 
     if (inApp.meta_viewport) { categories.push('meta_viewport'); }
     if (inApp.public_stats) { categories.push('public_stats'); }
+    if (inApp.w3c_manifest) { categories.push('w3c_manifest'); }
+    if (inApp.mobileWebClip) { categories.push('mobile_web_clip'); }
+    if (inApp.twitterCard) { categories.push('twitter_card'); }
 
     if (inApp.tags.indexOf('tarako') > -1) { categories.push('tarako'); }
     
